@@ -1,7 +1,7 @@
 import { NormalizedTicket } from '../../types/ticket';
 import { getLocalStore, updateLocalStore, initDatabase } from '../database';
 import { mergeTickets } from '../../parsers/merger';
-import { getLegacyTrainDetails, formatHaltTime } from '../../services/railRadarService';
+import { getLegacyTrainDetails, formatHaltTime } from '../../services/railService';
 
 export class TicketRepository {
   private static instance: TicketRepository;
@@ -100,7 +100,7 @@ export class TicketRepository {
       throw new Error('PNR is required to save ticket');
     }
 
-    // Fetch official train details & route from RailRadar legacy API when adding to wallet
+    // Fetch official train details & route from NTES proxy when adding to wallet
     if (incoming.train?.number) {
       try {
         const legacy = await getLegacyTrainDetails(incoming.train.number);

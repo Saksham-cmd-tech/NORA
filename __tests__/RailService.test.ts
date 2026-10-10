@@ -2,12 +2,12 @@ import {
   getCoachPosition,
   getLiveTrainStatus,
   fetchTrainName,
-} from '../src/services/railRadarService';
+} from '../src/services/railService';
 import { getTrainName, registerTrainName } from '../src/utils/stationLookup';
 
 jest.setTimeout(15000);
 
-describe('RailRadarService Caching & Quota Protection', () => {
+describe('NORA Rail Service & NTES Proxy Suite', () => {
   it('should return coach position for train 26101 with permanent cache', async () => {
     const coach1 = await getCoachPosition('26101');
     expect(coach1).toBeDefined();

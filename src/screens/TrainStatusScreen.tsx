@@ -53,7 +53,7 @@ import {
   Cabin,
   CabinSeat,
   BlueprintClass,
-} from '../services/railRadarService';
+} from '../services/railService';
 import { getTrainName } from '../utils/stationLookup';
 import { ShareTicketModal } from '../components/ticket/ShareTicketModal';
 import { buildShareTicketData, ShareTicketData } from '../services/shareTicketService';
@@ -1323,7 +1323,7 @@ export const TrainStatusScreen: React.FC<TrainStatusScreenProps> = ({
                 </AppText>
                 <AppText variant="micro" color="secondary" style={{ marginTop: 2, lineHeight: 16 }}>
                   {lastRefreshedText
-                    ? `Platform ${boardingPlatform} & Coach ${userCoach} confirmed via CRIS RailRadar.`
+                    ? `Platform ${boardingPlatform} & Coach ${userCoach} confirmed via CRIS NTES.`
                     : 'Live GPS radar & CRIS running telemetry auto-activates 1 hour prior to scheduled departure.'}
                 </AppText>
               </View>

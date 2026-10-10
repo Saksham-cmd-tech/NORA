@@ -1,9 +1,9 @@
 /**
- * RailRadar API Client & Offline Cache Service
+ * NORA Rail Proxy & Offline Cache Service
  * 
- * Strict Quota Optimization: Max 1,000 requests/month.
+ * Powered by direct Cloudflare NTES Proxy (CRIS Indian Railways)
  * - Coach compositions & layouts are cached permanently per train number.
- * - Live train status queries have a strict 3-minute cooldown (TTL).
+ * - Live train status queries have a 3-minute cooldown cache (TTL).
  * - Automatic offline & cached fallback so UI never blocks or fails.
  */
 
@@ -213,8 +213,6 @@ export interface LiveTrainData {
 // Cloudflare Worker Proxy URL for NTES live train status, halts & coach layouts
 // Replace with your deployed Cloudflare Worker URL (e.g. https://nora-rail-proxy.YOUR_SUBDOMAIN.workers.dev)
 export const CLOUDFLARE_PROXY_URL = 'https://nora-rail-proxy.YOUR_SUBDOMAIN.workers.dev';
-const RAILRADAR_BASE_URL = 'https://api.railradar.in';
-const RAILRADAR_API_KEY = 'YOUR_RAILRADAR_API_KEY';
 
 // Permanent Cache for Coach Formations (never re-fetch once loaded)
 const coachCache = new Map<string, CoachPositionResponse>();
@@ -930,44 +928,7 @@ export async function getCoachPosition(
     console.log(`[RailService] Cloudflare coach error for ${cleanNumber}:`, proxyErr);
   }
 
-  // 3. Fallback to RailRadar API
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 7000);
-
-    const res = await fetch(`${RAILRADAR_BASE_URL}/v1/trains/${cleanNumber}/coaches`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${RAILRADAR_API_KEY}`,
-        Accept: 'application/json',
-      },
-      signal: controller.signal,
-    });
-    clearTimeout(timeoutId);
-
-    if (res.ok) {
-      const json = await res.json();
-      if (json?.success && json?.data) {
-        const coachData: CoachPositionResponse = {
-          trainNumber: json.data.trainNumber || cleanNumber,
-          trainName: json.data.trainName || '',
-          totalCoaches: json.data.totalCoaches || (json.data.rake?.length || 8),
-          coachPosition: json.data.coachPosition || '',
-          rake: json.data.rake || [],
-          summary: json.data.summary,
-          blueprints: normalizeBlueprints(json.data.blueprints),
-          isCached: false,
-        };
-        // Save permanently in cache
-        coachCache.set(cleanNumber, coachData);
-        return coachData;
-      }
-    }
-  } catch (e) {
-    console.log(`[RailRadarService] Coach fetch error for ${cleanNumber}, using fallback:`, e);
-  }
-
-  // 4. Fallback if network fails
+  // 3. Fallback if network fails
   const fallback = buildDefaultRakeForTrain(cleanNumber, userCoach);
   coachCache.set(cleanNumber, fallback);
   return fallback;
@@ -1064,85 +1025,7 @@ export async function getLegacyTrainDetails(
     console.log(`[RailService] Cloudflare legacy route error for ${cleanNumber}:`, proxyErr);
   }
 
-  // 2. Fallback to RailRadar API
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 7000);
-
-    const res = await fetch(`${RAILRADAR_BASE_URL}/v1/legacy/trains/${cleanNumber}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${RAILRADAR_API_KEY}`,
-        Accept: 'application/json',
-      },
-      signal: controller.signal,
-    });
-    clearTimeout(timeoutId);
-
-    if (res.ok) {
-      const json = await res.json();
-      if (json?.success && json?.data?.train) {
-        const t = json.data.train;
-        const routeList: LegacyRouteHalt[] = (json.data.route || []).map((r: any) => ({
-          id: r.id,
-          sequence: r.sequence,
-          stationCode: (r.stationCode || '').toUpperCase(),
-          stationName: r.stationName || '',
-          isHalt: r.isHalt === 1 || r.isHalt === true,
-          distanceFromSourceKm: r.distanceFromSourceKm ?? 0,
-          scheduledArrival: r.scheduledArrival,
-          scheduledDeparture: r.scheduledDeparture,
-          actualArrival: r.actualArrival,
-          actualDeparture: r.actualDeparture,
-          delayArrivalMinutes: r.delayArrivalMinutes,
-          delayDepartureMinutes: r.delayDepartureMinutes,
-          haltDurationMinutes: r.haltDurationMinutes,
-          speedOnSectionKmph: r.speedOnSectionKmph,
-          platform: r.platform,
-          day: r.day,
-        }));
-
-        // Populate platform numbers from liveData if available in the response
-        if (json.data.liveData?.route) {
-          const liveRouteMap = new Map<string, string>();
-          json.data.liveData.route.forEach((lr: any) => {
-            if (lr.stationCode && lr.platform) {
-              liveRouteMap.set(lr.stationCode.toUpperCase(), String(lr.platform));
-            }
-          });
-          routeList.forEach((r) => {
-            if (!r.platform && liveRouteMap.has(r.stationCode)) {
-              r.platform = liveRouteMap.get(r.stationCode);
-            }
-          });
-        }
-
-        const details: LegacyTrainDetails = {
-          trainNumber: t.trainNumber || cleanNumber,
-          trainName: t.trainName || '',
-          type: t.type || '',
-          sourceStationCode: (t.sourceStationCode || '').toUpperCase(),
-          sourceStationName: t.sourceStationName || '',
-          destinationStationCode: (t.destinationStationCode || '').toUpperCase(),
-          destinationStationName: t.destinationStationName || '',
-          totalHalts: t.totalHalts || routeList.filter((r) => r.isHalt).length,
-          distanceKm: t.distanceKm || (routeList[routeList.length - 1]?.distanceFromSourceKm ?? 0),
-          travelTimeMinutes: t.travelTimeMinutes || 0,
-          avgSpeedKmph: t.avgSpeedKmph,
-          runningDays: t.runningDays?.days,
-          route: routeList,
-          isCached: false,
-        };
-
-        legacyTrainCache.set(cleanNumber, details);
-        return details;
-      }
-    }
-  } catch (e) {
-    console.log(`[RailRadarService] Legacy train details error for ${cleanNumber}:`, e);
-  }
-
-  // Fallback for known trains when offline or rate limited
+  // Fallback for known trains when offline
   if (cleanNumber === '11039') {
     legacyTrainCache.set(cleanNumber, FALLBACK_11039_DETAILS);
     return { ...FALLBACK_11039_DETAILS, isCached: true };
@@ -1256,56 +1139,7 @@ export async function getStationCoachPosition(
       }
     }
   } catch (proxyErr) {
-    console.log(`[RailRadarService] Cloudflare station coach error for ${cleanNumber}/${cleanStation}:`, proxyErr);
-  }
-
-  // 2. Fallback to RailRadar API
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 7000);
-
-    const res = await fetch(
-      `${RAILRADAR_BASE_URL}/v1/trains/${cleanNumber}/coaches/${cleanStation}`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${RAILRADAR_API_KEY}`,
-          Accept: 'application/json',
-        },
-        signal: controller.signal,
-      }
-    );
-    clearTimeout(timeoutId);
-
-    if (res.ok) {
-      const json = await res.json();
-      if (json?.success && json?.data) {
-        const d = json.data;
-        const rakeList = d.rake || d.coaches || [];
-        const platform = d.platform || d.station?.platform || undefined;
-        const stationName = d.stationName || d.station?.name || undefined;
-
-        const response: StationCoachResponse = {
-          trainNumber: d.trainNumber || cleanNumber,
-          trainName: d.trainName,
-          stationCode: d.stationCode || d.station?.code || cleanStation,
-          stationName,
-          platform: platform ? String(platform) : undefined,
-          direction: d.direction,
-          formation: d.formation || d.coachPosition,
-          reversal: d.reversal,
-          totalCoaches: d.totalCoaches || rakeList.length,
-          rake: rakeList,
-          blueprints: normalizeBlueprints(d.blueprints),
-          isCached: false,
-        };
-
-        stationCoachCache.set(cacheKey, response);
-        return response;
-      }
-    }
-  } catch (e) {
-    console.log(`[RailRadarService] Station coach error for ${cleanNumber}/${cleanStation}:`, e);
+    console.log(`[RailService] Cloudflare station coach error for ${cleanNumber}/${cleanStation}:`, proxyErr);
   }
 
   return null;
@@ -1478,53 +1312,10 @@ export async function getLiveTrainStatus(
     }
   }
 } catch (proxyErr) {
-    console.log(`[RailRadarService] Cloudflare live status error for ${cleanNumber}:`, proxyErr);
+    console.log(`[RailService] Cloudflare live status error for ${cleanNumber}:`, proxyErr);
   }
 
-  // 3. Fallback to RailRadar API
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 7000);
-
-    const res = await fetch(`${RAILRADAR_BASE_URL}/v1/trains/${cleanNumber}/live`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${RAILRADAR_API_KEY}`,
-        Accept: 'application/json',
-      },
-      signal: controller.signal,
-    });
-    clearTimeout(timeoutId);
-
-    if (res.ok) {
-      const json = await res.json();
-      if (json?.success && json?.data) {
-        const live: LiveTrainData = {
-          trainNumber: json.data.trainNumber || cleanNumber,
-          trainName: json.data.trainName || '',
-          startDate: json.data.startDate,
-          lastUpdatedAt: json.data.lastUpdatedAt || new Date().toISOString(),
-          status: json.data.status || 'running',
-          delayMinutes: json.data.delayMinutes || 0,
-          currentLocation: json.data.currentLocation,
-          previousHalt: json.data.previousHalt,
-          nextHalt: json.data.nextHalt,
-          route: json.data.route || [],
-          train: json.data.train,
-          isLive: true,
-          isCached: false,
-          cacheTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        };
-
-        liveCache.set(cleanNumber, { data: live, timestamp: now });
-        return live;
-      }
-    }
-  } catch (e) {
-    console.log(`[RailRadarService] Live status fetch error for ${cleanNumber}:`, e);
-  }
-
-  // 4. Fallback to cached or realistic seed data
+  // 3. Fallback to cached or realistic seed data
   if (cachedEntry) {
     return { ...cachedEntry.data, isCached: true };
   }

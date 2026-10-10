@@ -43,7 +43,7 @@ NORA/
 │   ├── database/            # SQLite schema, migrations, and ticket repository
 │   ├── parsers/             # IRCTC & redRail notification and SMS regex parsers
 │   ├── screens/             # Wallet, Ticket Details, Train Status, Add Ticket
-│   ├── services/            # RailRadar / NTES client, Notification & Alarm services
+│   ├── services/            # NTES client & cache, Notification & Alarm services
 │   ├── theme/               # Dark-mode design tokens and typography
 │   └── utils/               # Station codes dictionary, train names, date helpers
 ├── __tests__/               # Jest test suites (34 unit & integration tests)
@@ -77,7 +77,7 @@ NORA/
 3. **Deploy the Cloudflare Worker** (Optional but recommended for live telemetry):
    - Go to `cloudflare-worker/`
    - Deploy `worker.js` to your Cloudflare account using Wrangler or paste it into the Cloudflare Workers dashboard.
-   - Set your worker URL in [src/services/railRadarService.ts](src/services/railRadarService.ts):
+   - Set your worker URL in [src/services/railService.ts](src/services/railService.ts):
      ```typescript
      export const CLOUDFLARE_PROXY_URL = 'https://nora-rail-proxy.YOUR_SUBDOMAIN.workers.dev';
      ```
