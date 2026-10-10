@@ -1,4 +1,4 @@
-import { formatTicketForWidget, updateActiveTicketWidget } from '../src/services/widgetService';
+import { formatTicketForWidget, updateActiveTicketWidget, updateActiveTicketsWidget } from '../src/services/widgetService';
 import { NormalizedTicket } from '../src/types/ticket';
 import { NativeModules, Platform } from 'react-native';
 
@@ -76,6 +76,25 @@ describe('WidgetService', () => {
     expect(res).toBe(true);
     expect(NativeModules.NoraWidgetModule.updateActiveTicket).toHaveBeenCalledWith(
       expect.stringContaining('26101')
+    );
+  });
+
+  it('resolves platform for boarding station correctly', () => {
+    const formatted = formatTicketForWidget(mockTicket);
+    expect(formatted.platform).toBe('3'); // CSMT on train 26101
+  });
+
+  it('updates widget with multiple tickets payload', async () => {
+    Platform.OS = 'android';
+    NativeModules.NoraWidgetModule = {
+      updateActiveTicket: jest.fn().mockResolvedValue(true),
+      clearActiveTicket: jest.fn().mockResolvedValue(true),
+    };
+
+    const res = await updateActiveTicketsWidget([mockTicket]);
+    expect(res).toBe(true);
+    expect(NativeModules.NoraWidgetModule.updateActiveTicket).toHaveBeenCalledWith(
+      expect.stringContaining('"count":1')
     );
   });
 });

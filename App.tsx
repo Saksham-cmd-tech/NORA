@@ -18,7 +18,7 @@ import {
   dismissLiveJourneyNotification,
 } from './src/services/reminderNotificationService';
 import { isTicketValidAndUpcoming } from './src/utils/dateUtils';
-import { updateActiveTicketWidget } from './src/services/widgetService';
+import { updateActiveTicketWidget, updateActiveTicketsWidget } from './src/services/widgetService';
 import { OnboardingScreen } from './src/screens/OnboardingScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { TicketDetailsScreen } from './src/screens/TicketDetailsScreen';
@@ -173,9 +173,8 @@ export default function App() {
         scheduleJourneyReminders(t).catch(() => {});
       }
 
-      // Sync current active ticket to Android Home Screen Widget (or "No Active Ticket" if empty)
-      const currentActive = validUpcoming[0] || null;
-      await updateActiveTicketWidget(currentActive);
+      // Sync all valid upcoming tickets to Android Home Screen Widget (or "No Active Ticket" if empty)
+      await updateActiveTicketsWidget(validUpcoming);
     } catch (e) {
       console.log('[NORA App] loadTickets error:', e);
     }

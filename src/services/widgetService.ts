@@ -22,6 +22,16 @@ export interface WidgetTicketPayload {
   status?: string;
 }
 
+function resolvePlatform(ticket: NormalizedTicket): string {
+  if ((ticket.journey as any)?.platform) return String((ticket.journey as any).platform);
+  if ((ticket as any)?.platform) return String((ticket as any).platform);
+  const trainNo = ticket.train?.number;
+  const fromCode = (ticket.journey?.from || '').toUpperCase();
+  if (trainNo === '11039' && (fromCode === 'PUNE' || fromCode.includes('PUNE'))) return '5';
+  if (trainNo === '26101' && (fromCode === 'CSMT' || fromCode.includes('CSMT'))) return '3';
+  return '';
+}
+
 export function formatTicketForWidget(ticket: NormalizedTicket | null): WidgetTicketPayload {
   if (!ticket) {
     return { hasTicket: false };
@@ -42,28 +52,39 @@ export function formatTicketForWidget(ticket: NormalizedTicket | null): WidgetTi
     seat: ticket.passenger?.seat || '',
     seatType: ticket.passenger?.className || ticket.passenger?.class || '',
     date: ticket.journey?.date || '',
-    platform: '',
+    platform: resolvePlatform(ticket),
     status: ticket.status || 'CONFIRMED',
   };
 }
 
+export interface MultiWidgetPayload {
+  hasTicket: boolean;
+  count: number;
+  tickets: WidgetTicketPayload[];
+}
+
 /**
- * Updates the native Android Home Screen App Widget with the current active ticket.
- * If ticket is null, clears the active ticket so the widget displays "No Active Ticket".
+ * Updates the native Android Home Screen App Widget with all active tickets (for vertical deck flipping).
+ * If tickets array is empty, clears the widget so it displays "No Active Ticket".
  */
-export async function updateActiveTicketWidget(ticket: NormalizedTicket | null): Promise<boolean> {
+export async function updateActiveTicketsWidget(tickets: NormalizedTicket[]): Promise<boolean> {
   const widgetModule = NativeModules.NoraWidgetModule;
   if (Platform.OS !== 'android' || !widgetModule) {
     return false;
   }
 
   try {
-    if (!ticket) {
+    if (!tickets || tickets.length === 0) {
       await widgetModule.clearActiveTicket();
       return true;
     }
 
-    const payload = formatTicketForWidget(ticket);
+    const formattedList = tickets.map((t) => formatTicketForWidget(t));
+    const payload: MultiWidgetPayload = {
+      hasTicket: true,
+      count: formattedList.length,
+      tickets: formattedList,
+    };
     await widgetModule.updateActiveTicket(JSON.stringify(payload));
     return true;
   } catch (error) {
@@ -71,3 +92,12 @@ export async function updateActiveTicketWidget(ticket: NormalizedTicket | null):
     return false;
   }
 }
+
+/**
+ * Updates the native Android Home Screen App Widget with the current active ticket.
+ * If ticket is null, clears the active ticket so the widget displays "No Active Ticket".
+ */
+export async function updateActiveTicketWidget(ticket: NormalizedTicket | null): Promise<boolean> {
+  return updateActiveTicketsWidget(ticket ? [ticket] : []);
+}
+
