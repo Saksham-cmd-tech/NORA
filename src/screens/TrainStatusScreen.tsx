@@ -56,6 +56,7 @@ import {
 } from '../services/railService';
 import { getTrainName } from '../utils/stationLookup';
 import { ShareTicketModal } from '../components/ticket/ShareTicketModal';
+import { CoachLayout } from '../components/coach/CoachLayout';
 import { buildShareTicketData, ShareTicketData } from '../services/shareTicketService';
 import { parseDepartureTimestamp } from '../services/reminderNotificationService';
 import { parseDateComponents } from '../utils/dateUtils';
@@ -1567,291 +1568,19 @@ export const TrainStatusScreen: React.FC<TrainStatusScreenProps> = ({
         </View>
 
         {/* ======================================================== */}
-        {/* Section 3: Coach Interior Guide (Sleeper vs Chair Car vs Service) */}
+        {/* Section 3: Interactive Coach Layout & Blueprint Guide    */}
         {/* ======================================================== */}
-        <View key="coach-interior-card" style={styles.sectionCard} collapsable={false}>
-          <View style={styles.sectionHeaderRow}>
-            <View style={{ flex: 1, marginRight: 8 }}>
-              <AppText
-                variant="micro"
-                weight="heavy"
-                color="secondary"
-                uppercase
-                letterSpacing={0.8}
-              >
-                COACH {selectedCoachCode} INTERIOR GUIDE
-              </AppText>
-              <AppText variant="caption" weight="bold" color="primary" numberOfLines={1}>
-                {isSpecialServiceCoach
-                  ? specialCoachInfo.title
-                  : `${activeBlueprint.className || activeCoach?.className || 'Coach Interior'} • ${
-                      isSelectedSleeper
-                        ? 'Compartment Bay'
-                        : `${targetCabin?.main.length || 3}+${targetCabin?.side.length || 2} Seating`
-                    }`}
-              </AppText>
-            </View>
-
-            <View style={styles.rowBadge}>
-              <AppText variant="micro" weight="heavy" color="orange">
-                {isSpecialServiceCoach
-                  ? specialCoachInfo.badge
-                  : isSelectedSleeper
-                  ? `BAY ${activeCabinNum}`
-                  : `ROW ${activeCabinNum}`}
-              </AppText>
-            </View>
-          </View>
-
-          {/* Dynamic Boarding Door Guidance */}
-          <View style={styles.doorAdviceBox} collapsable={false}>
-            <Compass size={15} color={Colors.textPrimary} style={styles.doorIcon} />
-            <AppText variant="caption" color="secondary" style={styles.doorAdviceText}>
-              {isViewingUserCoach ? (
-                <>
-                  Board via <AppText variant="caption" weight="heavy" color="primary">{doorName}</AppText>
-                  {' '}• Walk {isSelectedSleeper ? `to Bay #${activeCabinNum}` : `${walkRows} rows`} towards {walkDirection}
-                </>
-              ) : isSpecialServiceCoach ? (
-                <>
-                  Service Coach <AppText variant="caption" weight="heavy" color="primary">{selectedCoachCode}</AppText>
-                  {' '}• Aligns near Platform Pillar #{dynamicPillarNum} ({dynamicPositionDesc})
-                </>
-              ) : (
-                <>
-                  Inspecting Coach <AppText variant="caption" weight="heavy" color="primary">{selectedCoachCode}</AppText>
-                  {' '}({activeBlueprint.className}) layout
-                </>
-              )}
-            </AppText>
-          </View>
-
-          {/* Render Special Coach Card OR Passenger Sleeper/Seating Layout */}
-          {isSpecialServiceCoach ? (
-            <View style={styles.specialCoachCard} collapsable={false}>
-              <View style={styles.specialCoachHeroRow}>
-                <View style={styles.specialCoachIconContainer}>
-                  {isPantryCar ? (
-                    <Coffee size={22} color={Colors.primary} />
-                  ) : isGeneralUnreserved ? (
-                    <Users size={22} color={Colors.primary} />
-                  ) : (
-                    <Luggage size={22} color={Colors.primary} />
-                  )}
-                </View>
-                <View style={{ flex: 1, marginLeft: 12 }}>
-                  <AppText variant="subheading" weight="heavy" color="primary">
-                    {specialCoachInfo.title}
-                  </AppText>
-                  <AppText variant="caption" color="secondary" style={{ marginTop: 2 }}>
-                    {specialCoachInfo.subtitle}
-                  </AppText>
-                </View>
-              </View>
-
-              <View style={styles.specialCoachDescBox}>
-                <AppText variant="caption" color="secondary" style={{ lineHeight: 18 }}>
-                  {specialCoachInfo.description}
-                </AppText>
-              </View>
-
-              <View style={styles.specialCoachFeatureList}>
-                {specialCoachInfo.features.map((feat, idx) => (
-                  <View key={`feat_${idx}`} style={styles.specialCoachFeatureRow}>
-                    <View style={styles.specialCoachBullet} />
-                    <View style={{ flex: 1 }}>
-                      <AppText variant="tiny" weight="heavy" color="primary">
-                        {feat.label}
-                      </AppText>
-                      <AppText variant="micro" color="secondary" style={{ marginTop: 1 }}>
-                        {feat.desc}
-                      </AppText>
-                    </View>
-                  </View>
-                ))}
-              </View>
-            </View>
-          ) : isSelectedSleeper ? (
-            <View style={styles.blueprintGridContainer} collapsable={false}>
-              <View style={styles.blueprintColumnHeader}>
-                <AppText variant="micro" weight="heavy" color="secondary" style={styles.colHeaderLeft}>
-                  MAIN COMPARTMENT (FACING)
-                </AppText>
-                <AppText variant="micro" weight="heavy" color="secondary" style={styles.colHeaderCenter}>
-                  AISLE
-                </AppText>
-                <AppText variant="micro" weight="heavy" color="secondary" style={styles.colHeaderRight}>
-                  SIDE BERTHS
-                </AppText>
-              </View>
-
-              {targetCabin && (() => {
-                const halfLen = Math.ceil(targetCabin.main.length / 2);
-                const benchA = targetCabin.main.slice(0, halfLen);
-                const benchB = targetCabin.main.slice(halfLen);
-                const side1 = targetCabin.side[0];
-                const side2 = targetCabin.side[1];
-                const side3 = targetCabin.side[2]; // 3E (Side Middle)
-
-                return (
-                  <View style={styles.sleeperBayContainer} collapsable={false}>
-                    {/* Facing Bench A & Side Berth 1 */}
-                    <View style={styles.sleeperBayRow} collapsable={false}>
-                      <View style={styles.sleeperBenchGroup}>
-                        <View style={styles.benchHeaderRow}>
-                          <AppText variant="micro" weight="bold" color="muted">
-                            BENCH A
-                          </AppText>
-                        </View>
-                        <View style={styles.berthRow}>
-                          {benchA.map((s) => renderBerthBox(s))}
-                        </View>
-                      </View>
-
-                      <View style={styles.sleeperAisleDivider}>
-                        <AppText variant="micro" weight="heavy" color="orange">
-                          BAY {targetCabin.cabinNumber}
-                        </AppText>
-                      </View>
-
-                      <View style={styles.sleeperSideGroup}>
-                        <View style={styles.benchHeaderRow}>
-                          <AppText variant="micro" weight="bold" color="muted">
-                            SIDE
-                          </AppText>
-                        </View>
-                        <View style={styles.berthRow}>
-                          {side1 ? renderBerthBox(side1) : <View style={styles.emptyBerthBox} />}
-                        </View>
-                      </View>
-                    </View>
-
-                    {/* Corridor Separator */}
-                    <View style={styles.sleeperFacingDivider} />
-
-                    {/* Facing Bench B & Side Berth 2 / 3 */}
-                    <View style={styles.sleeperBayRow} collapsable={false}>
-                      <View style={styles.sleeperBenchGroup}>
-                        <View style={styles.benchHeaderRow}>
-                          <AppText variant="micro" weight="bold" color="muted">
-                            BENCH B
-                          </AppText>
-                        </View>
-                        <View style={styles.berthRow}>
-                          {benchB.map((s) => renderBerthBox(s))}
-                        </View>
-                      </View>
-
-                      <View style={styles.sleeperAisleDivider}>
-                        <AppText variant="micro" weight="bold" color="secondary">
-                          CORR.
-                        </AppText>
-                      </View>
-
-                      <View style={styles.sleeperSideGroup}>
-                        <View style={styles.benchHeaderRow}>
-                          <AppText variant="micro" weight="bold" color="muted">
-                            SIDE
-                          </AppText>
-                        </View>
-                        <View style={styles.berthRow}>
-                          {side2 ? renderBerthBox(side2) : <View style={styles.emptyBerthBox} />}
-                          {side3 ? renderBerthBox(side3) : null}
-                        </View>
-                      </View>
-                    </View>
-                  </View>
-                );
-              })()}
-            </View>
-          ) : (
-            /* ======================================================== */
-            /* B. CHAIR CAR ROW LAYOUT (CC, EC, 2S)                     */
-            /* ======================================================== */
-            <View style={styles.blueprintGridContainer} collapsable={false}>
-              <View style={styles.blueprintColumnHeader}>
-                <AppText variant="micro" weight="heavy" color="secondary" style={styles.colHeaderLeft}>
-                  WINDOW (LEFT)
-                </AppText>
-                <AppText variant="micro" weight="heavy" color="secondary" style={styles.colHeaderCenter}>
-                  AISLE
-                </AppText>
-                <AppText variant="micro" weight="heavy" color="secondary" style={styles.colHeaderRight}>
-                  WINDOW (RIGHT)
-                </AppText>
-              </View>
-
-              {/* Previous Row Preview (if available) */}
-              {prevCabin && (
-                <View style={styles.blueprintRow} collapsable={false}>
-                  <View style={styles.seatGroupSide}>
-                    {prevCabin.main.map((s) => renderSeatBox(s))}
-                  </View>
-
-                  <View style={styles.aisleCol}>
-                    <AppText variant="micro" weight="bold" color="secondary">
-                      ROW {prevCabin.cabinNumber}
-                    </AppText>
-                  </View>
-
-                  <View style={styles.seatGroupSide}>
-                    {prevCabin.side.map((s) => renderSeatBox(s))}
-                  </View>
-                </View>
-              )}
-
-              {/* Active Row (Target Cabin) */}
-              {targetCabin && (
-                <View style={styles.blueprintRow} collapsable={false}>
-                  <View style={styles.seatGroupSide}>
-                    {targetCabin.main.map((s) => renderSeatBox(s))}
-                  </View>
-
-                  <View style={styles.aisleCol}>
-                    <AppText variant="micro" weight="heavy" color="orange">
-                      ROW {targetCabin.cabinNumber}
-                    </AppText>
-                  </View>
-
-                  <View style={styles.seatGroupSide}>
-                    {targetCabin.side.map((s) => renderSeatBox(s))}
-                  </View>
-                </View>
-              )}
-            </View>
-          )}
-
-          {/* Dynamic Amenities Row */}
-          <View style={styles.amenitiesRow} collapsable={false}>
-            {coachAmenities.map((amenity, idx) => {
-              let IconComponent = Zap;
-              if (amenity.icon === 'bed') IconComponent = Bed;
-              else if (amenity.icon === 'luggage') IconComponent = Luggage;
-              else if (amenity.icon === 'shield') IconComponent = ShieldCheck;
-              else if (amenity.icon === 'wind') IconComponent = Wind;
-              else if (amenity.icon === 'coffee') IconComponent = Coffee;
-              else if (amenity.icon === 'users') IconComponent = Users;
-              else if (amenity.icon === 'utensils') IconComponent = Utensils;
-              else if (amenity.icon === 'refrigerator') IconComponent = Refrigerator;
-
-              return (
-                <View key={`amenity_${idx}`} style={styles.amenityCard} collapsable={false}>
-                  <View style={styles.amenityIconContainer}>
-                    <IconComponent size={15} color={Colors.textPrimary} />
-                  </View>
-                  <View style={styles.amenityTextContainer}>
-                    <AppText variant="tiny" weight="heavy" color="primary" numberOfLines={1}>
-                      {amenity.title}
-                    </AppText>
-                    <AppText variant="micro" color="secondary" numberOfLines={1}>
-                      {amenity.subtitle}
-                    </AppText>
-                  </View>
-                </View>
-              );
-            })}
-          </View>
-        </View>
+        <CoachLayout
+          coachCode={selectedCoachCode}
+          coachClass={activeClassType}
+          userCoach={userCoach}
+          userSeat={userSeatNum}
+          userBerthType={targetSeatObj?.type}
+          blueprint={activeBlueprint}
+          platformPillar={dynamicPillarNum}
+          platformNumber={boardingPlatform}
+          positionDesc={dynamicPositionDesc}
+        />
 
         {/* Bottom Spacing */}
         <View style={{ height: 90 }} />
@@ -2751,7 +2480,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   specialCoachDescBox: {
-    backgroundColor: Colors.surfaceDefault,
+    backgroundColor: Colors.surface,
     borderRadius: 8,
     padding: 12,
     borderWidth: 1,
