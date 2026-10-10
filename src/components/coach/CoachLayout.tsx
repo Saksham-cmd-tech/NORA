@@ -21,6 +21,9 @@ import {
   Sparkles,
   Layers,
   Eye,
+  DoorOpen,
+  DoorClosed,
+  ArrowLeft,
 } from 'lucide-react-native';
 import { Colors } from '../../theme/colors';
 import { Spacing } from '../../theme/spacing';
@@ -533,10 +536,12 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
             weight="heavy"
             color={viewMode === 'focused' ? 'orange' : 'muted'}
             letterSpacing={0.5}
+            numberOfLines={1}
+            ellipsizeMode="tail"
           >
             {isViewingUserCoach
-              ? (isSleeper ? `MY BAY (#${userCabin?.cabinNumber || 1})` : `MY ROW (#${userCabin?.cabinNumber || 1})`)
-              : (isSleeper ? 'FOCUSED BAY' : 'FOCUSED ROW')}
+              ? (isSleeper ? 'MY BAY' : 'MY ROW')
+              : (isSleeper ? 'BAY VIEW' : 'ROW VIEW')}
           </AppText>
         </TouchableOpacity>
 
@@ -551,8 +556,10 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
             weight="heavy"
             color={viewMode === 'full' ? 'orange' : 'muted'}
             letterSpacing={0.5}
+            numberOfLines={1}
+            ellipsizeMode="tail"
           >
-            {`FULL COACH MAP (${cabins.length} ${isSleeper ? 'BAYS' : 'ROWS'})`}
+            FULL COACH
           </AppText>
         </TouchableOpacity>
       </View>
@@ -632,8 +639,9 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
               }}
               style={styles.jumpToUserBtn}
             >
+              <ArrowLeft size={11} color={Colors.primary} style={{ marginRight: 5 }} />
               <AppText variant="micro" weight="heavy" color="orange">
-                ← JUMP TO YOUR {isSleeper ? 'BAY' : 'ROW'} ({userCabin.cabinNumber})
+                JUMP TO YOUR {isSleeper ? 'BAY' : 'ROW'} ({userCabin.cabinNumber})
               </AppText>
             </TouchableOpacity>
           )}
@@ -651,9 +659,12 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
           {/* Front Coach Entrance Indicator */}
           <View style={styles.coachDoorHeader}>
             <View style={styles.doorLine} />
-            <AppText variant="micro" weight="heavy" color="muted" style={styles.doorHeaderLabel}>
-              🚪 FRONT ENTRANCE · 🚻 RESTROOMS
-            </AppText>
+            <View style={styles.doorHeaderBadge}>
+              <DoorOpen size={12} color={Colors.textMuted} style={{ marginRight: 6 }} />
+              <AppText variant="micro" weight="heavy" color="muted" style={styles.doorHeaderLabel}>
+                FRONT ENTRANCE · RESTROOMS
+              </AppText>
+            </View>
             <View style={styles.doorLine} />
           </View>
 
@@ -672,9 +683,12 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
           {/* Rear Coach Entrance Indicator */}
           <View style={styles.coachDoorFooter}>
             <View style={styles.doorLine} />
-            <AppText variant="micro" weight="heavy" color="muted" style={styles.doorHeaderLabel}>
-              🚻 RESTROOMS · 🚪 REAR ENTRANCE
-            </AppText>
+            <View style={styles.doorHeaderBadge}>
+              <DoorClosed size={12} color={Colors.textMuted} style={{ marginRight: 6 }} />
+              <AppText variant="micro" weight="heavy" color="muted" style={styles.doorHeaderLabel}>
+                REAR ENTRANCE · RESTROOMS
+              </AppText>
+            </View>
             <View style={styles.doorLine} />
           </View>
         </View>
@@ -838,14 +852,17 @@ const styles = StyleSheet.create({
     marginTop: Spacing.md,
     borderWidth: 1,
     borderColor: Colors.borderSubtle,
+    overflow: 'hidden',
   },
   modeTab: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8,
-    borderRadius: 8,
+    paddingVertical: 9,
+    paddingHorizontal: 8,
+    borderRadius: 7,
+    overflow: 'hidden',
   },
   modeTabActive: {
     backgroundColor: Colors.surfaceHighest,
@@ -894,9 +911,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.primary,
   },
   jumpToUserBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
     alignSelf: 'center',
-    paddingVertical: 4,
-    paddingHorizontal: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 12,
     marginBottom: 4,
   },
   unitDisplayWrapper: {
@@ -908,13 +927,23 @@ const styles = StyleSheet.create({
   coachDoorHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 6,
+    marginVertical: 8,
   },
   coachDoorFooter: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 8,
-    marginBottom: 4,
+    marginTop: 10,
+    marginBottom: 6,
+  },
+  doorHeaderBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    backgroundColor: Colors.surfaceLowest,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: Colors.borderSubtle,
   },
   doorLine: {
     flex: 1,
@@ -922,7 +951,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.borderSubtle,
   },
   doorHeaderLabel: {
-    paddingHorizontal: 8,
+    letterSpacing: 0.5,
   },
   fullCoachScrollView: {
     maxHeight: 380,
