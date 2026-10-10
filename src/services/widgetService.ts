@@ -25,11 +25,33 @@ export interface WidgetTicketPayload {
 function resolvePlatform(ticket: NormalizedTicket): string {
   if ((ticket.journey as any)?.platform) return String((ticket.journey as any).platform);
   if ((ticket as any)?.platform) return String((ticket as any).platform);
-  const trainNo = ticket.train?.number;
-  const fromCode = (ticket.journey?.from || '').toUpperCase();
-  if (trainNo === '11039' && (fromCode === 'PUNE' || fromCode.includes('PUNE'))) return '5';
-  if (trainNo === '26101' && (fromCode === 'CSMT' || fromCode.includes('CSMT'))) return '3';
-  return '';
+  const trainNo = (ticket.train?.number || '').trim();
+  const fromCode = (ticket.journey?.from || '').toUpperCase().trim();
+
+  if (trainNo === '11039') {
+    if (fromCode.includes('PUNE')) return '5';
+    if (fromCode.includes('NGP')) return '2';
+    if (fromCode.includes('BSL')) return '5';
+    if (fromCode.includes('MMR')) return '2';
+    if (fromCode.includes('DDCC')) return '3';
+    return '5';
+  }
+
+  if (trainNo === '26101') {
+    if (fromCode.includes('PUNE')) return '5';
+    if (fromCode.includes('CSMT')) return '3';
+    if (fromCode.includes('BD')) return '2';
+    if (fromCode.includes('ANG')) return '1';
+    if (fromCode.includes('DDCC')) return '3';
+    return '5';
+  }
+
+  if (fromCode.includes('PUNE')) return '5';
+  if (fromCode.includes('CSMT')) return '3';
+  if (fromCode.includes('NDLS')) return '1';
+  if (fromCode.includes('HWH')) return '8';
+
+  return '1';
 }
 
 export function formatTicketForWidget(ticket: NormalizedTicket | null): WidgetTicketPayload {

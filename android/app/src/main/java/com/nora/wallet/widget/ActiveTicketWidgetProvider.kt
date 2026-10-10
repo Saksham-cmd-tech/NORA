@@ -123,9 +123,22 @@ class ActiveTicketWidgetProvider : AppWidgetProvider() {
                 views.setTextViewText(R.id.text_arrival_time, if (arrival.isNotEmpty()) arrival else "--:--")
                 views.setTextViewText(R.id.text_to_station, if (to.isNotEmpty()) to else "ARR")
 
-                // Coach & Seat Badges
+                // Coach & Seat Badges + Platform Badge (Spot B)
                 views.setTextViewText(R.id.text_coach, if (coach.isNotEmpty()) "COACH $coach" else "COACH --")
                 views.setTextViewText(R.id.text_seat, if (seat.isNotEmpty()) "SEAT $seat" else "SEAT --")
+
+                if (platform.isNotEmpty()) {
+                    val pfClean = if (platform.startsWith("PF", ignoreCase = true)) {
+                        platform.trim()
+                    } else {
+                        "PF $platform"
+                    }
+                    views.setViewVisibility(R.id.badge_platform, View.VISIBLE)
+                    views.setTextViewText(R.id.text_platform_badge, pfClean)
+                } else {
+                    views.setViewVisibility(R.id.badge_platform, View.GONE)
+                }
+
                 views.setTextViewText(R.id.text_class_type, if (seatType.isNotEmpty()) "$seatType · Berth" else "Confirmed Berth")
 
                 // Stub Header & Ticket Counter

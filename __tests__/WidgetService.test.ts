@@ -82,6 +82,19 @@ describe('WidgetService', () => {
   it('resolves platform for boarding station correctly', () => {
     const formatted = formatTicketForWidget(mockTicket);
     expect(formatted.platform).toBe('3'); // CSMT on train 26101
+
+    const puneVandeBharat: NormalizedTicket = {
+      ...mockTicket,
+      journey: { ...mockTicket.journey, from: 'PUNE', to: 'BD' },
+    };
+    expect(formatTicketForWidget(puneVandeBharat).platform).toBe('5'); // PUNE on train 26101
+
+    const maharashtraExp: NormalizedTicket = {
+      ...mockTicket,
+      train: { number: '11039', name: 'Maharashtra Exp' },
+      journey: { ...mockTicket.journey, from: 'PUNE', to: 'NGP' },
+    };
+    expect(formatTicketForWidget(maharashtraExp).platform).toBe('5'); // PUNE on train 11039
   });
 
   it('updates widget with multiple tickets payload', async () => {
