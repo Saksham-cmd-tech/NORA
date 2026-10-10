@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "private": true,
-  "description": "NORA Rail Proxy Cloudflare Worker"
+  "description": "NORA Rail Proxy Cloudflare Worker",
+  "devDependencies": {
+    "wrangler": "^4.149.0"
+  }
 }
