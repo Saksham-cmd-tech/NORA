@@ -1,0 +1,28 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="360dp"
+    android:height="200dp"
+    android:viewportWidth="360"
+    android:viewportHeight="200">
+
+  <!-- 1. Upper Ticket Body (Dark Charcoal) -->
+  <path
+      android:fillColor="#151519"
+      android:strokeColor="#2E2E38"
+      android:strokeWidth="1.5"
+      android:pathData="M 18,1 H 342 A 17,17 0 0 1 359,18 V 130 A 10,10 0 0 0 350,140 L 10,140 A 10,10 0 0 0 1,130 V 18 A 17,17 0 0 1 18,1 Z" />
+
+  <!-- 2. Lower Ticket Stub (Vivid Red / Orange) -->
+  <path
+      android:fillColor="#FF4438"
+      android:strokeColor="#E63D31"
+      android:strokeWidth="1.5"
+      android:pathData="M 10,140 L 350,140 A 10,10 0 0 0 359,150 V 182 A 17,17 0 0 1 342,199 H 18 A 17,17 0 0 1 1,182 V 150 A 10,10 0 0 0 10,140 Z" />
+
+  <!-- 3. Perforation Dashed Line along the tear notch boundary -->
+  <path
+      android:strokeColor="#66FFFFFF"
+      android:strokeWidth="1.5"
+      android:strokeLineCap="round"
+      android:pathData="M 14,140 L 20,140 M 26,140 L 32,140 M 38,140 L 44,140 M 50,140 L 56,140 M 62,140 L 68,140 M 74,140 L 80,140 M 86,140 L 92,140 M 98,140 L 104,140 M 110,140 L 116,140 M 122,140 L 128,140 M 134,140 L 140,140 M 146,140 L 152,140 M 158,140 L 164,140 M 170,140 L 176,140 M 182,140 L 188,140 M 194,140 L 200,140 M 206,140 L 212,140 M 218,140 L 224,140 M 230,140 L 236,140 M 242,140 L 248,140 M 254,140 L 260,140 M 266,140 L 272,140 M 278,140 L 284,140 M 290,140 L 296,140 M 302,140 L 308,140 M 314,140 L 320,140 M 326,140 L 332,140 M 338,140 L 346,140" />
+
+</vector>

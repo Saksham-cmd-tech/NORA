@@ -70,48 +70,36 @@ class ActiveTicketWidgetProvider : AppWidgetProvider() {
                         views.setViewVisibility(R.id.layout_active_ticket, View.VISIBLE)
                         views.setViewVisibility(R.id.layout_no_ticket, View.GONE)
 
-                        // Status & PNR
-                        views.setTextViewText(R.id.text_widget_status, if (status.isNotEmpty()) status else "ACTIVE")
-                        views.setTextViewText(R.id.text_widget_pnr, if (pnr.isNotEmpty()) "PNR: $pnr" else "")
+                        // Status & Journey Date
+                        val displayStatus = if (status.isNotEmpty()) status.uppercase() else "CONFIRMED"
+                        views.setTextViewText(R.id.text_widget_status, displayStatus)
+                        views.setTextViewText(R.id.text_journey_date, if (date.isNotEmpty()) date.uppercase() else "UPCOMING")
 
                         // Train number & name
-                        val titleText = when {
-                            trainNumber.isNotEmpty() && trainName.isNotEmpty() -> "$trainNumber · $trainName"
-                            trainNumber.isNotEmpty() -> "TRAIN $trainNumber"
-                            trainName.isNotEmpty() -> trainName
-                            else -> "UPCOMING TRAIN"
-                        }
-                        views.setTextViewText(R.id.text_train_number_name, titleText)
+                        views.setTextViewText(R.id.text_train_number, if (trainNumber.isNotEmpty()) trainNumber else "TRAIN")
+                        views.setTextViewText(R.id.text_train_name, if (trainName.isNotEmpty()) trainName else "Express Service")
 
                         // Route & Timings
-                        views.setTextViewText(R.id.text_departure_time, departure)
-                        views.setTextViewText(R.id.text_from_station, from)
-                        views.setTextViewText(R.id.text_arrival_time, arrival)
-                        views.setTextViewText(R.id.text_to_station, to)
+                        views.setTextViewText(R.id.text_departure_time, if (departure.isNotEmpty()) departure else "--:--")
+                        views.setTextViewText(R.id.text_from_station, if (from.isNotEmpty()) from else "DEP")
+                        views.setTextViewText(R.id.text_arrival_time, if (arrival.isNotEmpty()) arrival else "--:--")
+                        views.setTextViewText(R.id.text_to_station, if (to.isNotEmpty()) to else "ARR")
 
-                        // Coach & Seat
-                        val seatText = StringBuilder().apply {
-                            if (coach.isNotEmpty()) append("COACH $coach")
-                            if (seat.isNotEmpty()) {
-                                if (isNotEmpty()) append(" · ")
-                                append("SEAT $seat")
-                                if (seatType.isNotEmpty()) append(" ($seatType)")
-                            }
-                        }.toString()
-                        views.setTextViewText(
-                            R.id.text_coach_seat,
-                            if (seatText.isNotEmpty()) seatText else "CONFIRMED BERTH"
-                        )
+                        // Coach & Seat Badges
+                        views.setTextViewText(R.id.text_coach, if (coach.isNotEmpty()) "COACH $coach" else "COACH --")
+                        views.setTextViewText(R.id.text_seat, if (seat.isNotEmpty()) "SEAT $seat" else "SEAT --")
 
-                        // Date & Platform
-                        val footerText = StringBuilder().apply {
-                            if (date.isNotEmpty()) append(date)
-                            if (platform.isNotEmpty()) {
-                                if (isNotEmpty()) append(" · ")
-                                append(platform)
-                            }
-                        }.toString()
-                        views.setTextViewText(R.id.text_journey_date_platform, footerText)
+                        // Class type
+                        val classInfo = if (seatType.isNotEmpty()) "$seatType · Berth" else "Confirmed Berth"
+                        views.setTextViewText(R.id.text_class_type, classInfo)
+
+                        // PNR formatted with spaces (e.g. "8492 019 482")
+                        val formattedPnr = if (pnr.length == 10) {
+                            "${pnr.substring(0, 4)} ${pnr.substring(4, 7)} ${pnr.substring(7)}"
+                        } else {
+                            pnr
+                        }
+                        views.setTextViewText(R.id.text_widget_pnr, if (formattedPnr.isNotEmpty()) formattedPnr else "BOARDING PASS")
                     }
                 } catch (e: Exception) {
                     hasActiveTicket = false

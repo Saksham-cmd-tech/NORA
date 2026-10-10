@@ -3,228 +3,355 @@
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/widget_bg"
-    android:padding="14dp">
+    android:background="@android:color/transparent"
+    android:padding="2dp">
 
     <!-- ================= 1. ACTIVE TICKET LAYOUT ================= -->
     <LinearLayout
         android:id="@+id/layout_active_ticket"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/widget_ticket_bg"
         android:orientation="vertical"
+        android:weightSum="100"
         android:visibility="visible">
 
-        <!-- Header Row -->
+        <!-- Top Ticket Body Section (Dark Boarding Pass) -->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:id="@+id/widget_train_icon"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/ic_notification_train"
-                android:tint="#FF4438"
-                android:layout_marginEnd="6dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="NORA"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                android:textColor="#FF4438" />
-
-            <FrameLayout
-                android:layout_width="6dp"
-                android:layout_height="1dp" />
-
-            <TextView
-                android:id="@+id/text_widget_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ACTIVE"
-                android:textSize="9sp"
-                android:textStyle="bold"
-                android:textColor="#FF553E"
-                android:background="@drawable/widget_badge_bg"
-                android:paddingLeft="6dp"
-                android:paddingRight="6dp"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp" />
-
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <TextView
-                android:id="@+id/text_widget_pnr"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="PNR: 2458910342"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                android:textColor="#8E8E98" />
-        </LinearLayout>
-
-        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="70"
+            android:orientation="vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="12dp">
 
-        <!-- Train Number & Name -->
-        <TextView
-            android:id="@+id/text_train_number_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="26101 · VANDE BHARAT EXP"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:textColor="#E6E6ED"
-            android:singleLine="true"
-            android:ellipsize="end" />
-
-        <!-- Route & Timings Row -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <!-- From Block -->
+            <!-- Header Row -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/widget_train_icon"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_notification_train"
+                    android:tint="#FF4438"
+                    android:layout_marginEnd="5dp" />
 
                 <TextView
-                    android:id="@+id/text_departure_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="14:05"
-                    android:textSize="20sp"
+                    android:text="NORA"
+                    android:textSize="10sp"
                     android:textStyle="bold"
-                    android:textColor="#FFFFFF" />
+                    android:textColor="#FF4438" />
+
+                <FrameLayout
+                    android:layout_width="6dp"
+                    android:layout_height="1dp" />
 
                 <TextView
-                    android:id="@+id/text_from_station"
+                    android:id="@+id/text_widget_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="CSMT"
-                    android:textSize="11sp"
+                    android:text="CONFIRMED"
+                    android:textSize="8sp"
                     android:textStyle="bold"
-                    android:textColor="#A0A0AC" />
+                    android:textColor="#4ADE80"
+                    android:background="@drawable/widget_badge_bg"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="1.5dp"
+                    android:paddingBottom="1.5dp" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/text_journey_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="28 OCT 2026"
+                    android:textSize="9sp"
+                    android:textStyle="bold"
+                    android:textColor="#A0A0B2" />
             </LinearLayout>
 
-            <!-- Route Connector -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- Train Banner Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/widget_badge_bg"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:paddingTop="1.5dp"
+                    android:paddingBottom="1.5dp"
+                    android:layout_marginEnd="6dp">
+
+                    <TextView
+                        android:id="@+id/text_train_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="11039"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:textColor="#FF553E" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/text_train_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Maharashtra Express"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:singleLine="true"
+                    android:ellipsize="end" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- Route & Timetable Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <!-- From Station Block -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_departure_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="11:20 PM"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF" />
+
+                    <TextView
+                        android:id="@+id/text_from_station"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="PUNE"
+                        android:textSize="10.5sp"
+                        android:textStyle="bold"
+                        android:textColor="#A0A0B2" />
+                </LinearLayout>
+
+                <!-- Arrow Route Connector -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp">
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="#2E2E38" />
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_arrow_right"
+                        android:tint="#FF4438"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginEnd="3dp" />
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="#2E2E38" />
+                </LinearLayout>
+
+                <!-- To Station Block -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_arrival_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:text="08:15 PM"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF" />
+
+                    <TextView
+                        android:id="@+id/text_to_station"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:text="NGP"
+                        android:textSize="10.5sp"
+                        android:textStyle="bold"
+                        android:textColor="#A0A0B2" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- Coach & Seat Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <!-- Coach Badge -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/widget_subtle_pill"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:layout_marginEnd="5dp">
+
+                    <TextView
+                        android:id="@+id/text_coach"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="COACH B2"
+                        android:textSize="9.5sp"
+                        android:textStyle="bold"
+                        android:textColor="#FF553E" />
+                </LinearLayout>
+
+                <!-- Seat Badge -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/widget_subtle_pill"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:layout_marginEnd="6dp">
+
+                    <TextView
+                        android:id="@+id/text_seat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SEAT 35"
+                        android:textSize="9.5sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/text_class_type"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="3A Class · Berth"
+                    android:textSize="9.5sp"
+                    android:textColor="#A0A0B2"
+                    android:singleLine="true"
+                    android:ellipsize="end" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Lower Tear-Off Ticket Stub (Authentic Red/Orange with PNR & Barcode) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="30"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="4dp">
+
+            <!-- PNR Reference Block -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp">
-
-                <FrameLayout
-                    android:layout_width="0dp"
-                    android:layout_height="1.5dp"
-                    android:layout_weight="1"
-                    android:background="#2E2E38" />
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_arrow_right"
-                    android:tint="#FF4438"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginEnd="4dp" />
-
-                <FrameLayout
-                    android:layout_width="0dp"
-                    android:layout_height="1.5dp"
-                    android:layout_weight="1"
-                    android:background="#2E2E38" />
-            </LinearLayout>
-
-            <!-- To Block -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="end"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/text_arrival_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:text="18:10"
-                    android:textSize="20sp"
+                    android:text="PNR REFERENCE"
+                    android:textSize="7.5sp"
                     android:textStyle="bold"
-                    android:textColor="#FFFFFF" />
+                    android:textColor="#2A0A08" />
 
                 <TextView
-                    android:id="@+id/text_to_station"
+                    android:id="@+id/text_widget_pnr"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:text="PUNE"
-                    android:textSize="11sp"
+                    android:text="8492 019 482"
+                    android:textSize="12.5sp"
                     android:textStyle="bold"
-                    android:textColor="#A0A0AC" />
+                    android:textColor="#0E0E10" />
             </LinearLayout>
-        </LinearLayout>
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <!-- Seat & Platform Footer Row -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
+            <!-- Barcode Graphic Block -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/widget_subtle_pill"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp">
+                android:gravity="end|center_vertical"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/widget_barcode"
+                    android:layout_width="86dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_barcode_sample"
+                    android:tint="#0E0E10" />
 
                 <TextView
-                    android:id="@+id/text_coach_seat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="COACH C2 · SEAT 22 (AS)"
-                    android:textSize="10sp"
+                    android:text="DIGITAL BOARDING PASS"
+                    android:textSize="6.5sp"
                     android:textStyle="bold"
-                    android:textColor="#FF553E" />
+                    android:textColor="#2A0A08"
+                    android:layout_marginTop="1dp" />
             </LinearLayout>
-
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <TextView
-                android:id="@+id/text_journey_date_platform"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="10 Oct · Platform 5"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                android:textColor="#8E8E98" />
         </LinearLayout>
     </LinearLayout>
 
@@ -233,102 +360,124 @@
         android:id="@+id/layout_no_ticket"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/widget_ticket_empty_bg"
         android:orientation="vertical"
+        android:weightSum="100"
         android:visibility="gone">
 
-        <!-- Header Row -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/ic_notification_train"
-                android:tint="#FF4438"
-                android:layout_marginEnd="6dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="NORA"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                android:textColor="#FF4438" />
-
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="WALLET"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                android:textColor="#8E8E98" />
-        </LinearLayout>
-
-        <!-- Centered Empty State Content -->
+        <!-- Top Ticket Body Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
+            android:layout_weight="70"
             android:orientation="vertical"
-            android:padding="4dp">
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="12dp">
 
-            <ImageView
-                android:id="@+id/image_no_ticket"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:src="@drawable/ic_ticket_empty"
-                android:tint="#777785"
-                android:layout_marginBottom="6dp" />
-
-            <TextView
-                android:id="@+id/text_no_ticket_title"
-                android:layout_width="wrap_content"
+            <!-- Header Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="No Active Ticket"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:gravity="center" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-            <TextView
-                android:id="@+id/text_no_ticket_subtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:text="IRCTC &amp; redRail bookings appear here automatically"
-                android:textSize="11sp"
-                android:textColor="#8E8E98"
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_notification_train"
+                    android:tint="#FF4438"
+                    android:layout_marginEnd="5dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NORA"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textColor="#FF4438" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="WALLET"
+                    android:textSize="9sp"
+                    android:textStyle="bold"
+                    android:textColor="#8E8E98" />
+            </LinearLayout>
+
+            <!-- Centered Empty State Content -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:maxLines="2" />
+                android:orientation="vertical"
+                android:padding="4dp">
+
+                <ImageView
+                    android:id="@+id/image_no_ticket"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_ticket_empty"
+                    android:tint="#777785"
+                    android:layout_marginBottom="3dp" />
+
+                <TextView
+                    android:id="@+id/text_no_ticket_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No Active Train Ticket"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:gravity="center" />
+
+                <TextView
+                    android:id="@+id/text_no_ticket_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Bookings from IRCTC &amp; redRail appear here automatically"
+                    android:textSize="9.5sp"
+                    android:textColor="#8E8E98"
+                    android:gravity="center"
+                    android:maxLines="2" />
+            </LinearLayout>
         </LinearLayout>
 
-        <!-- Tap to Open Action Pill -->
+        <!-- Lower Stub Section for Empty State -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center">
+            android:layout_height="0dp"
+            android:layout_weight="30"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="4dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="TAP TO OPEN NORA"
-                android:textSize="10sp"
+                android:layout_weight="1"
+                android:text="+ TAP TO OPEN WALLET"
+                android:textSize="9.5sp"
                 android:textStyle="bold"
-                android:textColor="#FF553E"
-                android:background="@drawable/widget_subtle_pill"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp" />
+                android:textColor="#FF553E" />
+
+            <ImageView
+                android:layout_width="70dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_barcode_sample"
+                android:tint="#5E5E6E" />
         </LinearLayout>
     </LinearLayout>
 
