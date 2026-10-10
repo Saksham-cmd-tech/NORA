@@ -18,6 +18,7 @@ import {
   dismissLiveJourneyNotification,
 } from './src/services/reminderNotificationService';
 import { isTicketValidAndUpcoming } from './src/utils/dateUtils';
+import { updateActiveTicketWidget } from './src/services/widgetService';
 import { OnboardingScreen } from './src/screens/OnboardingScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { TicketDetailsScreen } from './src/screens/TicketDetailsScreen';
@@ -113,6 +114,10 @@ export default function App() {
       await dismissLiveJourneyNotification();
       return;
     }
+    if (payload.actionType === 'OPEN_WALLET') {
+      setCurrentScreen('Home');
+      return;
+    }
     const pnr = (payload.pnr || '').trim();
     let ticketToOpen: NormalizedTicket | null = null;
     if (pnr) {
@@ -138,6 +143,7 @@ export default function App() {
           setAutoOpenShareModal(true);
           setCurrentScreen('TicketDetails');
           break;
+        case 'OPEN_ACTIVE_TICKET':
         case 'VIEW_TICKET':
         case 'CHECK_STATUS':
         default:
@@ -166,6 +172,10 @@ export default function App() {
       for (const t of validUpcoming) {
         scheduleJourneyReminders(t).catch(() => {});
       }
+
+      // Sync current active ticket to Android Home Screen Widget (or "No Active Ticket" if empty)
+      const currentActive = validUpcoming[0] || null;
+      await updateActiveTicketWidget(currentActive);
     } catch (e) {
       console.log('[NORA App] loadTickets error:', e);
     }

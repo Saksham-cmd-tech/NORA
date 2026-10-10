@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_bg"
+    android:padding="12dp">
+
+    <!-- ================= 1. ACTIVE TICKET LAYOUT ================= -->
+    <LinearLayout
+        android:id="@+id/layout_active_ticket"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <!-- Header Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/widget_train_icon"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_notification_train"
+                android:tint="#FF4438"
+                android:layout_marginEnd="6dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NORA"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="#FF4438" />
+
+            <View
+                android:layout_width="6dp"
+                android:layout_height="1dp" />
+
+            <TextView
+                android:id="@+id/text_widget_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ACTIVE"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:textColor="#FF553E"
+                android:background="@drawable/widget_badge_bg"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/text_widget_pnr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PNR: 2458910342"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="#8E8E98" />
+        </LinearLayout>
+
+        <!-- Train Number & Name -->
+        <TextView
+            android:id="@+id/text_train_number_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="26101 · VANDE BHARAT EXP"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#E6E6ED"
+            android:singleLine="true"
+            android:ellipsize="end" />
+
+        <!-- Route & Timings Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- From Block -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_departure_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="14:05"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF" />
+
+                <TextView
+                    android:id="@+id/text_from_station"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CSMT"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="#A0A0AC" />
+            </LinearLayout>
+
+            <!-- Route Connector -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#2E2E38" />
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_arrow_right"
+                    android:tint="#FF4438"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#2E2E38" />
+            </LinearLayout>
+
+            <!-- To Block -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_arrival_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="18:10"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF" />
+
+                <TextView
+                    android:id="@+id/text_to_station"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="PUNE"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="#A0A0AC" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Seat & Platform Footer Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="2dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/widget_subtle_pill"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp">
+
+                <TextView
+                    android:id="@+id/text_coach_seat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="COACH C2 · SEAT 22 (AS)"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textColor="#FF553E" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/text_journey_date_platform"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10 Oct · Platform 5"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="#8E8E98" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- ================= 2. NO TICKET / EMPTY LAYOUT ================= -->
+    <LinearLayout
+        android:id="@+id/layout_no_ticket"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <!-- Header Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_notification_train"
+                android:tint="#FF4438"
+                android:layout_marginEnd="6dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NORA"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="#FF4438" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="WALLET"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="#8E8E98" />
+        </LinearLayout>
+
+        <!-- Centered Empty State Content -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="4dp">
+
+            <ImageView
+                android:id="@+id/image_no_ticket"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_ticket_empty"
+                android:tint="#777785"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/text_no_ticket_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No Active Ticket"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/text_no_ticket_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="IRCTC &amp; redRail bookings appear here automatically"
+                android:textSize="10sp"
+                android:textColor="#8E8E98"
+                android:gravity="center"
+                android:maxLines="2" />
+        </LinearLayout>
+
+        <!-- Tap to Open Action Pill -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TAP TO OPEN NORA"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:textColor="#FF553E"
+                android:background="@drawable/widget_subtle_pill"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

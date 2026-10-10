@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Nora</string>
+    <string name="widget_active_ticket_label">NORA Active Ticket</string>
+    <string name="widget_active_ticket_description">Glance at your current active train journey, seat &amp; timings directly from your home screen.</string>
 </resources>
