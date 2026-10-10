@@ -423,16 +423,7 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
 
         {/* Central Aisle */}
         <View style={styles.chairAisleBlock}>
-          <AppText
-            variant="micro"
-            weight="heavy"
-            color={isUserInRow ? 'orange' : 'secondary'}
-          >
-            ROW {cabin.cabinNumber}
-          </AppText>
-          {isUserInRow ? (
-            <View style={styles.miniYouDot} />
-          ) : null}
+          <View style={styles.chairAisleLine} />
         </View>
 
         {/* Right Side Seats (Aisle to Window) */}
@@ -1096,16 +1087,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   chairAisleBlock: {
+    width: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 8,
+    paddingHorizontal: 2,
   },
-  miniYouDot: {
-    width: 5,
-    height: 5,
-    borderRadius: 2.5,
-    backgroundColor: Colors.primary,
-    marginTop: 2,
+  chairAisleLine: {
+    width: 2,
+    height: 38,
+    borderRadius: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
   },
   // Inspected Seat Pill
   inspectedSeatPill: {
