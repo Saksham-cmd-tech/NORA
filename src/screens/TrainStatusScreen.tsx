@@ -1864,20 +1864,19 @@ export const TrainStatusScreen: React.FC<TrainStatusScreenProps> = ({
           onPress={handleFetchTrainLocation}
           disabled={refreshingLive}
           style={styles.refreshBtn}
+          accessibilityRole="button"
+          accessibilityLabel={
+            isJourneyNotStarted
+              ? 'Check radar preview'
+              : effectiveLiveData
+              ? 'Refresh location'
+              : 'Check live status'
+          }
         >
           {refreshingLive ? (
             <ActivityIndicator size="small" color={Colors.textPrimary} />
           ) : (
-            <>
-              <RotateCw size={16} color={Colors.textPrimary} style={styles.btnIconSpacing} />
-              <AppText variant="caption" weight="heavy" color="primary" uppercase letterSpacing={0.5}>
-                {isJourneyNotStarted
-                  ? 'CHECK RADAR PREVIEW'
-                  : effectiveLiveData
-                  ? 'REFRESH LOCATION'
-                  : 'CHECK LIVE STATUS'}
-              </AppText>
-            </>
+            <RotateCw size={20} color={Colors.textPrimary} />
           )}
         </TouchableOpacity>
 
@@ -1885,11 +1884,10 @@ export const TrainStatusScreen: React.FC<TrainStatusScreenProps> = ({
           activeOpacity={0.8}
           onPress={handleShareTrip}
           style={styles.shareTripBtn}
+          accessibilityRole="button"
+          accessibilityLabel="Share trip"
         >
-          <Share2 size={16} color="#000000" style={styles.btnIconSpacing} />
-          <AppText variant="caption" weight="heavy" color="dark" uppercase letterSpacing={0.5}>
-            SHARE TRIP
-          </AppText>
+          <Share2 size={20} color="#000000" />
         </TouchableOpacity>
       </View>
 
