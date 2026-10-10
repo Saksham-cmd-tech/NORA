@@ -1,0 +1,328 @@
+{
+  "name": "projects/16251988528031317744",
+  "title": "NORA Train Ticket Wallet",
+  "visibility": "PRIVATE",
+  "createTime": "2026-10-07T09:12:38.392059Z",
+  "updateTime": "2026-10-07T10:59:02.572Z",
+  "projectType": "TEXT_TO_UI_PRO",
+  "thumbnailScreenshot": {
+    "name": "projects/16251988528031317744/screens/556cfd77bbcf4ae88c020db61e74fd12/fileEntries/screenshot",
+    "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1XMwLZhKZNGT87Lqkj4yI7WIqTIVlLl7WqElBZsOruTYakdpIJmDRZtGQq59n5hAUu3LKvzZscnBpusztuWDbi6jAHeEsgYMoJ_H8fY1wCVI2sbzQDegjiRJ36gPckeCo3owI-XfMtPgIOG7g3A-HI3t3gKyKJQZCGQuBVmR-hRhUwXhzO4_JqlJ_1kMUbsxfn3AOwRP1u_1vBJ-39QdHxz5jFuLdg8B0rnRj6kn-3Hfg"
+  },
+  "origin": "STITCH",
+  "deviceType": "MOBILE",
+  "designTheme": {
+    "colorMode": "DARK",
+    "font": "SPACE_GROTESK",
+    "roundness": "ROUND_EIGHT",
+    "customColor": "#f25623",
+    "headlineFont": "SPACE_GROTESK",
+    "bodyFont": "PLUS_JAKARTA_SANS",
+    "labelFont": "SPACE_GROTESK",
+    "namedColors": {
+      "surface_container_highest": "#353436",
+      "surface_variant": "#353436",
+      "on_surface_variant": "#e3beb4",
+      "on_surface": "#e5e2e3",
+      "on_secondary_fixed_variant": "#464745",
+      "on_tertiary_fixed": "#1b1c1c",
+      "surface_tint": "#ffb59f",
+      "on_primary_fixed": "#3a0a00",
+      "outline_variant": "#5a4139",
+      "on_secondary_container": "#b5b5b2",
+      "surface_bright": "#39393a",
+      "secondary_fixed": "#e3e2df",
+      "inverse_primary": "#af3000",
+      "surface_dim": "#131314",
+      "background": "#131314",
+      "on_tertiary": "#303030",
+      "tertiary_fixed": "#e4e2e2",
+      "tertiary_container": "#919090",
+      "outline": "#aa8980",
+      "error_container": "#93000a",
+      "on_background": "#e5e2e3",
+      "on_tertiary_fixed_variant": "#474747",
+      "surface": "#131314",
+      "inverse_surface": "#e5e2e3",
+      "on_primary_container": "#531200",
+      "inverse_on_surface": "#313031",
+      "surface_container": "#201f20",
+      "primary_fixed_dim": "#ffb59f",
+      "on_primary": "#5f1600",
+      "primary_fixed": "#ffdbd1",
+      "surface_container_lowest": "#0e0e0f",
+      "primary_container": "#fa5c29",
+      "on_tertiary_container": "#292a2a",
+      "on_error_container": "#ffdad6",
+      "surface_container_high": "#2a2a2b",
+      "secondary": "#c7c6c4",
+      "secondary_container": "#464745",
+      "on_secondary_fixed": "#1a1c1a",
+      "surface_container_low": "#1c1b1c",
+      "tertiary": "#c8c6c6",
+      "secondary_fixed_dim": "#c7c6c4",
+      "tertiary_fixed_dim": "#c8c6c6",
+      "error": "#ffb4ab",
+      "primary": "#ffb59f",
+      "on_primary_fixed_variant": "#862300",
+      "on_error": "#690005",
+      "on_secondary": "#2f312f"
+    },
+    "designMd": "---\nname: Tactile Modernist Transit\ncolors:\n  surface: '#131314'\n  surface-dim: '#131314'\n  surface-bright: '#39393a'\n  surface-container-lowest: '#0e0e0f'\n  surface-container-low: '#1c1b1c'\n  surface-container: '#201f20'\n  surface-container-high: '#2a2a2b'\n  surface-container-highest: '#353436'\n  on-surface: '#e5e2e3'\n  on-surface-variant: '#e3beb4'\n  inverse-surface: '#e5e2e3'\n  inverse-on-surface: '#313031'\n  outline: '#aa8980'\n  outline-variant: '#5a4139'\n  surface-tint: '#ffb59f'\n  primary: '#ffb59f'\n  on-primary: '#5f1600'\n  primary-container: '#fa5c29'\n  on-primary-container: '#531200'\n  inverse-primary: '#af3000'\n  secondary: '#c7c6c4'\n  on-secondary: '#2f312f'\n  secondary-container: '#464745'\n  on-secondary-container: '#b5b5b2'\n  tertiary: '#c8c6c6'\n  on-tertiary: '#303030'\n  tertiary-container: '#919090'\n  on-tertiary-container: '#292a2a'\n  error: '#ffb4ab'\n  on-error: '#690005'\n  error-container: '#93000a'\n  on-error-container: '#ffdad6'\n  primary-fixed: '#ffdbd1'\n  primary-fixed-dim: '#ffb59f'\n  on-primary-fixed: '#3a0a00'\n  on-primary-fixed-variant: '#862300'\n  secondary-fixed: '#e3e2df'\n  secondary-fixed-dim: '#c7c6c4'\n  on-secondary-fixed: '#1a1c1a'\n  on-secondary-fixed-variant: '#464745'\n  tertiary-fixed: '#e4e2e2'\n  tertiary-fixed-dim: '#c8c6c6'\n  on-tertiary-fixed: '#1b1c1c'\n  on-tertiary-fixed-variant: '#474747'\n  background: '#131314'\n  on-background: '#e5e2e3'\n  surface-variant: '#353436'\ntypography:\n  headline-xl:\n    fontFamily: Space Grotesk\n    fontSize: 44px\n    fontWeight: '700'\n    lineHeight: 48px\n    letterSpacing: -0.03em\n  headline-xl-mobile:\n    fontFamily: Space Grotesk\n    fontSize: 36px\n    fontWeight: '700'\n    lineHeight: 40px\n    letterSpacing: -0.03em\n  headline-lg:\n    fontFamily: Space Grotesk\n    fontSize: 32px\n    fontWeight: '700'\n    lineHeight: 36px\n    letterSpacing: -0.02em\n  headline-lg-mobile:\n    fontFamily: Space Grotesk\n    fontSize: 26px\n    fontWeight: '700'\n    lineHeight: 30px\n    letterSpacing: -0.02em\n  headline-md:\n    fontFamily: Space Grotesk\n    fontSize: 22px\n    fontWeight: '600'\n    lineHeight: 28px\n    letterSpacing: -0.01em\n  station-code:\n    fontFamily: Space Grotesk\n    fontSize: 30px\n    fontWeight: '700'\n    lineHeight: 32px\n    letterSpacing: 0.04em\n  body-lg:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 16px\n    fontWeight: '500'\n    lineHeight: 24px\n    letterSpacing: -0.01em\n  body-md:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 14px\n    fontWeight: '400'\n    lineHeight: 20px\n    letterSpacing: 0em\n  body-sm:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 12px\n    fontWeight: '400'\n    lineHeight: 16px\n    letterSpacing: 0em\n  label-mono:\n    fontFamily: Space Grotesk\n    fontSize: 13px\n    fontWeight: '600'\n    lineHeight: 16px\n    letterSpacing: 0.05em\n  micro-tag:\n    fontFamily: Space Grotesk\n    fontSize: 10px\n    fontWeight: '700'\n    lineHeight: 12px\n    letterSpacing: 0.12em\nrounded:\n  sm: 0.25rem\n  DEFAULT: 0.5rem\n  md: 0.75rem\n  lg: 1rem\n  xl: 1.5rem\n  full: 9999px\nspacing:\n  gutter: 1rem\n  gutter-sm: 0.5rem\n  gutter-lg: 1.5rem\n  margin: 1.25rem\n  margin-sm: 1rem\n  margin-lg: 2rem\n  space-xs: 0.25rem\n  space-sm: 0.5rem\n  space-md: 1rem\n  space-lg: 1.5rem\n  space-xl: 2rem\n---\n\n## Brand & Style\n\nThis design system blends strict Swiss editorial graphic precision with tactile transit ephemera tailored for an Android flagship experience. Designed for frequent rail commuters, cross-country travellers, and minimalist design aficionados, the aesthetic evokes the quiet assurance of precision engineering, physical paper stocks, and high-speed transit efficiency.\n\nThe visual direction draws heavily from modernist editorial print, high-contrast brutalist layout geometry, and the tactile nostalgia of heavy cardstock boarding tickets. Rather than mimicking flat generic mobile utility cards, the system leans into tangible paper architecture: semicircular perforation cutouts, hairline dashed tear paths, dot-matrix transit codes, and high-legibility uppercase micro-typography. The mood is calm, uncluttered, focused, and purposeful\u2014stripping away visual noise in favor of unmistakable hierarchy, immediate readability in crowded stations, and deep spatial contrast.\n\n## Colors\n\nThe system uses an inverted dark-canvas foundation paired with crisp, high-contrast card stock surfaces and a single high-energy thermal transit accent.\n\n- **Canvas & Underlay (Neutral):** Deep pitch black (`#0D0D0E`) with charcoal tiering (`#141416`, `#1A1A1E`). These dark tones eliminate backlight glare and recede gracefully, giving priority to active ticket artifacts.\n- **Ticket Stock (Secondary):** Warm off-white / pale cream cardstock (`#F8F7F4` and `#F0EFEA`) and pure crisp white (`#FFFFFF`) provide paper authenticity and extreme contrast against the dark background.\n- **Accent Signal (Primary):** Persimmon orange (`#F25623`), derived from vintage rail validation stamps and high-visibility physical warning labels. It commands priority for live departure countdowns, validation barcodes, active platform gates, and primary action triggers.\n- **Structure & Supporting Metadata (Tertiary):** Mid-tone neutral grays (`#4D4D4D`, `#71717A`, and `#DEDEDE`) create subtle hierarchy for field dividers, perforation punch borders, secondary timings, and quiet train station labels.\n\n## Typography\n\nThe typographic hierarchy relies on a pairing between **Space Grotesk** for display headers, station codes, and micro-labels, and **Plus Jakarta Sans** for body copy and administrative details.\n\n- **Station Codes & Headers (`Space Grotesk`):** Station codes (`PUNE`, `BD`, `NDLS`, `WAW`) are set in uppercase display weights with slight positive tracking, matching the clarity of mechanical departure boards and dot-matrix displays.\n- **Micro-Data Labels (`micro-tag`):** Metadata titles such as `COACH`, `PLATFORM`, `PNR`, `SEAT`, and `DEPARTURE` are rendered strictly in uppercase, bold, tracking at `0.12em` (widest), in small sizes (10px\u201311px). This mimics industrial boarding ticket stamp printing and ensures clear categorization without overwhelming the screen.\n- **Body & Continuous Copy (`Plus Jakarta Sans`):** Passenger names, transit policies, and informational notes use clean, warm geometric sans-serif styling to preserve legibility under dynamic lighting conditions.\n\n## Layout & Spacing\n\nThe layout is built around single-column, thumb-first vertical flow optimized for Android mobile screens (360px\u2013420px viewports), transitioning gracefully to centered wallet drawers on wider form factors.\n\n- **Rhythm & Grid:** A 4-column mobile fluid layout built with an outer margin of `1.25rem` (20px) and gutters of `1rem` (16px). All vertical components snap to a strict 4px / 8px baseline grid to keep perforation notches and dashed rules mathematically aligned.\n- **Card Edge Clearances:** Ticket passes expand to the grid edge minus `margin` (`1.25rem`). The ticket's interior content respects internal padding of `1.25rem` to `1.5rem` to ensure cutouts do not clip critical text or QR codes.\n- **Perforation Line Anchors:** Perforation notches sit at fixed structural splits (between the trip overview and the scannable validation stub), marked with symmetrical horizontal margins to maintain balance.\n\n## Elevation & Depth\n\nVisual hierarchy uses physical material separation and tonal layering rather than traditional drop shadows.\n\n- **Layer 0 (Canvas):** Pitch Black (`#0D0D0E`), absolute flat backdrop representing the device bezel and wallet container.\n- **Layer 1 (Cardstock Ticket Body):** Warm Off-White (`#F8F7F4`) card surface floating atop the dark canvas. Rather than heavy diffuse shadows, the ticket's boundary is accentuated by a crisp hairline border (`rgba(255, 255, 255, 0.08)` when resting on dark, or `rgba(0, 0, 0, 0.06)` on light) and an ambient shadow: `0px 8px 24px rgba(0, 0, 0, 0.35)`.\n- **Layer 2 (Perforation & Stub Separation):** Perforations are rendered as physical circular cutouts (`width: 20px`, `height: 20px`, positioned with negative offsets over container borders) exposing the underlying pitch-black canvas beneath. Between the cutouts runs a crisp dashed rule (`border-top: 1.5px dashed #DEDEDE`).\n- **Layer 3 (Active Stub / Tear Accent):** An electric Persimmon Orange (`#F25623`) tear-stub or floating validation token sitting at the bottom of the ticket pass. It gives the impression of a physical validation slip stapled to a boarding pass.\n\n## Shapes\n\nThe design uses a balanced rounded geometry (`roundedness: 2`, with primary card corner radii at 1rem / 16px to 1.5rem / 24px).\n\n- **Ticket Hull:** Boarding pass parent cards feature 20px to 24px outer border radiuses.\n- **Perforation Notches:** Semi-circular cutouts along the ticket's left and right lateral edges are formed by 20px-diameter circle masks or pseudo-elements sharing the background canvas color (`#0D0D0E`).\n- **Interactive Controls:** Search bars, segmented station toggles, and CTA buttons follow uniform rounded pills (full radius / 9999px) or structured rectangular soft radiuses (12px) to differentiate physical cards from tappable digital triggers.\n\n## Components\n\n### 1. Boarding Pass Ticket Cards\n- **Dual-Zone Construction:**\n  - **Upper Body (Main Journey):** Displays departure station, arrow icon with route path, arrival station, departure times, platform, seat, and class. Background is clean Off-White (`#F8F7F4`) or Soft Charcoal (`#141416`).\n  - **Perforation Boundary:** Left and right circular indentations with a dashed connector line running across the card width.\n  - **Lower Stub (Validation & Gate):** High-density barcode/QR code container with ticket number, passenger PNR, and quick-access gate validation, rendered on Crisp White or Persimmon Orange (`#F25623`).\n- **Station Displays:** 3-to-4 letter train station abbreviations rendered in `station-code` typography, paired with small tabular time indicators (`14:35`) directly underneath.\n\n### 2. Action Buttons & Ticket CTAs\n- **Primary Wallet Button:** Solid Pitch Black (`#0D0D0E`) with Crisp White typography when resting on off-white cards; or vibrant Persimmon (`#F25623`) with white text when anchored to the bottom system sheet. Pill or 12px rounded profile with minimum touch target height of 52px.\n- **Secondary Buttons & Action Strips:** Outlined button with 1px hairline border (`#DEDEDE`), transparent background, and `Space Grotesk` uppercase text.\n\n### 3. Segmented Route & Class Chips\n- Compact pills (height: 36px) with an active state in Pitch Black (`#0D0D0E`) with white text, and inactive state in Warm Light Gray (`#E5E5E7`) with Dark Gray text (`#4D4D4D`).\n\n### 4. Perforation Dividers & Tear Lines\n- Horizontal hairline separator: `border: none; border-top: 1.5px dashed #DEDEDE; height: 0; margin: 0; width: 100%`.\n- Symmetrical circular cutout markers positioned half-outside card boundaries (`margin-left: -10px`, `margin-right: -10px`) to replicate physical transit punches.\n\n### 5. Barcode & Validation Matrices\n- Monospaced ticket code above an ultra-crisp linear Code 128 / QR barcode, framed by high-contrast spacing with uppercase validation micro-labels (`SCAN AT PLATFORM TURNSTILE`).\n\n### 6. Station & Direction Switchers\n- Floating circular or rounded rectangular interchange buttons (44px \u00d7 44px) placed along the path vector to allow rapid origin/destination swapping with haptic feedback.",
+    "colorVariant": "FIDELITY",
+    "overridePrimaryColor": "#f25623",
+    "overrideSecondaryColor": "#f8f7f4",
+    "overrideTertiaryColor": "#4d4d4d",
+    "overrideNeutralColor": "#0d0d0e",
+    "spacingScale": 2,
+    "typography": {
+      "body-sm": {
+        "fontFamily": "Plus Jakarta Sans",
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "16px",
+        "letterSpacing": "0em"
+      },
+      "headline-xl": {
+        "fontFamily": "Space Grotesk",
+        "fontSize": "44px",
+        "fontWeight": "700",
+        "lineHeight": "48px",
+        "letterSpacing": "-0.03em"
+      },
+      "headline-lg-mobile": {
+        "fontFamily": "Space Grotesk",
+        "fontSize": "26px",
+        "fontWeight": "700",
+        "lineHeight": "30px",
+        "letterSpacing": "-0.02em"
+      },
+      "label-mono": {
+        "fontFamily": "Space Grotesk",
+        "fontSize": "13px",
+        "fontWeight": "600",
+        "lineHeight": "16px",
+        "letterSpacing": "0.05em"
+      },
+      "headline-xl-mobile": {
+        "fontFamily": "Space Grotesk",
+        "fontSize": "36px",
+        "fontWeight": "700",
+        "lineHeight": "40px",
+        "letterSpacing": "-0.03em"
+      },
+      "body-lg": {
+        "fontFamily": "Plus Jakarta Sans",
+        "fontSize": "16px",
+        "fontWeight": "500",
+        "lineHeight": "24px",
+        "letterSpacing": "-0.01em"
+      },
+      "micro-tag": {
+        "fontFamily": "Space Grotesk",
+        "fontSize": "10px",
+        "fontWeight": "700",
+        "lineHeight": "12px",
+        "letterSpacing": "0.12em"
+      },
+      "body-md": {
+        "fontFamily": "Plus Jakarta Sans",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "lineHeight": "20px",
+        "letterSpacing": "0em"
+      },
+      "headline-lg": {
+        "fontFamily": "Space Grotesk",
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "36px",
+        "letterSpacing": "-0.02em"
+      },
+      "headline-md": {
+        "fontFamily": "Space Grotesk",
+        "fontSize": "22px",
+        "fontWeight": "600",
+        "lineHeight": "28px",
+        "letterSpacing": "-0.01em"
+      },
+      "station-code": {
+        "fontFamily": "Space Grotesk",
+        "fontSize": "30px",
+        "fontWeight": "700",
+        "lineHeight": "32px",
+        "letterSpacing": "0.04em"
+      }
+    },
+    "spacing": {
+      "space-md": "1rem",
+      "gutter": "1rem",
+      "space-xs": "0.25rem",
+      "space-sm": "0.5rem",
+      "space-xl": "2rem",
+      "gutter-lg": "1.5rem",
+      "margin-sm": "1rem",
+      "margin-lg": "2rem",
+      "gutter-sm": "0.5rem",
+      "margin": "1.25rem",
+      "space-lg": "1.5rem"
+    },
+    "headlineFontFamily": "Space Grotesk",
+    "bodyFontFamily": "Plus Jakarta Sans",
+    "labelFontFamily": "Space Grotesk"
+  },
+  "screenInstances": [
+    {
+      "id": "0027c1e265b746c2a033cc1b7a49d17f",
+      "sourceScreen": "projects/16251988528031317744/screens/0027c1e265b746c2a033cc1b7a49d17f",
+      "y": 3375,
+      "width": 390,
+      "height": 1122,
+      "label": "Generating Screen...",
+      "hidden": true
+    },
+    {
+      "id": "07dc3955cad14d47805d17375d0f492a",
+      "sourceScreen": "projects/16251988528031317744/screens/07dc3955cad14d47805d17375d0f492a",
+      "x": 4812,
+      "width": 390,
+      "height": 884,
+      "label": "Generating Screen..."
+    },
+    {
+      "id": "22b3fd74a09e4358b29d44d779ffc432",
+      "sourceScreen": "projects/16251988528031317744/screens/22b3fd74a09e4358b29d44d779ffc432",
+      "x": 5266,
+      "width": 390,
+      "height": 1605,
+      "label": "Generating Screen..."
+    },
+    {
+      "id": "23f285f9-4706-4b45-8a92-cc42e670ee0e",
+      "sourceScreen": "projects/16251988528031317744/screens/1830712112928979712",
+      "y": 6034,
+      "width": 512,
+      "height": 289,
+      "label": "WhatsApp Image 2026-10-07 at 15.25.38.jpeg",
+      "hidden": true,
+      "type": "SCREEN_INSTANCE"
+    },
+    {
+      "id": "31391490-d425-44c2-aa33-e8c312b4d70e",
+      "sourceScreen": "projects/16251988528031317744/screens/1777441834485475666",
+      "x": 1728,
+      "width": 512,
+      "height": 768,
+      "label": "Terminal Boarding Pass \u2014 Departure Board Plane Ticket Keepsake on iPhone.jpeg",
+      "type": "SCREEN_INSTANCE"
+    },
+    {
+      "id": "4ac3df45-4569-44a9-9127-e96cedbb9c99",
+      "sourceScreen": "projects/16251988528031317744/screens/12337127382676210625",
+      "y": 6579,
+      "width": 512,
+      "height": 273,
+      "label": "Screenshot 2026-10-07 at 3.50.36\u202fPM.png",
+      "hidden": true,
+      "type": "SCREEN_INSTANCE"
+    },
+    {
+      "id": "50b3532b0cf342cebed2387412aa7db9",
+      "sourceScreen": "projects/16251988528031317744/screens/50b3532b0cf342cebed2387412aa7db9",
+      "x": 5266,
+      "width": 390,
+      "height": 1439,
+      "label": "Generating Screen...",
+      "hidden": true
+    },
+    {
+      "id": "514631d713224fd1aa5bb3aa4a52fa5f",
+      "sourceScreen": "projects/16251988528031317744/screens/514631d713224fd1aa5bb3aa4a52fa5f",
+      "y": 1830,
+      "width": 390,
+      "height": 984,
+      "label": "Generating Screen...",
+      "hidden": true
+    },
+    {
+      "id": "556cfd77bbcf4ae88c020db61e74fd12",
+      "sourceScreen": "projects/16251988528031317744/screens/556cfd77bbcf4ae88c020db61e74fd12",
+      "x": 3904,
+      "width": 390,
+      "height": 884,
+      "label": "Generating Screen..."
+    },
+    {
+      "id": "5c45efc447614dcc8e374532b42b9554",
+      "sourceScreen": "projects/16251988528031317744/screens/5c45efc447614dcc8e374532b42b9554",
+      "y": 4753,
+      "width": 390,
+      "height": 1025,
+      "label": "Generating Screen...",
+      "hidden": true
+    },
+    {
+      "id": "9d7d0c4a-cc72-49fc-a033-a9fc4d05e9a4",
+      "sourceScreen": "projects/16251988528031317744/screens/1777441834485476488",
+      "x": 1152,
+      "width": 512,
+      "height": 640,
+      "label": "name.jpeg",
+      "type": "SCREEN_INSTANCE"
+    },
+    {
+      "id": "assets_897104056d0f4c77b7793752317067ed",
+      "x": 2880,
+      "width": 960,
+      "height": 540,
+      "sourceAsset": "assets/897104056d0f4c77b7793752317067ed",
+      "type": "DESIGN_SYSTEM_INSTANCE"
+    },
+    {
+      "id": "b0eeb062-e4e0-450b-8ce1-066e740f8eeb",
+      "sourceScreen": "projects/16251988528031317744/screens/1777441834485474036",
+      "width": 512,
+      "height": 384,
+      "label": "Daily UI #024 - Boarding Pass \u2708\ufe0f.jpeg",
+      "type": "SCREEN_INSTANCE"
+    },
+    {
+      "id": "c93bc3665aa6414d838cec3a070830e2",
+      "sourceScreen": "projects/16251988528031317744/screens/c93bc3665aa6414d838cec3a070830e2",
+      "x": 4358,
+      "width": 390,
+      "height": 891,
+      "label": "Generating Screen..."
+    },
+    {
+      "id": "cab81855-4f04-46ea-9d97-39665595faef",
+      "sourceScreen": "projects/16251988528031317744/screens/1777441834485477310",
+      "x": 576,
+      "width": 512,
+      "height": 384,
+      "label": "Flight Booking App Redesign.jpeg",
+      "type": "SCREEN_INSTANCE"
+    },
+    {
+      "id": "e6f031cc77464a85949222c30d7d7aa1",
+      "sourceScreen": "projects/16251988528031317744/screens/e6f031cc77464a85949222c30d7d7aa1",
+      "x": 6174,
+      "width": 390,
+      "height": 891,
+      "label": "NORA Transit Pass & Rail Wallet",
+      "hidden": true
+    },
+    {
+      "id": "fcee87b1-571b-47a2-a697-a69c3a858c12",
+      "sourceScreen": "projects/16251988528031317744/screens/1777441834485474844",
+      "x": 2304,
+      "width": 512,
+      "height": 384,
+      "label": "Ticket App WIP.jpeg",
+      "type": "SCREEN_INSTANCE"
+    }
+  ],
+  "metadata": {
+    "userRole": "OWNER"
+  }
+}

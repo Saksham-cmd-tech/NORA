@@ -1,0 +1,7 @@
+{
+  "name": "nora-rail-proxy",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "NORA Rail Proxy Cloudflare Worker"
+}

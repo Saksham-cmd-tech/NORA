@@ -1,0 +1,4430 @@
+[
+  {
+    "sr_no": 1,
+    "station_name": "Mumbai CSMT",
+    "code": "CSMT",
+    "station_code": "CSMT",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "NSG-1"
+  },
+  {
+    "sr_no": 2,
+    "station_name": "Dadar",
+    "code": "DR",
+    "station_code": "DR",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "NSG-1"
+  },
+  {
+    "sr_no": 3,
+    "station_name": "Kalyan",
+    "code": "KYN",
+    "station_code": "KYN",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "NSG-1"
+  },
+  {
+    "sr_no": 4,
+    "station_name": "Lokmanya Tilak Terminus",
+    "code": "LTT",
+    "station_code": "LTT",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "NSG-1"
+  },
+  {
+    "sr_no": 5,
+    "station_name": "Panvel",
+    "code": "PNVL",
+    "station_code": "PNVL",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "NSG-1"
+  },
+  {
+    "sr_no": 6,
+    "station_name": "Thane",
+    "code": "TNA",
+    "station_code": "TNA",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "NSG-1"
+  },
+  {
+    "sr_no": 7,
+    "station_name": "Lonavala",
+    "code": "LNL",
+    "station_code": "LNL",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "NSG-3"
+  },
+  {
+    "sr_no": 8,
+    "station_name": "Aman Lodge",
+    "code": "ANLG",
+    "station_code": "ANLG",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "NSG-4"
+  },
+  {
+    "sr_no": 9,
+    "station_name": "Bhiwandi Road",
+    "code": "BIRD",
+    "station_code": "BIRD",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "NSG-4"
+  },
+  {
+    "sr_no": 10,
+    "station_name": "Matheran",
+    "code": "MAE",
+    "station_code": "MAE",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "NSG-4"
+  },
+  {
+    "sr_no": 11,
+    "station_name": "Igatpuri",
+    "code": "IGP",
+    "station_code": "IGP",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 12,
+    "station_name": "Roha",
+    "code": "ROHA",
+    "station_code": "ROHA",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 13,
+    "station_name": "Apta",
+    "code": "APTA",
+    "station_code": "APTA",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 14,
+    "station_name": "Jite",
+    "code": "JITE",
+    "station_code": "JITE",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 15,
+    "station_name": "Khandala",
+    "code": "KAD",
+    "station_code": "KAD",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 16,
+    "station_name": "Kaman Raod",
+    "code": "KARD",
+    "station_code": "KARD",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 17,
+    "station_name": "Kharbhav",
+    "code": "KHBV",
+    "station_code": "KHBV",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 18,
+    "station_name": "Kalamboli",
+    "code": "KLMC",
+    "station_code": "KLMC",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 19,
+    "station_name": "Nagothane",
+    "code": "NGTN",
+    "station_code": "NGTN",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 20,
+    "station_name": "Nilaje",
+    "code": "NIIJ",
+    "station_code": "NIIJ",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 21,
+    "station_name": "Pen",
+    "code": "PEN",
+    "station_code": "PEN",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 22,
+    "station_name": "Somtane",
+    "code": "SMNE",
+    "station_code": "SMNE",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 23,
+    "station_name": "Taloja Panchanand",
+    "code": "TPND",
+    "station_code": "TPND",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 24,
+    "station_name": "Ambernath",
+    "code": "ABH",
+    "station_code": "ABH",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-1"
+  },
+  {
+    "sr_no": 25,
+    "station_name": "Bhandup",
+    "code": "BND",
+    "station_code": "BND",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-1"
+  },
+  {
+    "sr_no": 26,
+    "station_name": "Badlapur",
+    "code": "BUD",
+    "station_code": "BUD",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-1"
+  },
+  {
+    "sr_no": 27,
+    "station_name": "Kurla",
+    "code": "CLA",
+    "station_code": "CLA",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-1"
+  },
+  {
+    "sr_no": 28,
+    "station_name": "Dombivli",
+    "code": "DI",
+    "station_code": "DI",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-1"
+  },
+  {
+    "sr_no": 29,
+    "station_name": "Diva",
+    "code": "DIVA",
+    "station_code": "DIVA",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-1"
+  },
+  {
+    "sr_no": 30,
+    "station_name": "Ghatkopar",
+    "code": "GC",
+    "station_code": "GC",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-1"
+  },
+  {
+    "sr_no": 31,
+    "station_name": "Mumbra",
+    "code": "MBQ",
+    "station_code": "MBQ",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 32,
+    "station_name": "Mulund",
+    "code": "MLND",
+    "station_code": "MLND",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-1"
+  },
+  {
+    "sr_no": 33,
+    "station_name": "Mankhurd",
+    "code": "MNKD",
+    "station_code": "MNKD",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 34,
+    "station_name": "Sion",
+    "code": "SIN",
+    "station_code": "SIN",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 35,
+    "station_name": "Vikhroli",
+    "code": "VK",
+    "station_code": "VK",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 36,
+    "station_name": "Ambivli",
+    "code": "ABY",
+    "station_code": "ABY",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 37,
+    "station_name": "Airoli",
+    "code": "AIRL",
+    "station_code": "AIRL",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 38,
+    "station_name": "Belapur",
+    "code": "BEPR",
+    "station_code": "BEPR",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 39,
+    "station_name": "Byculla",
+    "code": "BY",
+    "station_code": "BY",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 40,
+    "station_name": "Chinchpokli",
+    "code": "CHG",
+    "station_code": "CHG",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 41,
+    "station_name": "Chembur",
+    "code": "CMBR",
+    "station_code": "CMBR",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 42,
+    "station_name": "Currey Road",
+    "code": "CRD",
+    "station_code": "CRD",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 43,
+    "station_name": "Cotton Green",
+    "code": "CTGN",
+    "station_code": "CTGN",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 44,
+    "station_name": "Ghansoli",
+    "code": "GNSL",
+    "station_code": "GNSL",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 45,
+    "station_name": "Guru Tej Bahadur",
+    "code": "GTBN",
+    "station_code": "GTBN",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 46,
+    "station_name": "Govandi",
+    "code": "GV",
+    "station_code": "GV",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 47,
+    "station_name": "Juinagar",
+    "code": "JNJ",
+    "station_code": "JNJ",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 48,
+    "station_name": "King's Circle",
+    "code": "KCE",
+    "station_code": "KCE",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 49,
+    "station_name": "Kharghar",
+    "code": "KHAG",
+    "station_code": "KHAG",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 50,
+    "station_name": "Kanjurmarg",
+    "code": "KJRD",
+    "station_code": "KJRD",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 51,
+    "station_name": "Karjat",
+    "code": "KJT",
+    "station_code": "KJT",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 52,
+    "station_name": "Kalva",
+    "code": "KLVA",
+    "station_code": "KLVA",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 53,
+    "station_name": "Khandeshwar",
+    "code": "KNDS",
+    "station_code": "KNDS",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 54,
+    "station_name": "Koparkhairane",
+    "code": "KPHN",
+    "station_code": "KPHN",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 55,
+    "station_name": "Mansarovar",
+    "code": "MANR",
+    "station_code": "MANR",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 56,
+    "station_name": "Masjid",
+    "code": "MSD",
+    "station_code": "MSD",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 57,
+    "station_name": "Matunga",
+    "code": "MTN",
+    "station_code": "MTN",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 58,
+    "station_name": "Nerul",
+    "code": "NEU",
+    "station_code": "NEU",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 59,
+    "station_name": "Nahur",
+    "code": "NHU",
+    "station_code": "NHU",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 60,
+    "station_name": "Shahad",
+    "code": "SHAD",
+    "station_code": "SHAD",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 61,
+    "station_name": "Sanpada",
+    "code": "SNCR",
+    "station_code": "SNCR",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 62,
+    "station_name": "Sandhurst Road",
+    "code": "SNRD",
+    "station_code": "SNRD",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 63,
+    "station_name": "Sewree",
+    "code": "SVE",
+    "station_code": "SVE",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 64,
+    "station_name": "Seawoodsdarave",
+    "code": "SWDV",
+    "station_code": "SWDV",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 65,
+    "station_name": "Thakurli",
+    "code": "THK",
+    "station_code": "THK",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 66,
+    "station_name": "Tilak Nagar",
+    "code": "TKNG",
+    "station_code": "TKNG",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 67,
+    "station_name": "Titwala",
+    "code": "TLA",
+    "station_code": "TLA",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 68,
+    "station_name": "Ulhasnagar",
+    "code": "ULNR",
+    "station_code": "ULNR",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 69,
+    "station_name": "Wadala Road",
+    "code": "VDLR",
+    "station_code": "VDLR",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 70,
+    "station_name": "Vitthalwadi",
+    "code": "VLDI",
+    "station_code": "VLDI",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 71,
+    "station_name": "Vashi",
+    "code": "VSH",
+    "station_code": "VSH",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 72,
+    "station_name": "Vidyavihar",
+    "code": "VVH",
+    "station_code": "VVH",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 73,
+    "station_name": "Agasan",
+    "code": "AGSN",
+    "station_code": "AGSN",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 74,
+    "station_name": "Asangaon",
+    "code": "ASO",
+    "station_code": "ASO",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 75,
+    "station_name": "Atgaon",
+    "code": "ATG",
+    "station_code": "ATG",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 76,
+    "station_name": "Baman Dongri",
+    "code": "BMDR",
+    "station_code": "BMDR",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 77,
+    "station_name": "Bhivpuri",
+    "code": "BVS",
+    "station_code": "BVS",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 78,
+    "station_name": "Chunabhatti",
+    "code": "CHF",
+    "station_code": "CHF",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 79,
+    "station_name": "Digha Gaon",
+    "code": "DIGH",
+    "station_code": "DIGH",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 80,
+    "station_name": "Dockyard Road",
+    "code": "DKRD",
+    "station_code": "DKRD",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 81,
+    "station_name": "Dolavli",
+    "code": "DLV",
+    "station_code": "DLV",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 82,
+    "station_name": "Dronagiri",
+    "code": "DRGI",
+    "station_code": "DRGI",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 83,
+    "station_name": "Kharkopar",
+    "code": "KARP",
+    "station_code": "KARP",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 84,
+    "station_name": "Khadavli",
+    "code": "KDV",
+    "station_code": "KDV",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 85,
+    "station_name": "Khardi",
+    "code": "KE",
+    "station_code": "KE",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 86,
+    "station_name": "Khopoli",
+    "code": "KHPI",
+    "station_code": "KHPI",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 87,
+    "station_name": "Kelavli",
+    "code": "KLY",
+    "station_code": "KLY",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 88,
+    "station_name": "Kopar",
+    "code": "KOPR",
+    "station_code": "KOPR",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 89,
+    "station_name": "Kasara",
+    "code": "KSRA",
+    "station_code": "KSRA",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 90,
+    "station_name": "Lowjee",
+    "code": "LWJ",
+    "station_code": "LWJ",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 91,
+    "station_name": "Nhave Sheva",
+    "code": "NESA",
+    "station_code": "NESA",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 92,
+    "station_name": "Neral",
+    "code": "NRL",
+    "station_code": "NRL",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 93,
+    "station_name": "Palasdhari",
+    "code": "PDI",
+    "station_code": "PDI",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 94,
+    "station_name": "Parel",
+    "code": "PR",
+    "station_code": "PR",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 95,
+    "station_name": "Rabale",
+    "code": "RABE",
+    "station_code": "RABE",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 96,
+    "station_name": "Reay Road",
+    "code": "RRD",
+    "station_code": "RRD",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 97,
+    "station_name": "Shematikhar",
+    "code": "SEMK",
+    "station_code": "SEMK",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 98,
+    "station_name": "Shelu",
+    "code": "SHLU",
+    "station_code": "SHLU",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 99,
+    "station_name": "Turbhe",
+    "code": "TUH",
+    "station_code": "TUH",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 100,
+    "station_name": "Uran",
+    "code": "URAN",
+    "station_code": "URAN",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 101,
+    "station_name": "Vangani",
+    "code": "VGI",
+    "station_code": "VGI",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 102,
+    "station_name": "Vasind",
+    "code": "VSD",
+    "station_code": "VSD",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 103,
+    "station_name": "Chouk",
+    "code": "CHOK",
+    "station_code": "CHOK",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 104,
+    "station_name": "Hamrapur",
+    "code": "HMRR",
+    "station_code": "HMRR",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "HG-2"
+  },
+  {
+    "sr_no": 105,
+    "station_name": "Juchandra",
+    "code": "JCNR",
+    "station_code": "JCNR",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 106,
+    "station_name": "Kasu",
+    "code": "KASU",
+    "station_code": "KASU",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "HG-2"
+  },
+  {
+    "sr_no": 107,
+    "station_name": "Nidi",
+    "code": "NIDI",
+    "station_code": "NIDI",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "HG-2"
+  },
+  {
+    "sr_no": 108,
+    "station_name": "Navde Road",
+    "code": "NVRD",
+    "station_code": "NVRD",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 109,
+    "station_name": "Chikhli",
+    "code": "CKHS",
+    "station_code": "CKHS",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 110,
+    "station_name": "Mohope",
+    "code": "MHPE",
+    "station_code": "MHPE",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 111,
+    "station_name": "Umbermali",
+    "code": "OMB",
+    "station_code": "OMB",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 112,
+    "station_name": "Rasayani",
+    "code": "RSYI",
+    "station_code": "RSYI",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 113,
+    "station_name": "Thansit",
+    "code": "THS",
+    "station_code": "THS",
+    "division": "BB",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 114,
+    "station_name": "Nasik Road",
+    "code": "NK",
+    "station_code": "NK",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-2"
+  },
+  {
+    "sr_no": 115,
+    "station_name": "Akola",
+    "code": "AK",
+    "station_code": "AK",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-3"
+  },
+  {
+    "sr_no": 116,
+    "station_name": "Amravati",
+    "code": "AMI",
+    "station_code": "AMI",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-3"
+  },
+  {
+    "sr_no": 117,
+    "station_name": "Badnera",
+    "code": "BD",
+    "station_code": "BD",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-3"
+  },
+  {
+    "sr_no": 118,
+    "station_name": "Bhusawal",
+    "code": "BSL",
+    "station_code": "BSL",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-2"
+  },
+  {
+    "sr_no": 119,
+    "station_name": "Jalgaon",
+    "code": "JL",
+    "station_code": "JL",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-3"
+  },
+  {
+    "sr_no": 120,
+    "station_name": "Khandwa",
+    "code": "KNW",
+    "station_code": "KNW",
+    "division": "BSL",
+    "state": "Madhya Pradesh",
+    "category": "NSG-3"
+  },
+  {
+    "sr_no": 121,
+    "station_name": "Manmad",
+    "code": "MMR",
+    "station_code": "MMR",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-3"
+  },
+  {
+    "sr_no": 122,
+    "station_name": "Shegaon",
+    "code": "SEG",
+    "station_code": "SEG",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-3"
+  },
+  {
+    "sr_no": 123,
+    "station_name": "Burhanpur",
+    "code": "BAU",
+    "station_code": "BAU",
+    "division": "BSL",
+    "state": "Madhya Pradesh",
+    "category": "NSG-4"
+  },
+  {
+    "sr_no": 124,
+    "station_name": "Chalisgaon",
+    "code": "CSN",
+    "station_code": "CSN",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-4"
+  },
+  {
+    "sr_no": 125,
+    "station_name": "Malkapur",
+    "code": "MKU",
+    "station_code": "MKU",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-4"
+  },
+  {
+    "sr_no": 126,
+    "station_name": "Bodwad",
+    "code": "BDWD",
+    "station_code": "BDWD",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 127,
+    "station_name": "Dhule",
+    "code": "DHI",
+    "station_code": "DHI",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 128,
+    "station_name": "Devlali",
+    "code": "DVL",
+    "station_code": "DVL",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 129,
+    "station_name": "Lasalgaon",
+    "code": "LS",
+    "station_code": "LS",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 130,
+    "station_name": "Murtizapur Jn.",
+    "code": "MZR",
+    "station_code": "MZR",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 131,
+    "station_name": "Nandgaon",
+    "code": "NGN",
+    "station_code": "NGN",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 132,
+    "station_name": "Nandura",
+    "code": "NN",
+    "station_code": "NN",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 133,
+    "station_name": "Nepanagar",
+    "code": "NPNR",
+    "station_code": "NPNR",
+    "division": "BSL",
+    "state": "Madhya Pradesh",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 134,
+    "station_name": "Niphad",
+    "code": "NR",
+    "station_code": "NR",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 135,
+    "station_name": "Pachora",
+    "code": "PC",
+    "station_code": "PC",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 136,
+    "station_name": "Raver",
+    "code": "RV",
+    "station_code": "RV",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 137,
+    "station_name": "Achegaon",
+    "code": "ACG",
+    "station_code": "ACG",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 138,
+    "station_name": "Asirgarh Road",
+    "code": "AGQ",
+    "station_code": "AGQ",
+    "division": "BSL",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 139,
+    "station_name": "Ankai",
+    "code": "ANK",
+    "station_code": "ANK",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 140,
+    "station_name": "Asvali",
+    "code": "AV",
+    "station_code": "AV",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 141,
+    "station_name": "Bhadli",
+    "code": "BDI",
+    "station_code": "BDI",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 142,
+    "station_name": "Borgaon",
+    "code": "BGN",
+    "station_code": "BGN",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 143,
+    "station_name": "Biswa Bridge",
+    "code": "BIS",
+    "station_code": "BIS",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 144,
+    "station_name": "Bagmar",
+    "code": "BMA",
+    "station_code": "BMA",
+    "division": "BSL",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 145,
+    "station_name": "Chandni",
+    "code": "CDI",
+    "station_code": "CDI",
+    "division": "BSL",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 146,
+    "station_name": "Chandur Bazar",
+    "code": "CNDB",
+    "station_code": "CNDB",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 147,
+    "station_name": "Dongargaon",
+    "code": "DGN",
+    "station_code": "DGN",
+    "division": "BSL",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 148,
+    "station_name": "Duskheda",
+    "code": "DSK",
+    "station_code": "DSK",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 149,
+    "station_name": "Achalpur",
+    "code": "ELP",
+    "station_code": "ELP",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 150,
+    "station_name": "Galan",
+    "code": "GAA",
+    "station_code": "GAA",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 151,
+    "station_name": "Gaigaon",
+    "code": "GAO",
+    "station_code": "GAO",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 152,
+    "station_name": "Ghoti",
+    "code": "GO",
+    "station_code": "GO",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 153,
+    "station_name": "Hirapur",
+    "code": "HPR",
+    "station_code": "HPR",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 154,
+    "station_name": "Hisvahal",
+    "code": "HSL",
+    "station_code": "HSL",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 155,
+    "station_name": "Jalamb JN",
+    "code": "JM",
+    "station_code": "JM",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 156,
+    "station_name": "Jamda",
+    "code": "JMD",
+    "station_code": "JMD",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 157,
+    "station_name": "Kasbe Sukene",
+    "code": "KBSN",
+    "station_code": "KBSN",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 158,
+    "station_name": "Kajgaon",
+    "code": "KJ",
+    "station_code": "KJ",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 159,
+    "station_name": "Khumgaon Burti",
+    "code": "KJL",
+    "station_code": "KJL",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 160,
+    "station_name": "Khamkhed",
+    "code": "KMKD",
+    "station_code": "KMKD",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 161,
+    "station_name": "Khamgaon",
+    "code": "KMN",
+    "station_code": "KMN",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 162,
+    "station_name": "Katepurna",
+    "code": "KTP",
+    "station_code": "KTP",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 163,
+    "station_name": "Kurum",
+    "code": "KUM",
+    "station_code": "KUM",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 164,
+    "station_name": "Khervadi",
+    "code": "KW",
+    "station_code": "KW",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 165,
+    "station_name": "Lahavit",
+    "code": "LT",
+    "station_code": "LT",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 166,
+    "station_name": "Mana",
+    "code": "MANA",
+    "station_code": "MANA",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 167,
+    "station_name": "Mandwa",
+    "code": "MWA",
+    "station_code": "MWA",
+    "division": "BSL",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 168,
+    "station_name": "Mhasavad",
+    "code": "MWD",
+    "station_code": "MWD",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 169,
+    "station_name": "Myheji",
+    "code": "MYJ",
+    "station_code": "MYJ",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 170,
+    "station_name": "New Amravati",
+    "code": "NAVI",
+    "station_code": "NAVI",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 171,
+    "station_name": "Nimbhora",
+    "code": "NB",
+    "station_code": "NB",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 172,
+    "station_name": "Nagardevla",
+    "code": "NGD",
+    "station_code": "NGD",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 173,
+    "station_name": "Shri Kshetra Nagjhari",
+    "code": "NGZ",
+    "station_code": "NGZ",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 174,
+    "station_name": "Naydongri",
+    "code": "NI",
+    "station_code": "NI",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 175,
+    "station_name": "Odha",
+    "code": "ODHA",
+    "station_code": "ODHA",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 176,
+    "station_name": "Pardhade",
+    "code": "PHQ",
+    "station_code": "PHQ",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 177,
+    "station_name": "Panjhan",
+    "code": "PJN",
+    "station_code": "PJN",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 178,
+    "station_name": "Pimpar Khed",
+    "code": "PKE",
+    "station_code": "PKE",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 179,
+    "station_name": "Paras",
+    "code": "PS",
+    "station_code": "PS",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 180,
+    "station_name": "Savda",
+    "code": "SAV",
+    "station_code": "SAV",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 181,
+    "station_name": "Shirud",
+    "code": "SHF",
+    "station_code": "SHF",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 182,
+    "station_name": "Sirsoli",
+    "code": "SS",
+    "station_code": "SS",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 183,
+    "station_name": "Summit",
+    "code": "SUM",
+    "station_code": "SUM",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 184,
+    "station_name": "Takli",
+    "code": "TKI",
+    "station_code": "TKI",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 185,
+    "station_name": "Ugaon",
+    "code": "UGN",
+    "station_code": "UGN",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 186,
+    "station_name": "Vaghli",
+    "code": "VGL",
+    "station_code": "VGL",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 187,
+    "station_name": "Varangaon",
+    "code": "VNA",
+    "station_code": "VNA",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 188,
+    "station_name": "Wadoda",
+    "code": "WADO",
+    "station_code": "WADO",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 189,
+    "station_name": "Waghoda",
+    "code": "WGA",
+    "station_code": "WGA",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 190,
+    "station_name": "Walgaon",
+    "code": "WLGN",
+    "station_code": "WLGN",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 191,
+    "station_name": "Yeulkhed",
+    "code": "YAD",
+    "station_code": "YAD",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 192,
+    "station_name": "Yavatmal",
+    "code": "YTL",
+    "station_code": "YTL",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 193,
+    "station_name": "Jamner",
+    "code": "JMNR",
+    "station_code": "JMNR",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 194,
+    "station_name": "Bhoras Budrukh",
+    "code": "BFJ",
+    "station_code": "BFJ",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-2"
+  },
+  {
+    "sr_no": 195,
+    "station_name": "Rajmane",
+    "code": "RM",
+    "station_code": "RM",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-2"
+  },
+  {
+    "sr_no": 196,
+    "station_name": "Mordad Tanda",
+    "code": "MWK",
+    "station_code": "MWK",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-2"
+  },
+  {
+    "sr_no": 197,
+    "station_name": "Lakhpuri",
+    "code": "LPU",
+    "station_code": "LPU",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 198,
+    "station_name": "Banosa",
+    "code": "BASA",
+    "station_code": "BASA",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 199,
+    "station_name": "Lahegaon",
+    "code": "LGN",
+    "station_code": "LGN",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 200,
+    "station_name": "Kokalda",
+    "code": "KXD",
+    "station_code": "KXD",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 201,
+    "station_name": "Kapustalni",
+    "code": "KTNI",
+    "station_code": "KTNI",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 202,
+    "station_name": "Anjangaon",
+    "code": "ANJ",
+    "station_code": "ANJ",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 203,
+    "station_name": "Pathrot",
+    "code": "PTRT",
+    "station_code": "PTRT",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 204,
+    "station_name": "Khusta Burzurg",
+    "code": "KSBG",
+    "station_code": "KSBG",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 205,
+    "station_name": "Chamak",
+    "code": "CMK",
+    "station_code": "CMK",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 206,
+    "station_name": "Nowbagh",
+    "code": "NBGH",
+    "station_code": "NBGH",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 207,
+    "station_name": "Murtijapur Town",
+    "code": "MZRT",
+    "station_code": "MZRT",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 208,
+    "station_name": "Kinkhed",
+    "code": "KQV",
+    "station_code": "KQV",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 209,
+    "station_name": "Vilegaon",
+    "code": "VLN",
+    "station_code": "VLN",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 210,
+    "station_name": "Bhadsivni",
+    "code": "BDKE",
+    "station_code": "BDKE",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 211,
+    "station_name": "Pohe",
+    "code": "POHE",
+    "station_code": "POHE",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 212,
+    "station_name": "Karanja",
+    "code": "KRJA",
+    "station_code": "KRJA",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 213,
+    "station_name": "Karanja Town",
+    "code": "KRJT",
+    "station_code": "KRJT",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 214,
+    "station_name": "Somthan",
+    "code": "SMTN",
+    "station_code": "SMTN",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 215,
+    "station_name": "Sangwi",
+    "code": "SWQ",
+    "station_code": "SWQ",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 216,
+    "station_name": "Warudkhed",
+    "code": "WRD",
+    "station_code": "WRD",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 217,
+    "station_name": "Darwa Motibag",
+    "code": "DWM",
+    "station_code": "DWM",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 218,
+    "station_name": "Tapona",
+    "code": "TPN",
+    "station_code": "TPN",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 219,
+    "station_name": "Ladkhed",
+    "code": "LDD",
+    "station_code": "LDD",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 220,
+    "station_name": "Ling",
+    "code": "LING",
+    "station_code": "LING",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 221,
+    "station_name": "Lasina",
+    "code": "LSN",
+    "station_code": "LSN",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 222,
+    "station_name": "Bhagdara",
+    "code": "BGR",
+    "station_code": "BGR",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 223,
+    "station_name": "Mohadi Pragane Laling",
+    "code": "MHAD",
+    "station_code": "MHAD",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 224,
+    "station_name": "Mandura",
+    "code": "MNDA",
+    "station_code": "MNDA",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 225,
+    "station_name": "Kolhadi",
+    "code": "KLHD",
+    "station_code": "KLHD",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 226,
+    "station_name": "Kohdad",
+    "code": "KDK",
+    "station_code": "KDK",
+    "division": "BSL",
+    "state": "Madhya Pradesh",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 227,
+    "station_name": "Borvihir",
+    "code": "BRVR",
+    "station_code": "BRVR",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 228,
+    "station_name": "Varkhedi",
+    "code": "VRKD",
+    "station_code": "VRKD",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 229,
+    "station_name": "Pimpalgaon",
+    "code": "PMJN",
+    "station_code": "PMJN",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 230,
+    "station_name": "Shendurni",
+    "code": "SDRN",
+    "station_code": "SDRN",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 231,
+    "station_name": "Pahur",
+    "code": "PHU",
+    "station_code": "PHU",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 232,
+    "station_name": "Shirala",
+    "code": "SIRL",
+    "station_code": "SIRL",
+    "division": "BSL",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 233,
+    "station_name": "Nagpur",
+    "code": "NGP",
+    "station_code": "NGP",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-1"
+  },
+  {
+    "sr_no": 234,
+    "station_name": "Ballarshah",
+    "code": "BPQ",
+    "station_code": "BPQ",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-3"
+  },
+  {
+    "sr_no": 235,
+    "station_name": "Wardha",
+    "code": "WR",
+    "station_code": "WR",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-3"
+  },
+  {
+    "sr_no": 236,
+    "station_name": "Chandrapur",
+    "code": "CD",
+    "station_code": "CD",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-3"
+  },
+  {
+    "sr_no": 237,
+    "station_name": "Betul",
+    "code": "BZU",
+    "station_code": "BZU",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-3"
+  },
+  {
+    "sr_no": 238,
+    "station_name": "Sewagram",
+    "code": "SEGM",
+    "station_code": "SEGM",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-4"
+  },
+  {
+    "sr_no": 239,
+    "station_name": "Ajni",
+    "code": "AJNI",
+    "station_code": "AJNI",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-4"
+  },
+  {
+    "sr_no": 240,
+    "station_name": "Dhamangaon",
+    "code": "DMN",
+    "station_code": "DMN",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 241,
+    "station_name": "Amla",
+    "code": "AMLA",
+    "station_code": "AMLA",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 242,
+    "station_name": "Pandhurna",
+    "code": "PAR",
+    "station_code": "PAR",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 243,
+    "station_name": "Pulgaon",
+    "code": "PLO",
+    "station_code": "PLO",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 244,
+    "station_name": "Ghoradongri",
+    "code": "GDYA",
+    "station_code": "GDYA",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 245,
+    "station_name": "Multai",
+    "code": "MTY",
+    "station_code": "MTY",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 246,
+    "station_name": "Junnardeo",
+    "code": "JNO",
+    "station_code": "JNO",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 247,
+    "station_name": "Parasia",
+    "code": "PUX",
+    "station_code": "PUX",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 248,
+    "station_name": "Warora",
+    "code": "WRR",
+    "station_code": "WRR",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 249,
+    "station_name": "Chandur",
+    "code": "CND",
+    "station_code": "CND",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 250,
+    "station_name": "Hinganghat",
+    "code": "HGT",
+    "station_code": "HGT",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 251,
+    "station_name": "Narkhed",
+    "code": "NRKR",
+    "station_code": "NRKR",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 252,
+    "station_name": "Katol",
+    "code": "KATL",
+    "station_code": "KATL",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 253,
+    "station_name": "Bhandak",
+    "code": "BUX",
+    "station_code": "BUX",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 254,
+    "station_name": "Bhugaon",
+    "code": "BPK",
+    "station_code": "BPK",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 255,
+    "station_name": "Bordhai",
+    "code": "BXY",
+    "station_code": "BXY",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 256,
+    "station_name": "Wani",
+    "code": "WANI",
+    "station_code": "WANI",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 257,
+    "station_name": "Navegaon",
+    "code": "NVG",
+    "station_code": "NVG",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 258,
+    "station_name": "Majri",
+    "code": "MJRI",
+    "station_code": "MJRI",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 259,
+    "station_name": "Warud Orange City",
+    "code": "WOC",
+    "station_code": "WOC",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 260,
+    "station_name": "Sindi",
+    "code": "SNI",
+    "station_code": "SNI",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 261,
+    "station_name": "Morshi",
+    "code": "MRSH",
+    "station_code": "MRSH",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 262,
+    "station_name": "Hirdagarh",
+    "code": "HRG",
+    "station_code": "HRG",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 263,
+    "station_name": "Godhni",
+    "code": "GNQ",
+    "station_code": "GNQ",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 264,
+    "station_name": "Kalmeshwar",
+    "code": "KSWR",
+    "station_code": "KSWR",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 265,
+    "station_name": "Jambhara",
+    "code": "JMV",
+    "station_code": "JMV",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 266,
+    "station_name": "Tuljapur",
+    "code": "TGP",
+    "station_code": "TGP",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 267,
+    "station_name": "Teegaon",
+    "code": "TEO",
+    "station_code": "TEO",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 268,
+    "station_name": "Iklehra",
+    "code": "IKR",
+    "station_code": "IKR",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 269,
+    "station_name": "Butibori",
+    "code": "BTBR",
+    "station_code": "BTBR",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 270,
+    "station_name": "Palachauri",
+    "code": "PCLI",
+    "station_code": "PCLI",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 271,
+    "station_name": "Talni",
+    "code": "TLN",
+    "station_code": "TLN",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 272,
+    "station_name": "Pusla",
+    "code": "PUSA",
+    "station_code": "PUSA",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 273,
+    "station_name": "Nagri",
+    "code": "NGI",
+    "station_code": "NGI",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 274,
+    "station_name": "Babupeth",
+    "code": "BUPH",
+    "station_code": "BUPH",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 275,
+    "station_name": "Dahegaon",
+    "code": "DAE",
+    "station_code": "DAE",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 276,
+    "station_name": "Timtala",
+    "code": "TMT",
+    "station_code": "TMT",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 277,
+    "station_name": "Kohli",
+    "code": "KOHL",
+    "station_code": "KOHL",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 278,
+    "station_name": "Barbatpur",
+    "code": "BBTR",
+    "station_code": "BBTR",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 279,
+    "station_name": "Sonegaon",
+    "code": "SNN",
+    "station_code": "SNN",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 280,
+    "station_name": "Jaulkheda",
+    "code": "JKR",
+    "station_code": "JKR",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 281,
+    "station_name": "Malkhed",
+    "code": "MLR",
+    "station_code": "MLR",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 282,
+    "station_name": "Dhodramohor",
+    "code": "DOH",
+    "station_code": "DOH",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 283,
+    "station_name": "Chichonda",
+    "code": "CCD",
+    "station_code": "CCD",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 284,
+    "station_name": "Bharatwada",
+    "code": "BWRA",
+    "station_code": "BWRA",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 285,
+    "station_name": "Sonkhamb",
+    "code": "SNKB",
+    "station_code": "SNKB",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 286,
+    "station_name": "Chikni Road",
+    "code": "CKNI",
+    "station_code": "CKNI",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 287,
+    "station_name": "Metpanjra",
+    "code": "MER",
+    "station_code": "MER",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 288,
+    "station_name": "Khapri",
+    "code": "KRI",
+    "station_code": "KRI",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 289,
+    "station_name": "Wagholi",
+    "code": "WG",
+    "station_code": "WG",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 290,
+    "station_name": "Gumgaon",
+    "code": "GMG",
+    "station_code": "GMG",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 291,
+    "station_name": "Borkhedi",
+    "code": "BOK",
+    "station_code": "BOK",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 292,
+    "station_name": "Seloo Road",
+    "code": "SLOR",
+    "station_code": "SLOR",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 293,
+    "station_name": "Kalaakhar",
+    "code": "KQE",
+    "station_code": "KQE",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 294,
+    "station_name": "Kaotha",
+    "code": "KAOT",
+    "station_code": "KAOT",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 295,
+    "station_name": "Kirathgarh",
+    "code": "KRTH",
+    "station_code": "KRTH",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 296,
+    "station_name": "Tadali",
+    "code": "TAE",
+    "station_code": "TAE",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 297,
+    "station_name": "Maramjhiri",
+    "code": "MJY",
+    "station_code": "MJY",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 298,
+    "station_name": "Taku",
+    "code": "TAKU",
+    "station_code": "TAKU",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 299,
+    "station_name": "Barsali",
+    "code": "BYS",
+    "station_code": "BYS",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 300,
+    "station_name": "Kayar",
+    "code": "KAYR",
+    "station_code": "KAYR",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 301,
+    "station_name": "Kalambha",
+    "code": "KALB",
+    "station_code": "KALB",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 302,
+    "station_name": "Pimpalkhuti",
+    "code": "PMKT",
+    "station_code": "PMKT",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 303,
+    "station_name": "Lingti",
+    "code": "LNT",
+    "station_code": "LNT",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 304,
+    "station_name": "Dharakhoh",
+    "code": "DHQ",
+    "station_code": "DHQ",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 305,
+    "station_name": "Majri Khadan",
+    "code": "MJKN",
+    "station_code": "MJKN",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 306,
+    "station_name": "Saheli",
+    "code": "SAHL",
+    "station_code": "SAHL",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 307,
+    "station_name": "Kalambh",
+    "code": "KALM",
+    "station_code": "KALM",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 308,
+    "station_name": "Deoli",
+    "code": "DELI",
+    "station_code": "DELI",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 309,
+    "station_name": "Barelipar",
+    "code": "BQM",
+    "station_code": "BQM",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "HG-2"
+  },
+  {
+    "sr_no": 310,
+    "station_name": "Markadhana",
+    "code": "MKDN",
+    "station_code": "MKDN",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "HG-2"
+  },
+  {
+    "sr_no": 311,
+    "station_name": "Mowad",
+    "code": "MWAD",
+    "station_code": "MWAD",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "HG-2"
+  },
+  {
+    "sr_no": 312,
+    "station_name": "Barchi Road",
+    "code": "BCRD",
+    "station_code": "BCRD",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "HG-2"
+  },
+  {
+    "sr_no": 313,
+    "station_name": "Gangiwara",
+    "code": "GNW",
+    "station_code": "GNW",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "HG-2"
+  },
+  {
+    "sr_no": 314,
+    "station_name": "Benoda",
+    "code": "BNOD",
+    "station_code": "BNOD",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 315,
+    "station_name": "Varud",
+    "code": "VUD",
+    "station_code": "VUD",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 316,
+    "station_name": "Bhidi",
+    "code": "BHID",
+    "station_code": "BHID",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 317,
+    "station_name": "Gondwana Visapur",
+    "code": "GNVR",
+    "station_code": "GNVR",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "HG-2"
+  },
+  {
+    "sr_no": 318,
+    "station_name": "Tinkheda",
+    "code": "TNH",
+    "station_code": "TNH",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 319,
+    "station_name": "Hatnapur",
+    "code": "HTN",
+    "station_code": "HTN",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 320,
+    "station_name": "Darimeta",
+    "code": "DDMT",
+    "station_code": "DDMT",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 321,
+    "station_name": "Ghudankhapa",
+    "code": "GDKP",
+    "station_code": "GDKP",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 322,
+    "station_name": "Malkapur Road",
+    "code": "MALK",
+    "station_code": "MALK",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 323,
+    "station_name": "Lalawadi",
+    "code": "LLD",
+    "station_code": "LLD",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 324,
+    "station_name": "Magrdoh",
+    "code": "MGRD",
+    "station_code": "MGRD",
+    "division": "NGP",
+    "state": "Madhya Pradesh",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 325,
+    "station_name": "Riddhapur",
+    "code": "Not Available",
+    "station_code": "Not Available",
+    "division": "NGP",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 326,
+    "station_name": "Pune",
+    "code": "PUNE",
+    "station_code": "PUNE",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-1"
+  },
+  {
+    "sr_no": 327,
+    "station_name": "Kolhapur",
+    "code": "KOP",
+    "station_code": "KOP",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-3"
+  },
+  {
+    "sr_no": 328,
+    "station_name": "Miraj",
+    "code": "MRJ",
+    "station_code": "MRJ",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-3"
+  },
+  {
+    "sr_no": 329,
+    "station_name": "Ahmednagar",
+    "code": "ANG",
+    "station_code": "ANG",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-3"
+  },
+  {
+    "sr_no": 330,
+    "station_name": "Sainagar Shirdih",
+    "code": "SNSI",
+    "station_code": "SNSI",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-3"
+  },
+  {
+    "sr_no": 331,
+    "station_name": "Kopargaon",
+    "code": "KPG",
+    "station_code": "KPG",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-3"
+  },
+  {
+    "sr_no": 332,
+    "station_name": "Daund",
+    "code": "DD",
+    "station_code": "DD",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-3"
+  },
+  {
+    "sr_no": 333,
+    "station_name": "Sangli",
+    "code": "SLI",
+    "station_code": "SLI",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-4"
+  },
+  {
+    "sr_no": 334,
+    "station_name": "Satara",
+    "code": "STR",
+    "station_code": "STR",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-4"
+  },
+  {
+    "sr_no": 335,
+    "station_name": "Karad",
+    "code": "KRD",
+    "station_code": "KRD",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 336,
+    "station_name": "Baramati",
+    "code": "BRMT",
+    "station_code": "BRMT",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 337,
+    "station_name": "Hathkalangale",
+    "code": "HTK",
+    "station_code": "HTK",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 338,
+    "station_name": "Jejuri",
+    "code": "JJR",
+    "station_code": "JJR",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 339,
+    "station_name": "Jaysingpur",
+    "code": "JSP",
+    "station_code": "JSP",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 340,
+    "station_name": "Kedgaon",
+    "code": "KDG",
+    "station_code": "KDG",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 341,
+    "station_name": "Kirloskarwadi",
+    "code": "KOV",
+    "station_code": "KOV",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 342,
+    "station_name": "Uruli",
+    "code": "URI",
+    "station_code": "URI",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 343,
+    "station_name": "Valivade",
+    "code": "VV",
+    "station_code": "VV",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 344,
+    "station_name": "Belapur",
+    "code": "BAP",
+    "station_code": "BAP",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 345,
+    "station_name": "Lonand",
+    "code": "LNN",
+    "station_code": "LNN",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 346,
+    "station_name": "Hadapsar",
+    "code": "HDP",
+    "station_code": "HDP",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 347,
+    "station_name": "Ambale",
+    "code": "ABLE",
+    "station_code": "ABLE",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 348,
+    "station_name": "Bhilavdi",
+    "code": "BVQ",
+    "station_code": "BVQ",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 349,
+    "station_name": "Adarki",
+    "code": "AKI",
+    "station_code": "AKI",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 350,
+    "station_name": "Alandi",
+    "code": "ALN",
+    "station_code": "ALN",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 351,
+    "station_name": "Bhavaninagar",
+    "code": "BVNR",
+    "station_code": "BVNR",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 352,
+    "station_name": "Daundaj",
+    "code": "DNJ",
+    "station_code": "DNJ",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 353,
+    "station_name": "Phursungi",
+    "code": "FSG",
+    "station_code": "FSG",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 354,
+    "station_name": "Jarandeshwar",
+    "code": "JSV",
+    "station_code": "JSV",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 355,
+    "station_name": "Koregaon",
+    "code": "KRG",
+    "station_code": "KRG",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 356,
+    "station_name": "Loni",
+    "code": "LONI",
+    "station_code": "LONI",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 357,
+    "station_name": "Masur",
+    "code": "MSR",
+    "station_code": "MSR",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 358,
+    "station_name": "Nandre",
+    "code": "NDE",
+    "station_code": "NDE",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 359,
+    "station_name": "Nira",
+    "code": "NIRA",
+    "station_code": "NIRA",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 360,
+    "station_name": "Patas",
+    "code": "PAA",
+    "station_code": "PAA",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 361,
+    "station_name": "Palsi",
+    "code": "PLV",
+    "station_code": "PLV",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 362,
+    "station_name": "Rajewadi",
+    "code": "RJW",
+    "station_code": "RJW",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 363,
+    "station_name": "Rukdi",
+    "code": "RKD",
+    "station_code": "RKD",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 364,
+    "station_name": "Rahimatpur",
+    "code": "RMP",
+    "station_code": "RMP",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 365,
+    "station_name": "Shindawane",
+    "code": "SHIV",
+    "station_code": "SHIV",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 366,
+    "station_name": "Shirwade",
+    "code": "SIW",
+    "station_code": "SIW",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 367,
+    "station_name": "Salpa",
+    "code": "SLP",
+    "station_code": "SLP",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 368,
+    "station_name": "Shenoli",
+    "code": "SNE",
+    "station_code": "SNE",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 369,
+    "station_name": "Targaon",
+    "code": "TAZ",
+    "station_code": "TAZ",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 370,
+    "station_name": "Takari",
+    "code": "TKR",
+    "station_code": "TKR",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 371,
+    "station_name": "Walha",
+    "code": "WLH",
+    "station_code": "WLH",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 372,
+    "station_name": "Wathar",
+    "code": "WTR",
+    "station_code": "WTR",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 373,
+    "station_name": "Yevat",
+    "code": "YT",
+    "station_code": "YT",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 374,
+    "station_name": "Saswad Road",
+    "code": "SSV",
+    "station_code": "SSV",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 375,
+    "station_name": "Akolner",
+    "code": "AKR",
+    "station_code": "AKR",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 376,
+    "station_name": "Belvandi",
+    "code": "BWD",
+    "station_code": "BWD",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 377,
+    "station_name": "Chitali",
+    "code": "CIT",
+    "station_code": "CIT",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 378,
+    "station_name": "Daund Cord Line",
+    "code": "DDCC",
+    "station_code": "DDCC",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 379,
+    "station_name": "kanhegaon",
+    "code": "KNGN",
+    "station_code": "KNGN",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 380,
+    "station_name": "kashti",
+    "code": "KSTH",
+    "station_code": "KSTH",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 381,
+    "station_name": "Puntamba",
+    "code": "PB",
+    "station_code": "PB",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 382,
+    "station_name": "padhegaon",
+    "code": "PDGN",
+    "station_code": "PDGN",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 383,
+    "station_name": "Ranjangaon Road",
+    "code": "RNJD",
+    "station_code": "RNJD",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 384,
+    "station_name": "Rahuri",
+    "code": "RRI",
+    "station_code": "RRI",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 385,
+    "station_name": "Shrigonda Road",
+    "code": "SGND",
+    "station_code": "SGND",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 386,
+    "station_name": "Sarola",
+    "code": "SRL",
+    "station_code": "SRL",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 387,
+    "station_name": "Vambori",
+    "code": "VBR",
+    "station_code": "VBR",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 388,
+    "station_name": "Vilad",
+    "code": "VL",
+    "station_code": "VL",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 389,
+    "station_name": "Visapur",
+    "code": "VPR",
+    "station_code": "VPR",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 390,
+    "station_name": "Yeola",
+    "code": "YL",
+    "station_code": "YL",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 391,
+    "station_name": "Chinchwad",
+    "code": "CCH",
+    "station_code": "CCH",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "SG-2"
+  },
+  {
+    "sr_no": 392,
+    "station_name": "Akurdi",
+    "code": "AKRD",
+    "station_code": "AKRD",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 393,
+    "station_name": "Begdewadi",
+    "code": "BGWI",
+    "station_code": "BGWI",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 394,
+    "station_name": "Dhapodi",
+    "code": "DAPD",
+    "station_code": "DAPD",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 395,
+    "station_name": "Dehu Road",
+    "code": "DEHR",
+    "station_code": "DEHR",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 396,
+    "station_name": "Ghorawadi",
+    "code": "GRWD",
+    "station_code": "GRWD",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 397,
+    "station_name": "Khadki",
+    "code": "KK",
+    "station_code": "KK",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 398,
+    "station_name": "Kamshet",
+    "code": "KMST",
+    "station_code": "KMST",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 399,
+    "station_name": "Kasarwadi",
+    "code": "KSWD",
+    "station_code": "KSWD",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 400,
+    "station_name": "Malavli",
+    "code": "MVL",
+    "station_code": "MVL",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 401,
+    "station_name": "Pimpri",
+    "code": "PMP",
+    "station_code": "PMP",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 402,
+    "station_name": "Shivajinagar",
+    "code": "SVJR",
+    "station_code": "SVJR",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 403,
+    "station_name": "Talegaon",
+    "code": "TGN",
+    "station_code": "TGN",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 404,
+    "station_name": "Vadgaon",
+    "code": "VDN",
+    "station_code": "VDN",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "SG-3"
+  },
+  {
+    "sr_no": 405,
+    "station_name": "Kanhe",
+    "code": "KNHE",
+    "station_code": "KNHE",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-2"
+  },
+  {
+    "sr_no": 406,
+    "station_name": "Manjribudrukh",
+    "code": "MJBK",
+    "station_code": "MJBK",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-2"
+  },
+  {
+    "sr_no": 407,
+    "station_name": "Vishrambaugh",
+    "code": "VRB",
+    "station_code": "VRB",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-2"
+  },
+  {
+    "sr_no": 408,
+    "station_name": "Shirsai",
+    "code": "SSI",
+    "station_code": "SSI",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-2"
+  },
+  {
+    "sr_no": 409,
+    "station_name": "Kutbhav",
+    "code": "KTT",
+    "station_code": "KTT",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-2"
+  },
+  {
+    "sr_no": 410,
+    "station_name": "Kadethan",
+    "code": "KDTN",
+    "station_code": "KDTN",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 411,
+    "station_name": "Katphal",
+    "code": "KFH",
+    "station_code": "KFH",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-2"
+  },
+  {
+    "sr_no": 412,
+    "station_name": "Maladgaon",
+    "code": "MDDG",
+    "station_code": "MDDG",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 413,
+    "station_name": "Amnapur",
+    "code": "ANQ",
+    "station_code": "ANQ",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 414,
+    "station_name": "Madhavnagar",
+    "code": "MDVR",
+    "station_code": "MDVR",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 415,
+    "station_name": "Nimshirgaon",
+    "code": "NMGT",
+    "station_code": "NMGT",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 416,
+    "station_name": "Surwadi",
+    "code": "SWLN",
+    "station_code": "SWLN",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 417,
+    "station_name": "Taradgaon",
+    "code": "TGLN",
+    "station_code": "TGLN",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 418,
+    "station_name": "Phaltan",
+    "code": "PLLD",
+    "station_code": "PLLD",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 419,
+    "station_name": "Amalner",
+    "code": "AMNE",
+    "station_code": "AMNE",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 420,
+    "station_name": "Hatola",
+    "code": "HTLA",
+    "station_code": "HTLA",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 421,
+    "station_name": "Kada",
+    "code": "KDAA",
+    "station_code": "KDAA",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 422,
+    "station_name": "New Ashti",
+    "code": "NAHT",
+    "station_code": "NAHT",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 423,
+    "station_name": "New Dhanora",
+    "code": "NDNR",
+    "station_code": "NDNR",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 424,
+    "station_name": "New Loni",
+    "code": "NLNI",
+    "station_code": "NLNI",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 425,
+    "station_name": "Narayandoho",
+    "code": "NYDO",
+    "station_code": "NYDO",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 426,
+    "station_name": "Solapurwadi",
+    "code": "SPWI",
+    "station_code": "SPWI",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 427,
+    "station_name": "Wetalwadi",
+    "code": "WTWI",
+    "station_code": "WTWI",
+    "division": "Pune",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 428,
+    "station_name": "SOLAPUR",
+    "code": "SUR",
+    "station_code": "SUR",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-2"
+  },
+  {
+    "sr_no": 429,
+    "station_name": "KALABURAGI",
+    "code": "KLBG",
+    "station_code": "KLBG",
+    "division": "SUR",
+    "state": "Karnataka",
+    "category": "NSG-2"
+  },
+  {
+    "sr_no": 430,
+    "station_name": "KURDUWADI",
+    "code": "KWV",
+    "station_code": "KWV",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-4"
+  },
+  {
+    "sr_no": 431,
+    "station_name": "LATUR",
+    "code": "LUR",
+    "station_code": "LUR",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-3"
+  },
+  {
+    "sr_no": 432,
+    "station_name": "PANDHARPUR",
+    "code": "PVR",
+    "station_code": "PVR",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-4"
+  },
+  {
+    "sr_no": 433,
+    "station_name": "WADI",
+    "code": "WADI",
+    "station_code": "WADI",
+    "division": "SUR",
+    "state": "Karnataka",
+    "category": "NSG-4"
+  },
+  {
+    "sr_no": 434,
+    "station_name": "AKALKOT ROAD",
+    "code": "AKOR",
+    "station_code": "AKOR",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 435,
+    "station_name": "BARSI TOWN",
+    "code": "BTW",
+    "station_code": "BTW",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 436,
+    "station_name": "DUDHANI",
+    "code": "DUD",
+    "station_code": "DUD",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 437,
+    "station_name": "GANAGAPUR ROAD",
+    "code": "GUR",
+    "station_code": "GUR",
+    "division": "SUR",
+    "state": "Karnataka",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 438,
+    "station_name": "HOTGI",
+    "code": "HG",
+    "station_code": "HG",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 439,
+    "station_name": "JEUR",
+    "code": "JEUR",
+    "station_code": "JEUR",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 440,
+    "station_name": "SHAHABAD",
+    "code": "SDB",
+    "station_code": "SDB",
+    "division": "SUR",
+    "state": "Karnataka",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 441,
+    "station_name": "OSMANABAD",
+    "code": "UMD",
+    "station_code": "UMD",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 442,
+    "station_name": "ANGAR",
+    "code": "AAG",
+    "station_code": "AAG",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 443,
+    "station_name": "ARAG",
+    "code": "ARAG",
+    "station_code": "ARAG",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 444,
+    "station_name": "BALE",
+    "code": "BALE",
+    "station_code": "BALE",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 445,
+    "station_name": "BABLAD",
+    "code": "BBD",
+    "station_code": "BBD",
+    "division": "SUR",
+    "state": "Karnataka",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 446,
+    "station_name": "BHIGWAN",
+    "code": "BGVN",
+    "station_code": "BGVN",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 447,
+    "station_name": "BHALWANI",
+    "code": "BLNI",
+    "station_code": "BLNI",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 448,
+    "station_name": "BOROTI",
+    "code": "BOT",
+    "station_code": "BOT",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 449,
+    "station_name": "BORIBIAL",
+    "code": "BRB",
+    "station_code": "BRB",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 450,
+    "station_name": "DHAVALAS",
+    "code": "DHS",
+    "station_code": "DHS",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 451,
+    "station_name": "DHOKI",
+    "code": "DKY",
+    "station_code": "DKY",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 452,
+    "station_name": "DHALGAON",
+    "code": "DLGN",
+    "station_code": "DLGN",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 453,
+    "station_name": "GAUDGAON.",
+    "code": "GDGN",
+    "station_code": "GDGN",
+    "division": "SUR",
+    "state": "Karnataka",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 454,
+    "station_name": "HUNSIHADGIL",
+    "code": "HHD",
+    "station_code": "HHD",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 455,
+    "station_name": "HIRENANDURU",
+    "code": "HQR",
+    "station_code": "HQR",
+    "division": "SUR",
+    "state": "Karnataka",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 456,
+    "station_name": "JINTI ROAD",
+    "code": "JNTR",
+    "station_code": "JNTR",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 457,
+    "station_name": "JATH ROAD",
+    "code": "JTRD",
+    "station_code": "JTRD",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 458,
+    "station_name": "KEM",
+    "code": "KEM",
+    "station_code": "KEM",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 459,
+    "station_name": "KULALI",
+    "code": "KUI",
+    "station_code": "KUI",
+    "division": "SUR",
+    "state": "Karnataka",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 460,
+    "station_name": "KAVATHE-MAHANKAL",
+    "code": "KVK",
+    "station_code": "KVK",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 461,
+    "station_name": "MADHA",
+    "code": "MA",
+    "station_code": "MA",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 462,
+    "station_name": "MALIKPETH",
+    "code": "MKPT",
+    "station_code": "MKPT",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 463,
+    "station_name": "MODNIMB",
+    "code": "MLB",
+    "station_code": "MLB",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 464,
+    "station_name": "MALTHAN",
+    "code": "MLM",
+    "station_code": "MLM",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 465,
+    "station_name": "MOHOL",
+    "code": "MO",
+    "station_code": "MO",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 466,
+    "station_name": "MARTUR",
+    "code": "MR",
+    "station_code": "MR",
+    "division": "SUR",
+    "state": "Karnataka",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 467,
+    "station_name": "MUNDHEWADI",
+    "code": "MVE",
+    "station_code": "MVE",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 468,
+    "station_name": "NAGANSUR",
+    "code": "NGS",
+    "station_code": "NGS",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 469,
+    "station_name": "AUSA ROAD",
+    "code": "OSA",
+    "station_code": "OSA",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 470,
+    "station_name": "PANGRI",
+    "code": "PJR",
+    "station_code": "PJR",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 471,
+    "station_name": "PAKNI",
+    "code": "PK",
+    "station_code": "PK",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 472,
+    "station_name": "POPHLAJ",
+    "code": "PPJ",
+    "station_code": "PPJ",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 473,
+    "station_name": "PAREWADI",
+    "code": "PRWD",
+    "station_code": "PRWD",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 474,
+    "station_name": "SHENDRI",
+    "code": "SEI",
+    "station_code": "SEI",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 475,
+    "station_name": "SANGOLA",
+    "code": "SGLA",
+    "station_code": "SGLA",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 476,
+    "station_name": "SULGARE",
+    "code": "SGRE",
+    "station_code": "SGRE",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 477,
+    "station_name": "SAWALGI",
+    "code": "SVG",
+    "station_code": "SVG",
+    "division": "SUR",
+    "state": "Karnataka",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 478,
+    "station_name": "TAJ SULTANPUR",
+    "code": "TJSP",
+    "station_code": "TJSP",
+    "division": "SUR",
+    "state": "Karnataka",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 479,
+    "station_name": "TIKEKARWADI",
+    "code": "TKWD",
+    "station_code": "TKWD",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 480,
+    "station_name": "TILATI",
+    "code": "TLT",
+    "station_code": "TLT",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 481,
+    "station_name": "WADSINGE",
+    "code": "WDS",
+    "station_code": "WDS",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 482,
+    "station_name": "VAKAV",
+    "code": "WKA",
+    "station_code": "WKA",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 483,
+    "station_name": "WASHIMBE",
+    "code": "WSB",
+    "station_code": "WSB",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 484,
+    "station_name": "YEDSHI",
+    "code": "YSI",
+    "station_code": "YSI",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-6"
+  },
+  {
+    "sr_no": 485,
+    "station_name": "BELANKI",
+    "code": "BLNK",
+    "station_code": "BLNK",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 486,
+    "station_name": "HARANGUL",
+    "code": "HGL",
+    "station_code": "HGL",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "NSG-5"
+  },
+  {
+    "sr_no": 487,
+    "station_name": "JAVALE",
+    "code": "JVA",
+    "station_code": "JVA",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 488,
+    "station_name": "KALAMB ROAD",
+    "code": "KMRD",
+    "station_code": "KMRD",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 489,
+    "station_name": "LANGARPETH",
+    "code": "LNP",
+    "station_code": "LNP",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 490,
+    "station_name": "MURUD",
+    "code": "MRX",
+    "station_code": "MRX",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 491,
+    "station_name": "MHASOBA DONGARGAON",
+    "code": "MSDG",
+    "station_code": "MSDG",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  },
+  {
+    "sr_no": 492,
+    "station_name": "WASUD",
+    "code": "WSD",
+    "station_code": "WSD",
+    "division": "SUR",
+    "state": "Maharashtra",
+    "category": "HG-3"
+  }
+]
