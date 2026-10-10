@@ -306,6 +306,61 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
     );
   };
 
+  // Render aerodynamic coach body caps
+  const renderCoachCap = (position: 'top' | 'bottom') => {
+    const isTop = position === 'top';
+    return (
+      <View style={isTop ? styles.coachCapTop : styles.coachCapBottom}>
+        <View style={styles.couplerNotch} />
+      </View>
+    );
+  };
+
+  // Render authentic train entrance vestibules with doors and non-skid gangway
+  const renderVestibule = (type: 'front' | 'rear', isCompact: boolean = false) => {
+    const isFront = type === 'front';
+    const IconComp = isFront ? DoorOpen : DoorClosed;
+    const title = isFront ? 'FRONT VESTIBULE' : 'REAR VESTIBULE';
+    const sub = isFront ? '◄ TOWARDS LOCOMOTIVE / ENGINE' : 'REAR GANGWAY · NEXT COACH ◄';
+    const doorL = isFront ? 'DOOR 1 (L)' : 'DOOR 3 (L)';
+    const doorR = isFront ? 'DOOR 2 (R)' : 'DOOR 4 (R)';
+
+    return (
+      <View style={[styles.vestibuleContainer, isCompact && styles.vestibuleContainerCompact]}>
+        {/* Left Entrance Door */}
+        <View style={styles.vestibuleDoor}>
+          <IconComp size={12} color={Colors.textSecondary} />
+          <AppText variant="micro" weight="heavy" color="secondary" style={styles.vestibuleDoorText}>
+            {doorL}
+          </AppText>
+        </View>
+
+        {/* Central Gangway & Restrooms */}
+        <View style={styles.vestibuleCenter}>
+          <View style={styles.gangwayTreads}>
+            <View style={styles.treadBar} />
+            <View style={styles.treadBar} />
+            <View style={styles.treadBar} />
+          </View>
+          <AppText variant="micro" weight="heavy" color="muted" style={styles.vestibuleTitle}>
+            {title} · RESTROOMS
+          </AppText>
+          <AppText variant="micro" color="secondary" style={styles.vestibuleSub}>
+            {sub}
+          </AppText>
+        </View>
+
+        {/* Right Entrance Door */}
+        <View style={styles.vestibuleDoor}>
+          <IconComp size={12} color={Colors.textSecondary} />
+          <AppText variant="micro" weight="heavy" color="secondary" style={styles.vestibuleDoorText}>
+            {doorR}
+          </AppText>
+        </View>
+      </View>
+    );
+  };
+
   // Render a Single Bay (for Sleeper coaches: 3A, 2A, SL, 3E, 1A)
   const renderSleeperBay = (cabin: Cabin, isCompact: boolean = false) => {
     const isUserInBay = isViewingUserCoach && (
@@ -314,8 +369,10 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
     );
 
     const halfMain = Math.ceil(cabin.main.length / 2);
-    const benchLeft = cabin.main.slice(0, halfMain);
-    const benchRight = cabin.main.slice(halfMain);
+    // Reverse vertical order so Upper Berth is physically at top, Middle in middle, Lower at bottom
+    const benchLeft = [...cabin.main.slice(0, halfMain)].reverse();
+    const benchRight = [...cabin.main.slice(halfMain)].reverse();
+    const sideBerths = [...cabin.side].reverse();
 
     return (
       <View
@@ -323,7 +380,7 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
         style={[
           styles.bayContainer,
           isUserInBay && styles.userBayContainer,
-          isCompact && { marginBottom: 12 },
+          isCompact && { marginBottom: 10 },
         ]}
       >
         {/* Bay Header */}
@@ -343,8 +400,13 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
           ) : null}
         </View>
 
-        {/* Bay Body: Facing Main Benches + Aisle + Side Berths */}
+        {/* Bay Body flanked by Outer Carriage Walls & Windows */}
         <View style={styles.bayBodyRow}>
+          {/* Left Wall Window */}
+          <View style={styles.outerWallSideSleeper}>
+            <View style={styles.windowGlassPillSleeper} />
+          </View>
+
           {/* Main Compartment (Facing Benches) */}
           <View style={styles.bayMainBlock}>
             <View style={styles.benchColumn}>
@@ -357,9 +419,10 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
             </View>
 
             <View style={styles.bayFacingSpacer}>
-              <View style={styles.facingLine} />
-              <AppText variant="micro" weight="heavy" color="muted">FACING</AppText>
-              <View style={styles.facingLine} />
+              <View style={styles.facingTable} />
+              <AppText variant="micro" weight="heavy" color="muted" style={styles.facingTableText}>
+                TABLE
+              </AppText>
             </View>
 
             <View style={styles.benchColumn}>
@@ -372,23 +435,29 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
             </View>
           </View>
 
-          {/* Central Aisle */}
+          {/* Central Aisle Walking Corridor */}
           <View style={styles.bayAisleColumn}>
-            <View style={styles.aisleDottedLine} />
-            <AppText variant="micro" weight="heavy" color="muted" style={styles.aisleText}>
-              AISLE
-            </AppText>
-            <View style={styles.aisleDottedLine} />
+            <View style={styles.bayAisleWalkway}>
+              <View style={styles.aisleWalkDash} />
+              <View style={styles.aisleWalkDash} />
+              <View style={styles.aisleWalkDash} />
+              <View style={styles.aisleWalkDash} />
+            </View>
           </View>
 
           {/* Side Berths Corridor */}
           <View style={styles.baySideBlock}>
             <AppText variant="micro" weight="bold" color="muted" style={styles.benchSideLabel}>
-              SIDE CORRIDOR
+              SIDE BERTHS
             </AppText>
             <View style={styles.berthStack}>
-              {cabin.side.map((s) => renderSeatItem(s, true))}
+              {sideBerths.map((s) => renderSeatItem(s, true))}
             </View>
+          </View>
+
+          {/* Right Wall Window */}
+          <View style={styles.outerWallSideSleeper}>
+            <View style={styles.windowGlassPillSleeper} />
           </View>
         </View>
       </View>
@@ -408,32 +477,40 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
         style={[
           styles.chairRowContainer,
           isUserInRow && styles.userChairRowContainer,
-          isCompact && { marginBottom: 10 },
+          isCompact && { marginBottom: 8 },
         ]}
       >
+        {/* Left Carriage Outer Wall with Window */}
+        <View style={styles.outerWallSide}>
+          <View style={styles.windowGlassPill} />
+        </View>
+
         {/* Left Side Seats (Window to Aisle) */}
         <View style={styles.chairSeatsGroup}>
-          <AppText variant="micro" weight="bold" color="muted" style={styles.windowLabel}>
-            WINDOW
-          </AppText>
           <View style={styles.seatsRow}>
             {cabin.main.map((s) => renderSeatItem(s, false))}
           </View>
         </View>
 
-        {/* Central Aisle */}
+        {/* Central Aisle Walking Corridor */}
         <View style={styles.chairAisleBlock}>
-          <View style={styles.chairAisleLine} />
+          <View style={styles.aisleWalkway}>
+            <View style={styles.aisleWalkDash} />
+            <View style={styles.aisleWalkDash} />
+            <View style={styles.aisleWalkDash} />
+          </View>
         </View>
 
         {/* Right Side Seats (Aisle to Window) */}
         <View style={styles.chairSeatsGroup}>
-          <AppText variant="micro" weight="bold" color="muted" style={[styles.windowLabel, { textAlign: 'right' }]}>
-            WINDOW
-          </AppText>
           <View style={styles.seatsRow}>
             {cabin.side.map((s) => renderSeatItem(s, false))}
           </View>
+        </View>
+
+        {/* Right Carriage Outer Wall with Window */}
+        <View style={styles.outerWallSide}>
+          <View style={styles.windowGlassPill} />
         </View>
       </View>
     );
@@ -637,27 +714,35 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
             </TouchableOpacity>
           )}
 
-          {/* Active Cabin / Bay Renderer */}
+          {/* Active Cabin / Bay Renderer wrapped in Coach Body Styling */}
           {currentCabin ? (
-            <View style={styles.unitDisplayWrapper}>
-              {isSleeper ? renderSleeperBay(currentCabin, false) : renderChairRow(currentCabin, false)}
+            <View style={styles.focusedCoachFuselage}>
+              {renderCoachCap('top')}
+
+              {/* Nearest Vestibule Guidance */}
+              <View style={styles.focusedDoorBanner}>
+                <DoorOpen size={12} color={Colors.primary} style={{ marginRight: 6 }} />
+                <AppText variant="micro" weight="heavy" color="orange" uppercase>
+                  {isFrontDoor ? 'BOARD VIA FRONT VESTIBULE (DOORS 1 & 2)' : 'BOARD VIA REAR VESTIBULE (DOORS 3 & 4)'}
+                </AppText>
+                <AppText variant="micro" color="secondary" style={{ marginLeft: 6 }}>
+                  · {walkCount} {walkUnitLabel}s away
+                </AppText>
+              </View>
+
+              <View style={styles.unitDisplayWrapper}>
+                {isSleeper ? renderSleeperBay(currentCabin, false) : renderChairRow(currentCabin, false)}
+              </View>
+
+              {renderCoachCap('bottom')}
             </View>
           ) : null}
         </View>
       ) : (
-        /* Full Coach Scrollable Blueprint */
-        <View style={styles.fullCoachSection}>
-          {/* Front Coach Entrance Indicator */}
-          <View style={styles.coachDoorHeader}>
-            <View style={styles.doorLine} />
-            <View style={styles.doorHeaderBadge}>
-              <DoorOpen size={12} color={Colors.textMuted} style={{ marginRight: 6 }} />
-              <AppText variant="micro" weight="heavy" color="muted" style={styles.doorHeaderLabel}>
-                FRONT ENTRANCE · RESTROOMS
-              </AppText>
-            </View>
-            <View style={styles.doorLine} />
-          </View>
+        /* Full Coach Scrollable Blueprint inside Coach Fuselage */
+        <View style={styles.fullCoachFuselage}>
+          {renderCoachCap('top')}
+          {renderVestibule('front', false)}
 
           {/* Scrollable coach container */}
           <ScrollView
@@ -671,17 +756,8 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
             )}
           </ScrollView>
 
-          {/* Rear Coach Entrance Indicator */}
-          <View style={styles.coachDoorFooter}>
-            <View style={styles.doorLine} />
-            <View style={styles.doorHeaderBadge}>
-              <DoorClosed size={12} color={Colors.textMuted} style={{ marginRight: 6 }} />
-              <AppText variant="micro" weight="heavy" color="muted" style={styles.doorHeaderLabel}>
-                REAR ENTRANCE · RESTROOMS
-              </AppText>
-            </View>
-            <View style={styles.doorLine} />
-          </View>
+          {renderVestibule('rear', false)}
+          {renderCoachCap('bottom')}
         </View>
       )}
 
@@ -716,12 +792,12 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
           <AppText variant="micro" color="secondary">Standard</AppText>
         </View>
         <View style={styles.legendItem}>
-          <AppText variant="micro" weight="heavy" color="muted">[W]</AppText>
-          <AppText variant="micro" color="secondary" style={{ marginLeft: 3 }}>Window</AppText>
+          <View style={styles.legendWindowBox} />
+          <AppText variant="micro" color="secondary">Window</AppText>
         </View>
         <View style={styles.legendItem}>
-          <AppText variant="micro" weight="heavy" color="muted">[A]</AppText>
-          <AppText variant="micro" color="secondary" style={{ marginLeft: 3 }}>Aisle</AppText>
+          <View style={styles.legendAisleBox} />
+          <AppText variant="micro" color="secondary">Aisle</AppText>
         </View>
       </View>
 
@@ -910,50 +986,149 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   unitDisplayWrapper: {
-    marginTop: 6,
-  },
-  fullCoachSection: {
-    marginTop: Spacing.sm,
-  },
-  coachDoorHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 8,
-  },
-  coachDoorFooter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 6,
-  },
-  doorHeaderBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
     paddingVertical: 4,
+  },
+  focusedCoachFuselage: {
+    marginTop: Spacing.xs,
+    borderRadius: 16,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: Colors.borderSubtle,
     backgroundColor: Colors.surfaceLowest,
+  },
+  focusedDoorBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+    paddingVertical: 7,
+    paddingHorizontal: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.05)',
+  },
+  fullCoachFuselage: {
+    marginTop: Spacing.sm,
+    borderRadius: 16,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: Colors.borderSubtle,
+    backgroundColor: Colors.surfaceLowest,
+  },
+  coachCapTop: {
+    height: 12,
+    backgroundColor: Colors.surfaceHighest,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.06)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  couplerNotch: {
+    width: 32,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.16)',
+  },
+  coachCapBottom: {
+    height: 12,
+    backgroundColor: Colors.surfaceHighest,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.06)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  vestibuleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: Colors.surfaceLowest,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.05)',
+    borderBottomColor: 'rgba(255, 255, 255, 0.05)',
+  },
+  vestibuleContainerCompact: {
+    paddingVertical: 8,
+  },
+  vestibuleDoor: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.surfaceHigh,
+    paddingVertical: 4,
+    paddingHorizontal: 6,
     borderRadius: 6,
     borderWidth: 1,
     borderColor: Colors.borderSubtle,
   },
-  doorLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: Colors.borderSubtle,
+  vestibuleDoorText: {
+    fontSize: 8,
+    marginLeft: 4,
   },
-  doorHeaderLabel: {
-    letterSpacing: 0.5,
+  vestibuleCenter: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+    paddingHorizontal: 6,
+  },
+  vestibuleTitle: {
+    fontSize: 8,
+    letterSpacing: 0.8,
+  },
+  vestibuleSub: {
+    fontSize: 8,
+    marginTop: 2,
+  },
+  gangwayTreads: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 4,
+  },
+  treadBar: {
+    width: 14,
+    height: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    borderRadius: 1,
+    marginHorizontal: 3,
   },
   fullCoachScrollView: {
-    maxHeight: 380,
+    maxHeight: 460,
     backgroundColor: Colors.surfaceLowest,
-    borderRadius: 12,
-    padding: 8,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    paddingHorizontal: 6,
+    paddingVertical: 8,
   },
   fullCoachScrollContent: {
     paddingBottom: 8,
+  },
+  // Outer walls & windows
+  outerWallSide: {
+    width: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 2,
+  },
+  windowGlassPill: {
+    width: 4,
+    height: 30,
+    borderRadius: 2,
+    backgroundColor: 'rgba(56, 189, 248, 0.22)',
+    borderWidth: 0.5,
+    borderColor: 'rgba(56, 189, 248, 0.45)',
+  },
+  outerWallSideSleeper: {
+    width: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 4,
+  },
+  windowGlassPillSleeper: {
+    width: 4,
+    height: 80,
+    borderRadius: 2,
+    backgroundColor: 'rgba(56, 189, 248, 0.22)',
+    borderWidth: 0.5,
+    borderColor: 'rgba(56, 189, 248, 0.45)',
   },
   // Seat boxes
   seatBox: {
@@ -985,14 +1160,16 @@ const styles = StyleSheet.create({
   // Sleeper Bay layout
   bayContainer: {
     backgroundColor: Colors.surfaceLowest,
-    borderRadius: 12,
     padding: 10,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.04)',
   },
   userBayContainer: {
-    borderColor: Colors.borderMedium,
-    backgroundColor: 'rgba(245, 51, 44, 0.04)',
+    backgroundColor: 'rgba(245, 51, 44, 0.05)',
+    borderLeftWidth: 2,
+    borderRightWidth: 2,
+    borderLeftColor: Colors.primary,
+    borderRightColor: Colors.primary,
   },
   bayHeaderRow: {
     flexDirection: 'row',
@@ -1035,25 +1212,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 4,
   },
-  facingLine: {
-    width: 1,
-    height: 16,
-    backgroundColor: Colors.borderSubtle,
+  facingTable: {
+    width: 14,
+    height: 28,
+    borderRadius: 4,
+    backgroundColor: Colors.surfaceHighest,
+    borderWidth: 1,
+    borderColor: Colors.borderSubtle,
+  },
+  facingTableText: {
+    fontSize: 7,
+    marginTop: 3,
   },
   bayAisleColumn: {
-    width: 32,
+    width: 28,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 2,
   },
-  aisleDottedLine: {
-    flex: 1,
-    width: 1,
-    backgroundColor: Colors.borderSubtle,
-  },
-  aisleText: {
-    fontSize: 8,
-    marginVertical: 4,
+  bayAisleWalkway: {
+    width: 16,
+    height: 96,
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderLeftColor: 'rgba(255, 255, 255, 0.06)',
+    borderRightColor: 'rgba(255, 255, 255, 0.06)',
   },
   baySideBlock: {
     alignItems: 'center',
@@ -1062,41 +1247,49 @@ const styles = StyleSheet.create({
   // Chair Car row layout
   chairRowContainer: {
     backgroundColor: Colors.surfaceLowest,
-    borderRadius: 12,
-    padding: 8,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.04)',
   },
   userChairRowContainer: {
-    borderColor: Colors.borderMedium,
-    backgroundColor: 'rgba(245, 51, 44, 0.04)',
+    backgroundColor: 'rgba(245, 51, 44, 0.05)',
+    borderLeftWidth: 2,
+    borderRightWidth: 2,
+    borderLeftColor: Colors.primary,
+    borderRightColor: Colors.primary,
   },
   chairSeatsGroup: {
     flex: 1,
-  },
-  windowLabel: {
-    fontSize: 8,
-    marginBottom: 2,
-    paddingHorizontal: 4,
   },
   seatsRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   chairAisleBlock: {
-    width: 20,
+    width: 24,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 2,
   },
-  chairAisleLine: {
-    width: 2,
+  aisleWalkway: {
+    width: 14,
     height: 38,
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderLeftColor: 'rgba(255, 255, 255, 0.05)',
+    borderRightColor: 'rgba(255, 255, 255, 0.05)',
+  },
+  aisleWalkDash: {
+    width: 2,
+    height: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     borderRadius: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
   },
   // Inspected Seat Pill
   inspectedSeatPill: {
@@ -1136,6 +1329,20 @@ const styles = StyleSheet.create({
   legendBoxUser: {
     backgroundColor: Colors.primary,
     borderColor: Colors.primary,
+  },
+  legendWindowBox: {
+    width: 4,
+    height: 12,
+    borderRadius: 2,
+    backgroundColor: 'rgba(56, 189, 248, 0.5)',
+    marginRight: 4,
+  },
+  legendAisleBox: {
+    width: 4,
+    height: 12,
+    borderRadius: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    marginRight: 4,
   },
   // Amenities
   amenitiesContainer: {
