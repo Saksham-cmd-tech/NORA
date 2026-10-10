@@ -1,0 +1,6 @@
+name = "nora-rail-proxy"
+main = "cloudflare-worker/worker.js"
+compatibility_date = "2026-10-09"
+
+[vars]
+ENVIRONMENT = "production"
