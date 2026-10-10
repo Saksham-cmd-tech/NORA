@@ -14,6 +14,18 @@ import com.facebook.react.bridge.WritableMap
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.nora.wallet.notification.NoraNotificationHelper
 import com.nora.wallet.notification.NoraNotificationScheduler
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.io.OutputStreamWriter
+import java.net.HttpURLConnection
+import java.net.URL
+import java.security.MessageDigest
+import javax.crypto.Cipher
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
+import android.util.Base64
+import org.json.JSONObject
+import org.json.JSONArray
 
 class NoraNotificationModule(reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
@@ -215,6 +227,91 @@ class NoraNotificationModule(reactContext: ReactApplicationContext) :
         // Required for React Native built-in Event Emitter Calls
     }
 
+    @ReactMethod
+    fun queryNtesLive(trainNumber: String, stationCode: String, promise: Promise) {
+        Thread {
+            try {
+                val cleanNumber = trainNumber.trim()
+                val cleanStation = stationCode.trim().uppercase()
+                if (cleanNumber.isEmpty()) {
+                    promise.resolve(null)
+                    return@Thread
+                }
+
+                val instPayload = "service=TrainRunningMob&subService=GetTrainInstance&trainNo=$cleanNumber"
+                val instData = NtesNativeHelper.query(instPayload)
+                val rawTrainName = instData.optString("TrainName", "")
+
+                val instances = instData.optJSONArray("vInstanceList")
+                var startDate = ""
+                if (instances != null && instances.length() > 0) {
+                    for (i in 0 until instances.length()) {
+                        val inst = instances.getJSONObject(i)
+                        if (inst.optInt("trainStatus", 0) == 1) {
+                            startDate = inst.optString("startDate", "")
+                            break
+                        }
+                    }
+                    if (startDate.isEmpty()) {
+                        startDate = instances.getJSONObject(0).optString("startDate", "")
+                    }
+                }
+
+                if (startDate.isEmpty()) {
+                    val result = JSONObject()
+                    result.put("success", true)
+                    result.put("trainNumber", cleanNumber)
+                    result.put("trainName", rawTrainName)
+                    result.put("platform", "")
+                    result.put("isLive", false)
+                    promise.resolve(result.toString())
+                    return@Thread
+                }
+
+                val fullPayload = "service=TrainRunningMob&subService=ShowFullRunJson&trainNo=$cleanNumber&startDate=$startDate"
+                val fullRun = NtesNativeHelper.query(fullPayload)
+                val stations = fullRun.optJSONArray("STNS")
+
+                var resolvedPlatform = ""
+                var coachPos = ""
+                var delayMinutes = fullRun.optInt("LDEL", 0)
+                var currentStatus = fullRun.optString("CPOS", "")
+
+                if (stations != null && stations.length() > 0) {
+                    for (i in 0 until stations.length()) {
+                        val s = stations.getJSONObject(i)
+                        val sc = s.optString("SC", "").uppercase()
+                        if (sc == cleanStation) {
+                            val pf = s.optString("PF", "")
+                            if (pf.isNotEmpty() && pf != "TBD") {
+                                resolvedPlatform = pf
+                            }
+                            coachPos = s.optString("departureCoachPosition", "")
+                            if (coachPos.isEmpty()) {
+                                coachPos = s.optString("arrivalCoachPosition", "")
+                            }
+                            break
+                        }
+                    }
+                }
+
+                val result = JSONObject()
+                result.put("success", true)
+                result.put("trainNumber", cleanNumber)
+                result.put("trainName", fullRun.optString("TNM", rawTrainName))
+                result.put("startDate", startDate)
+                result.put("platform", resolvedPlatform)
+                result.put("coachPosition", coachPos)
+                result.put("currentStatus", currentStatus)
+                result.put("delayMinutes", delayMinutes)
+                result.put("isLive", true)
+                promise.resolve(result.toString())
+            } catch (e: Exception) {
+                promise.resolve(null)
+            }
+        }.start()
+    }
+
     private fun extractTicketBundle(ticketMap: ReadableMap): Bundle {
         val bundle = Bundle()
 
@@ -340,5 +437,67 @@ class NoraNotificationModule(reactContext: ReactApplicationContext) :
                 // Ignore if JS not yet attached
             }
         }
+    }
+}
+
+object NtesNativeHelper {
+    private val KEY_BYTES = "8EA4DB2CC1EB3DC5".toByteArray(Charsets.UTF_8)
+    private val IV_BYTES = "7DC5EB3BB4DB6EA8".toByteArray(Charsets.UTF_8)
+    private const val SCKEY = "645fbc1e56e23365f2f3c204ae0899f6"
+    private const val NTES_URL = "https://enquiry.indianrail.gov.in/crisns/AppServAnd"
+
+    private fun md5(input: String): String {
+        val md = MessageDigest.getInstance("MD5")
+        val digest = md.digest(input.toByteArray(Charsets.UTF_8))
+        return digest.joinToString("") { "%02X".format(it) }
+    }
+
+    private fun encrypt(text: String): String {
+        val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+        cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(KEY_BYTES, "AES"), IvParameterSpec(IV_BYTES))
+        val encrypted = cipher.doFinal(text.toByteArray(Charsets.UTF_8))
+        val b64 = Base64.encodeToString(encrypted, Base64.NO_WRAP)
+        return b64.toByteArray(Charsets.UTF_8).joinToString("") { "%02X".format(it) }
+    }
+
+    private fun decrypt(hexStr: String): JSONObject {
+        val cleanHex = if (hexStr.contains("#")) hexStr.split("#")[1] else hexStr
+        val b64Bytes = ByteArray(cleanHex.length / 2) { i ->
+            cleanHex.substring(i * 2, i * 2 + 2).toInt(16).toByte()
+        }
+        val b64Str = String(b64Bytes, Charsets.UTF_8)
+        val cipherBytes = Base64.decode(b64Str, Base64.NO_WRAP)
+        val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+        cipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(KEY_BYTES, "AES"), IvParameterSpec(IV_BYTES))
+        val decrypted = cipher.doFinal(cipherBytes)
+        return JSONObject(String(decrypted, Charsets.UTF_8))
+    }
+
+    fun query(payload: String): JSONObject {
+        val wire = "${md5(payload + SCKEY)}#${encrypt(payload)}"
+        val url = URL(NTES_URL)
+        val conn = url.openConnection() as HttpURLConnection
+        conn.requestMethod = "POST"
+        conn.setRequestProperty("Content-Type", "application/json")
+        conn.setRequestProperty("User-Agent", "Dalvik/2.1.0 (Linux; Android 11)")
+        conn.doOutput = true
+        conn.connectTimeout = 8000
+        conn.readTimeout = 8000
+
+        val body = JSONObject().put("jsonIn", wire).toString()
+        OutputStreamWriter(conn.outputStream).use { it.write(body) }
+
+        val responseCode = conn.responseCode
+        if (responseCode != 200) {
+            throw Exception("NTES HTTP $responseCode")
+        }
+
+        val responseText = BufferedReader(InputStreamReader(conn.inputStream)).use { it.readText() }
+        val resJson = JSONObject(responseText)
+        val jsonIn = resJson.optString("jsonIn")
+        if (jsonIn.isEmpty()) {
+            throw Exception("Missing jsonIn")
+        }
+        return decrypt(jsonIn)
     }
 }

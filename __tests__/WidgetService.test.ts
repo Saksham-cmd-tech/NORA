@@ -94,7 +94,7 @@ describe('WidgetService', () => {
       train: { number: '11039', name: 'Maharashtra Exp' },
       journey: { ...mockTicket.journey, from: 'PUNE', to: 'NGP' },
     };
-    expect(formatTicketForWidget(maharashtraExp).platform).toBe('5'); // PUNE on train 11039
+    expect(formatTicketForWidget(maharashtraExp).platform).toBe('2'); // PUNE on train 11039
   });
 
   it('updates widget with multiple tickets payload', async () => {

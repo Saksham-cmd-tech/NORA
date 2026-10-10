@@ -7,6 +7,7 @@
  * - Automatic offline & cached fallback so UI never blocks or fails.
  */
 
+import { NativeModules, Platform } from 'react-native';
 import { getTrainName, registerTrainName } from '../utils/stationLookup';
 
 export interface CoachItem {
@@ -609,7 +610,7 @@ export const FALLBACK_11039_DETAILS: LegacyTrainDetails = {
   distanceKm: 885,
   travelTimeMinutes: 1020,
   route: [
-    { sequence: 1, stationCode: 'PUNE', stationName: 'Pune Jn', isHalt: true, distanceFromSourceKm: 0, scheduledDeparture: 1340, platform: '5' },
+    { sequence: 1, stationCode: 'PUNE', stationName: 'Pune Jn', isHalt: true, distanceFromSourceKm: 0, scheduledDeparture: 1340, platform: '2' },
     { sequence: 2, stationCode: 'DDCC', stationName: 'Daund Chord Line', isHalt: true, distanceFromSourceKm: 73, scheduledArrival: 1408, scheduledDeparture: 1410, platform: '3' },
     { sequence: 3, stationCode: 'ANG', stationName: 'Ahmednagar Jn', isHalt: true, distanceFromSourceKm: 155, scheduledArrival: 57, scheduledDeparture: 60, platform: '1' },
     { sequence: 4, stationCode: 'BAP', stationName: 'Belapur', isHalt: true, distanceFromSourceKm: 222, scheduledArrival: 118, scheduledDeparture: 120, platform: '1' },
@@ -1057,6 +1058,43 @@ export async function getStationCoachPosition(
   if (!forceRefresh && stationCoachCache.has(cacheKey)) {
     return { ...stationCoachCache.get(cacheKey)!, isCached: true };
   }
+
+  // 0. Query on-device Native NTES directly (Zero-proxy official CRIS NTES on Android)
+  try {
+    const notifMod = NativeModules?.NoraNotificationModule;
+    if (Platform.OS === 'android' && notifMod?.queryNtesLive) {
+      const nativeRaw = await notifMod.queryNtesLive(cleanNumber, cleanStation);
+      if (nativeRaw) {
+        const nativeJson = JSON.parse(nativeRaw);
+        if (nativeJson?.success && nativeJson.platform) {
+          const resp: StationCoachResponse = {
+            trainNumber: cleanNumber,
+            trainName: nativeJson.trainName || '',
+            stationCode: cleanStation,
+            stationName: cleanStation,
+            platform: nativeJson.platform,
+            direction: 'Up',
+            formation: nativeJson.coachPosition || '',
+            reversal: false,
+            totalCoaches: nativeJson.coachPosition ? nativeJson.coachPosition.split('-').length : 0,
+            coaches: nativeJson.coachPosition
+              ? nativeJson.coachPosition.split('-').map((code: string, idx: number) => ({
+                  position: idx + 1,
+                  code,
+                  classType: code.startsWith('C') || code.startsWith('E') ? 'CC' : code.startsWith('B') ? '3A' : code.startsWith('A') ? '2A' : code.startsWith('S') ? 'SL' : 'GEN',
+                  className: code.startsWith('B') ? 'AC 3-Tier' : 'Class',
+                  totalBerths: 72,
+                  hasSeats: false,
+                }))
+              : [],
+            isCached: false,
+          };
+          stationCoachCache.set(cacheKey, resp);
+          return resp;
+        }
+      }
+    }
+  } catch (_) {}
 
   // 1. Fetch from Cloudflare Proxy (NTES real-time data, unlimited free quota)
   try {

@@ -29,12 +29,12 @@ function resolvePlatform(ticket: NormalizedTicket): string {
   const fromCode = (ticket.journey?.from || '').toUpperCase().trim();
 
   if (trainNo === '11039') {
-    if (fromCode.includes('PUNE')) return '5';
+    if (fromCode.includes('PUNE')) return '2';
     if (fromCode.includes('NGP')) return '2';
     if (fromCode.includes('BSL')) return '5';
     if (fromCode.includes('MMR')) return '2';
     if (fromCode.includes('DDCC')) return '3';
-    return '5';
+    return '2';
   }
 
   if (trainNo === '26101') {
