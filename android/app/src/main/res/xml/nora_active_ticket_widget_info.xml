@@ -7,6 +7,7 @@
     android:updatePeriodMillis="1800000"
     android:description="@string/widget_active_ticket_description"
     android:previewImage="@drawable/ic_notification_train"
+    android:previewLayout="@layout/widget_active_ticket"
     android:initialLayout="@layout/widget_active_ticket"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen">

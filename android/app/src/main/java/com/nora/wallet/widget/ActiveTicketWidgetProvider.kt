@@ -20,6 +20,21 @@ class ActiveTicketWidgetProvider : AppWidgetProvider() {
         }
     }
 
+    override fun onAppWidgetOptionsChanged(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int,
+        newOptions: android.os.Bundle?
+    ) {
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
+        updateWidget(context, appWidgetManager, appWidgetId)
+    }
+
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
+        updateAllWidgets(context)
+    }
+
     companion object {
         const val PREFS_NAME = "nora_widget_prefs"
         const val KEY_ACTIVE_TICKET = "active_ticket_data"

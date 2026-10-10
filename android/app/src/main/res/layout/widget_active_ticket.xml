@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/widget_bg"
-    android:padding="12dp">
+    android:padding="14dp">
 
     <!-- ================= 1. ACTIVE TICKET LAYOUT ================= -->
     <LinearLayout
@@ -37,7 +37,7 @@
                 android:textStyle="bold"
                 android:textColor="#FF4438" />
 
-            <View
+            <FrameLayout
                 android:layout_width="6dp"
                 android:layout_height="1dp" />
 
@@ -55,7 +55,7 @@
                 android:paddingTop="2dp"
                 android:paddingBottom="2dp" />
 
-            <View
+            <FrameLayout
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="1" />
@@ -70,14 +70,18 @@
                 android:textColor="#8E8E98" />
         </LinearLayout>
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
         <!-- Train Number & Name -->
         <TextView
             android:id="@+id/text_train_number_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:text="26101 · VANDE BHARAT EXP"
-            android:textSize="12sp"
+            android:textSize="13sp"
             android:textStyle="bold"
             android:textColor="#E6E6ED"
             android:singleLine="true"
@@ -103,7 +107,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="14:05"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="#FFFFFF" />
 
@@ -124,12 +128,12 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp">
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp">
 
-                <View
+                <FrameLayout
                     android:layout_width="0dp"
-                    android:layout_height="1dp"
+                    android:layout_height="1.5dp"
                     android:layout_weight="1"
                     android:background="#2E2E38" />
 
@@ -141,9 +145,9 @@
                     android:layout_marginStart="4dp"
                     android:layout_marginEnd="4dp" />
 
-                <View
+                <FrameLayout
                     android:layout_width="0dp"
-                    android:layout_height="1dp"
+                    android:layout_height="1.5dp"
                     android:layout_weight="1"
                     android:background="#2E2E38" />
             </LinearLayout>
@@ -161,7 +165,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     android:text="18:10"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="#FFFFFF" />
 
@@ -177,13 +181,17 @@
             </LinearLayout>
         </LinearLayout>
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
         <!-- Seat & Platform Footer Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="2dp">
+            android:gravity="center_vertical">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -204,7 +212,7 @@
                     android:textColor="#FF553E" />
             </LinearLayout>
 
-            <View
+            <FrameLayout
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="1" />
@@ -250,7 +258,7 @@
                 android:textStyle="bold"
                 android:textColor="#FF4438" />
 
-            <View
+            <FrameLayout
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="1" />
@@ -275,18 +283,18 @@
 
             <ImageView
                 android:id="@+id/image_no_ticket"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:src="@drawable/ic_ticket_empty"
                 android:tint="#777785"
-                android:layout_marginBottom="4dp" />
+                android:layout_marginBottom="6dp" />
 
             <TextView
                 android:id="@+id/text_no_ticket_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="No Active Ticket"
-                android:textSize="14sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="#FFFFFF"
                 android:gravity="center" />
@@ -295,9 +303,9 @@
                 android:id="@+id/text_no_ticket_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="3dp"
                 android:text="IRCTC &amp; redRail bookings appear here automatically"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 android:textColor="#8E8E98"
                 android:gravity="center"
                 android:maxLines="2" />
@@ -313,14 +321,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TAP TO OPEN NORA"
-                android:textSize="9sp"
+                android:textSize="10sp"
                 android:textStyle="bold"
                 android:textColor="#FF553E"
                 android:background="@drawable/widget_subtle_pill"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp" />
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp" />
         </LinearLayout>
     </LinearLayout>
 
