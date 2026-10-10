@@ -28,7 +28,7 @@ export const redRailParser: NotificationParser = {
       const bookingMatch = text.match(/booking\s+([A-Z0-9]{8,15})\b/i);
       const bookingId = bookingMatch ? bookingMatch[1] : undefined;
 
-      // 3. Passenger name (Dear Saksham Tale, or Passenger: Saksham Tale)
+      // 3. Passenger name (Dear Rahul Sharma, or Passenger: Rahul Sharma)
       // "hey if there no name for pasinger show -"
       let passengerName = '-';
       const dearMatch = text.match(/dear\s+([^\r\n,]+),/i);

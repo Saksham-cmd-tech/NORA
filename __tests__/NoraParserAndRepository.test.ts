@@ -235,7 +235,7 @@ For Enquiry/Complaint/Assistance, please dial 139 IR-CRIS`;
         departure: '06:25 AM',
       },
       passenger: {
-        name: 'SAKSHAM TALE',
+        name: 'RAHUL SHARMA',
         coach: 'C5',
         seat: '64',
         bookingStatus: 'CONFIRMED',
@@ -278,7 +278,7 @@ For Enquiry/Complaint/Assistance, please dial 139 IR-CRIS`;
       pnr: '9988776655',
       train: { number: '12952', name: 'Mumbai Rajdhani' },
       journey: { from: 'MMCT', to: 'NDLS', date: '25 Dec 2026' },
-      passenger: { name: 'SAKSHAM', coach: 'B2', seat: '15' },
+      passenger: { name: 'RAHUL', coach: 'B2', seat: '15' },
       status: 'CONFIRMED',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),

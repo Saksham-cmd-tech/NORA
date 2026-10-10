@@ -20,7 +20,7 @@ export const PRIMARY_MOCK_TICKET: NormalizedTicket = {
     boardingStation: 'PUNE',
   },
   passenger: {
-    name: 'Saksham Tale',
+    name: 'Rahul Sharma',
     coach: 'C5',
     seat: '64',
     class: 'CC',
@@ -59,7 +59,7 @@ export const SECONDARY_TEST_TICKET: NormalizedTicket = {
     boardingStation: 'PUNE',
   },
   passenger: {
-    name: 'Saksham Tale',
+    name: 'Rahul Sharma',
     coach: 'C3',
     seat: '42',
     class: 'CC',

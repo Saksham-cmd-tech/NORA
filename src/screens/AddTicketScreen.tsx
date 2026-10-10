@@ -544,7 +544,7 @@ export const AddTicketScreen: React.FC<AddTicketScreenProps> = ({
               <TextInput
                 value={manualPassenger}
                 onChangeText={setManualPassenger}
-                placeholder="e.g. Saksham Tale"
+                placeholder="e.g. Rahul Sharma"
                 placeholderTextColor={Colors.textMuted}
                 style={styles.manualInput}
               />

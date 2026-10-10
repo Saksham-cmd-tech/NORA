@@ -112,7 +112,7 @@ describe('NORA Reminder & Notification Service Suite', () => {
         departure: '06:25 AM',
       },
       passenger: {
-        name: 'SAKSHAM TALE',
+        name: 'RAHUL SHARMA',
         coach: 'C5',
         seat: '64',
         bookingStatus: 'CONFIRMED',
