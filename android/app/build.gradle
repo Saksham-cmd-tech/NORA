@@ -10,17 +10,18 @@ react {
 
 def enableProguardInReleaseBuilds = false
 def jscFlavor = "io.github.react-native-community:jsc-android:2026004.+"
+def isHermesEnabled = project.findProperty("hermesEnabled") != null ? project.findProperty("hermesEnabled").toString().toBoolean() : true
 
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
-    compileSdk rootProject.ext.compileSdkVersion
+    compileSdk (rootProject.ext.compileSdkVersion as Integer)
 
     namespace "com.nora.wallet"
     defaultConfig {
         applicationId "com.nora.wallet"
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdkVersion (rootProject.ext.minSdkVersion as Integer)
+        targetSdkVersion (rootProject.ext.targetSdkVersion as Integer)
         versionCode 2
         versionName "1.1.0"
     }
@@ -34,13 +35,13 @@ android {
         }
         release {
             if (project.hasProperty("NORA_RELEASE_STORE_FILE")) {
-                storeFile file(NORA_RELEASE_STORE_FILE)
-                storePassword NORA_RELEASE_STORE_PASSWORD
-                keyAlias NORA_RELEASE_KEY_ALIAS
-                keyPassword NORA_RELEASE_KEY_PASSWORD
-                v1SigningEnabled true
-                v2SigningEnabled true
+                storeFile file(project.findProperty("NORA_RELEASE_STORE_FILE"))
+                storePassword project.findProperty("NORA_RELEASE_STORE_PASSWORD")
+                keyAlias project.findProperty("NORA_RELEASE_KEY_ALIAS")
+                keyPassword project.findProperty("NORA_RELEASE_KEY_PASSWORD")
             }
+            v1SigningEnabled true
+            v2SigningEnabled true
         }
     }
 
@@ -59,9 +60,9 @@ android {
 dependencies {
     implementation("com.facebook.react:react-android")
 
-    if (hermesEnabled.toBoolean()) {
+    if (isHermesEnabled) {
         implementation("com.facebook.react:hermes-android")
     } else {
-        implementation jscFlavor
+        implementation(jscFlavor)
     }
 }
