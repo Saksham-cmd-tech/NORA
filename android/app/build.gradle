@@ -6,6 +6,11 @@ plugins {
 
 react {
     autolinkLibrariesWithApp()
+    if (file("/opt/homebrew/bin/node").exists()) {
+        nodeExecutableAndArgs = ["/opt/homebrew/bin/node"]
+    } else if (file("/usr/local/bin/node").exists()) {
+        nodeExecutableAndArgs = ["/usr/local/bin/node"]
+    }
 }
 
 def enableProguardInReleaseBuilds = false
