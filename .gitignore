@@ -39,6 +39,7 @@ local.properties
 .cxx/
 *.keystore
 !debug.keystore
+!nora-release-key.keystore
 .kotlin/
 
 # node.js
