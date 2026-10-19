@@ -27,7 +27,7 @@ android {
         applicationId "dev.saksham.nora"
         minSdkVersion (rootProject.ext.minSdkVersion as Integer)
         targetSdkVersion (rootProject.ext.targetSdkVersion as Integer)
-        versionCode 4
+        versionCode 5
         versionName "1.2.0"
     }
 
