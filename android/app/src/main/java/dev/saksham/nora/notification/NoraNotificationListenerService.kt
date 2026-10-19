@@ -1,4 +1,4 @@
-package com.nora.wallet.notification
+package dev.saksham.nora.notification
 
 import android.app.Notification
 import android.content.Intent
@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
-import com.nora.wallet.bridge.NoraNotificationModule
+import dev.saksham.nora.bridge.NoraNotificationModule
 
 class NoraNotificationListenerService : NotificationListenerService() {
 

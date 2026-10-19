@@ -245,7 +245,7 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
 
         <View style={styles.specialHeroBox}>
           <View style={styles.specialIconCircle}>
-            <IconComp size={22} color={Colors.primary} />
+            <IconComp size={22} color={Colors.appleOrange} />
           </View>
           <View style={{ flex: 1, marginLeft: 12 }}>
             <AppText variant="caption" weight="heavy" color="primary">
@@ -259,7 +259,7 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
 
         {platformPillar ? (
           <View style={styles.platformPillarBanner}>
-            <MapPin size={14} color={Colors.primary} style={{ marginRight: 6 }} />
+            <MapPin size={14} color={Colors.appleOrange} style={{ marginRight: 6 }} />
             <AppText variant="tiny" color="secondary">
               Positions near Platform Pillar <AppText variant="tiny" weight="heavy" color="primary">#{platformPillar}</AppText>
               {positionDesc ? ` (${positionDesc})` : ''} on Platform {platformNumber || '5'}
@@ -527,7 +527,7 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
             </AppText>
             {isViewingUserCoach ? (
               <View style={styles.userCoachTag}>
-                <AppText variant="micro" weight="heavy" color="dark">
+                <AppText variant="micro" weight="heavy" color="orange">
                   YOUR COACH
                 </AppText>
               </View>
@@ -583,7 +583,7 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
       {/* Platform & Pillar Alignment */}
       {platformPillar ? (
         <View style={styles.platformPillarBanner}>
-          <MapPin size={13} color={Colors.primary} style={{ marginRight: 6 }} />
+          <MapPin size={13} color={Colors.appleOrange} style={{ marginRight: 6 }} />
           <AppText variant="tiny" color="secondary">
             Aligns near <AppText variant="tiny" weight="heavy" color="primary">Platform Pillar #{platformPillar}</AppText>
             {positionDesc ? ` (${positionDesc})` : ''} on Platform {platformNumber || '5'}
@@ -598,7 +598,7 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
           onPress={() => setViewMode('focused')}
           style={[styles.modeTab, viewMode === 'focused' && styles.modeTabActive]}
         >
-          <Layers size={13} color={viewMode === 'focused' ? Colors.primary : Colors.textMuted} style={{ marginRight: 6 }} />
+          <Layers size={13} color={viewMode === 'focused' ? Colors.appleOrange : Colors.textMuted} style={{ marginRight: 6 }} />
           <AppText
             variant="micro"
             weight="heavy"
@@ -618,7 +618,7 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
           onPress={() => setViewMode('full')}
           style={[styles.modeTab, viewMode === 'full' && styles.modeTabActive]}
         >
-          <Compass size={13} color={viewMode === 'full' ? Colors.primary : Colors.textMuted} style={{ marginRight: 6 }} />
+          <Compass size={13} color={viewMode === 'full' ? Colors.appleOrange : Colors.textMuted} style={{ marginRight: 6 }} />
           <AppText
             variant="micro"
             weight="heavy"
@@ -707,7 +707,7 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
               }}
               style={styles.jumpToUserBtn}
             >
-              <ArrowLeft size={11} color={Colors.primary} style={{ marginRight: 5 }} />
+              <ArrowLeft size={11} color={Colors.appleOrange} style={{ marginRight: 5 }} />
               <AppText variant="micro" weight="heavy" color="orange">
                 JUMP TO YOUR {isSleeper ? 'BAY' : 'ROW'} ({userCabin.cabinNumber})
               </AppText>
@@ -721,7 +721,7 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
 
               {/* Nearest Vestibule Guidance */}
               <View style={styles.focusedDoorBanner}>
-                <DoorOpen size={12} color={Colors.primary} style={{ marginRight: 6 }} />
+                <DoorOpen size={12} color={Colors.appleOrange} style={{ marginRight: 6 }} />
                 <AppText variant="micro" weight="heavy" color="orange" uppercase>
                   {isFrontDoor ? 'BOARD VIA FRONT VESTIBULE (DOORS 1 & 2)' : 'BOARD VIA REAR VESTIBULE (DOORS 3 & 4)'}
                 </AppText>
@@ -807,7 +807,7 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
           const Icon = am.icon;
           return (
             <View key={`amenity_${idx}`} style={styles.amenityChip}>
-              <Icon size={12} color={Colors.primary} style={{ marginRight: 5 }} />
+              <Icon size={12} color={Colors.appleOrange} style={{ marginRight: 5 }} />
               <AppText variant="micro" color="secondary" numberOfLines={1}>
                 {am.label}
               </AppText>
@@ -821,11 +821,11 @@ export const CoachLayout: React.FC<CoachLayoutProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: Colors.surface,
-    borderRadius: 16,
-    padding: Spacing.screenPadding,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    backgroundColor: Colors.appleGroupedBg,
+    borderRadius: 20,
+    padding: 16,
+    borderWidth: 0.5,
+    borderColor: Colors.appleSeparator,
     marginTop: Spacing.md,
   },
   headerRow: {
@@ -835,50 +835,50 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   userCoachTag: {
-    backgroundColor: Colors.primary,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
+    backgroundColor: 'rgba(255, 159, 10, 0.15)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
     marginLeft: 8,
   },
   badgePill: {
-    backgroundColor: Colors.surfaceHigh,
-    paddingHorizontal: 8,
+    backgroundColor: 'rgba(255, 159, 10, 0.12)',
+    paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderRadius: 12,
+    borderWidth: 0.5,
+    borderColor: 'rgba(255, 159, 10, 0.25)',
   },
   specialHeroBox: {
     flexDirection: 'row',
-    backgroundColor: Colors.surfaceHigh,
-    borderRadius: 12,
+    backgroundColor: Colors.appleSecondaryBg,
+    borderRadius: 14,
     padding: 12,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderWidth: 0.5,
+    borderColor: Colors.appleSeparator,
     marginTop: Spacing.xs,
   },
   specialIconCircle: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: Colors.surfaceHighest,
+    backgroundColor: Colors.appleTertiaryBg,
     alignItems: 'center',
     justifyContent: 'center',
   },
   userSeatBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surfaceHigh,
-    borderRadius: 12,
+    backgroundColor: Colors.appleSecondaryBg,
+    borderRadius: 14,
     padding: 12,
-    borderWidth: 1,
-    borderColor: Colors.borderMedium,
+    borderWidth: 0.5,
+    borderColor: Colors.appleSeparator,
     marginTop: Spacing.xs,
   },
   userSeatBadge: {
-    backgroundColor: Colors.primary,
-    borderRadius: 8,
+    backgroundColor: Colors.appleOrange,
+    borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 6,
     alignItems: 'center',
@@ -892,33 +892,33 @@ const styles = StyleSheet.create({
   inspectingBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surfaceHigh,
-    borderRadius: 10,
+    backgroundColor: Colors.appleSecondaryBg,
+    borderRadius: 12,
     paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    paddingVertical: 10,
+    borderWidth: 0.5,
+    borderColor: Colors.appleSeparator,
     marginTop: Spacing.xs,
   },
   platformPillarBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surfaceLowest,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    backgroundColor: Colors.appleSecondaryBg,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     marginTop: 8,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderWidth: 0.5,
+    borderColor: Colors.appleSeparator,
   },
   modeTabsRow: {
     flexDirection: 'row',
-    backgroundColor: Colors.surfaceLowest,
-    borderRadius: 10,
+    backgroundColor: Colors.appleSecondaryBg,
+    borderRadius: 12,
     padding: 3,
     marginTop: Spacing.md,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderWidth: 0.5,
+    borderColor: Colors.appleSeparator,
     overflow: 'hidden',
   },
   modeTab: {
@@ -926,13 +926,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 9,
+    paddingVertical: 8,
     paddingHorizontal: 8,
-    borderRadius: 7,
+    borderRadius: 9,
     overflow: 'hidden',
   },
   modeTabActive: {
-    backgroundColor: Colors.surfaceHighest,
+    backgroundColor: Colors.appleTertiaryBg,
   },
   focusedSection: {
     marginTop: Spacing.sm,
@@ -945,12 +945,12 @@ const styles = StyleSheet.create({
   stepBtn: {
     width: 32,
     height: 32,
-    borderRadius: 8,
-    backgroundColor: Colors.surfaceHigh,
+    borderRadius: 16,
+    backgroundColor: Colors.appleSecondaryBg,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderWidth: 0.5,
+    borderColor: Colors.appleSeparator,
   },
   stepBtnDisabled: {
     opacity: 0.35,
@@ -962,20 +962,20 @@ const styles = StyleSheet.create({
   unitPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surfaceHigh,
-    paddingHorizontal: 10,
+    backgroundColor: Colors.appleSecondaryBg,
+    paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 8,
+    borderRadius: 12,
     marginHorizontal: 3,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderWidth: 0.5,
+    borderColor: Colors.appleSeparator,
   },
   unitPillSelected: {
-    backgroundColor: Colors.primary,
-    borderColor: Colors.primary,
+    backgroundColor: Colors.appleOrange,
+    borderColor: Colors.appleOrange,
   },
   unitPillUser: {
-    borderColor: Colors.primary,
+    borderColor: Colors.appleOrange,
   },
   jumpToUserBtn: {
     flexDirection: 'row',
@@ -992,9 +992,9 @@ const styles = StyleSheet.create({
     marginTop: Spacing.xs,
     borderRadius: 16,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
-    backgroundColor: Colors.surfaceLowest,
+    borderWidth: 0.5,
+    borderColor: Colors.appleSeparator,
+    backgroundColor: Colors.appleSecondaryBg,
   },
   focusedDoorBanner: {
     flexDirection: 'row',
@@ -1003,22 +1003,22 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.02)',
     paddingVertical: 7,
     paddingHorizontal: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.05)',
+    borderBottomWidth: 0.5,
+    borderBottomColor: Colors.appleSeparator,
   },
   fullCoachFuselage: {
     marginTop: Spacing.sm,
     borderRadius: 16,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
-    backgroundColor: Colors.surfaceLowest,
+    borderWidth: 0.5,
+    borderColor: Colors.appleSeparator,
+    backgroundColor: Colors.appleSecondaryBg,
   },
   coachCapTop: {
     height: 12,
-    backgroundColor: Colors.surfaceHighest,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.06)',
+    backgroundColor: Colors.appleTertiaryBg,
+    borderBottomWidth: 0.5,
+    borderBottomColor: Colors.appleSeparator,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -1030,9 +1030,9 @@ const styles = StyleSheet.create({
   },
   coachCapBottom: {
     height: 12,
-    backgroundColor: Colors.surfaceHighest,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.06)',
+    backgroundColor: Colors.appleTertiaryBg,
+    borderTopWidth: 0.5,
+    borderTopColor: Colors.appleSeparator,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -1040,13 +1040,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: Colors.surfaceLowest,
+    backgroundColor: Colors.appleSecondaryBg,
     paddingVertical: 10,
     paddingHorizontal: 10,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.05)',
-    borderBottomColor: 'rgba(255, 255, 255, 0.05)',
+    borderTopWidth: 0.5,
+    borderBottomWidth: 0.5,
+    borderTopColor: Colors.appleSeparator,
+    borderBottomColor: Colors.appleSeparator,
   },
   vestibuleContainerCompact: {
     paddingVertical: 8,
@@ -1054,12 +1054,12 @@ const styles = StyleSheet.create({
   vestibuleDoor: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surfaceHigh,
+    backgroundColor: Colors.appleTertiaryBg,
     paddingVertical: 4,
     paddingHorizontal: 6,
     borderRadius: 6,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderWidth: 0.5,
+    borderColor: Colors.appleSeparator,
   },
   vestibuleDoorText: {
     fontSize: 8,
@@ -1094,7 +1094,7 @@ const styles = StyleSheet.create({
   },
   fullCoachScrollView: {
     maxHeight: 460,
-    backgroundColor: Colors.surfaceLowest,
+    backgroundColor: Colors.appleSecondaryBg,
     paddingHorizontal: 6,
     paddingVertical: 8,
   },
@@ -1135,23 +1135,23 @@ const styles = StyleSheet.create({
     width: 38,
     height: 42,
     borderRadius: 8,
-    backgroundColor: Colors.surfaceHigh,
+    backgroundColor: Colors.appleTertiaryBg,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderWidth: 0.5,
+    borderColor: Colors.appleSeparator,
     margin: 2,
   },
   sideBerthBox: {
     width: 44,
   },
   userSeatBox: {
-    backgroundColor: Colors.primary,
-    borderColor: Colors.primary,
+    backgroundColor: Colors.appleOrange,
+    borderColor: Colors.appleOrange,
   },
   inspectedSeatBox: {
-    borderColor: Colors.primary,
-    backgroundColor: Colors.surfaceHighest,
+    borderColor: Colors.appleOrange,
+    backgroundColor: 'rgba(255, 159, 10, 0.15)',
   },
   seatTypeTag: {
     fontSize: 9,
@@ -1159,17 +1159,17 @@ const styles = StyleSheet.create({
   },
   // Sleeper Bay layout
   bayContainer: {
-    backgroundColor: Colors.surfaceLowest,
+    backgroundColor: 'transparent',
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.04)',
+    borderBottomWidth: 0.5,
+    borderBottomColor: Colors.appleSeparator,
   },
   userBayContainer: {
-    backgroundColor: 'rgba(245, 51, 44, 0.05)',
+    backgroundColor: 'rgba(255, 159, 10, 0.08)',
     borderLeftWidth: 2,
     borderRightWidth: 2,
-    borderLeftColor: Colors.primary,
-    borderRightColor: Colors.primary,
+    borderLeftColor: Colors.appleOrange,
+    borderRightColor: Colors.appleOrange,
   },
   bayHeaderRow: {
     flexDirection: 'row',
@@ -1177,11 +1177,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 8,
     paddingBottom: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.divider,
+    borderBottomWidth: 0.5,
+    borderBottomColor: Colors.appleSeparator,
   },
   youBayBadge: {
-    backgroundColor: 'rgba(245, 51, 44, 0.15)',
+    backgroundColor: 'rgba(255, 159, 10, 0.15)',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
@@ -1216,9 +1216,9 @@ const styles = StyleSheet.create({
     width: 14,
     height: 28,
     borderRadius: 4,
-    backgroundColor: Colors.surfaceHighest,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    backgroundColor: Colors.appleTertiaryBg,
+    borderWidth: 0.5,
+    borderColor: Colors.appleSeparator,
   },
   facingTableText: {
     fontSize: 7,
@@ -1246,21 +1246,21 @@ const styles = StyleSheet.create({
   },
   // Chair Car row layout
   chairRowContainer: {
-    backgroundColor: Colors.surfaceLowest,
+    backgroundColor: 'transparent',
     paddingVertical: 6,
     paddingHorizontal: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.04)',
+    borderBottomWidth: 0.5,
+    borderBottomColor: Colors.appleSeparator,
   },
   userChairRowContainer: {
-    backgroundColor: 'rgba(245, 51, 44, 0.05)',
+    backgroundColor: 'rgba(255, 159, 10, 0.08)',
     borderLeftWidth: 2,
     borderRightWidth: 2,
-    borderLeftColor: Colors.primary,
-    borderRightColor: Colors.primary,
+    borderLeftColor: Colors.appleOrange,
+    borderRightColor: Colors.appleOrange,
   },
   chairSeatsGroup: {
     flex: 1,
@@ -1296,13 +1296,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: Colors.surfaceHigh,
-    borderRadius: 8,
+    backgroundColor: Colors.appleSecondaryBg,
+    borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 8,
     marginTop: Spacing.sm,
-    borderWidth: 1,
-    borderColor: Colors.borderMedium,
+    borderWidth: 0.5,
+    borderColor: Colors.appleSeparator,
   },
   // Legend
   legendRow: {
@@ -1321,14 +1321,14 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 3,
-    backgroundColor: Colors.surfaceHighest,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    backgroundColor: Colors.appleTertiaryBg,
+    borderWidth: 0.5,
+    borderColor: Colors.appleSeparator,
     marginRight: 4,
   },
   legendBoxUser: {
-    backgroundColor: Colors.primary,
-    borderColor: Colors.primary,
+    backgroundColor: Colors.appleOrange,
+    borderColor: Colors.appleOrange,
   },
   legendWindowBox: {
     width: 4,
@@ -1350,19 +1350,19 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     marginTop: Spacing.sm,
     paddingTop: Spacing.xs,
-    borderTopWidth: 1,
-    borderTopColor: Colors.divider,
+    borderTopWidth: 0.5,
+    borderTopColor: Colors.appleSeparator,
   },
   amenityChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surfaceLowest,
-    paddingHorizontal: 8,
+    backgroundColor: Colors.appleSecondaryBg,
+    paddingHorizontal: 9,
     paddingVertical: 5,
-    borderRadius: 6,
+    borderRadius: 8,
     marginRight: 6,
     marginTop: 6,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderWidth: 0.5,
+    borderColor: Colors.appleSeparator,
   },
 });

@@ -1,4 +1,4 @@
-package com.nora.wallet.widget
+package dev.saksham.nora.widget
 
 import android.content.Context
 import com.facebook.react.bridge.Promise

@@ -37,11 +37,11 @@ interface SlideItem {
 const SLIDES: SlideItem[] = [
   {
     id: 'detect',
-    tag: 'AUTOMATIC DETECTION',
-    title: 'Zero-Effort Ticket Wallet',
+    tag: 'INSTANT IMPORT',
+    title: 'Share Sheet & Clipboard',
     description:
-      'NORA listens for incoming booking notifications and SMS from IRCTC and redRail, extracting your journey details automatically.',
-    icon: (c) => <Bell size={38} color={c} />,
+      'Effortlessly import tickets by sharing SMS or booking text to NORA via Android Share Sheet, or simply copy your 10-digit PNR.',
+    icon: (c) => <Sparkles size={38} color={c} />,
   },
   {
     id: 'boarding_pass',
@@ -139,23 +139,15 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
 
         {/* Onboarding Notification Helper on Slide 1 */}
         {currentSlide.id === 'detect' && (
-          <TouchableOpacity
-            activeOpacity={0.85}
-            onPress={handleGrantNotification}
-            style={styles.permissionActionCard}
-          >
+          <View style={styles.permissionActionCard}>
             <View style={styles.permissionLeft}>
-              <View style={[styles.permDot, notificationGranted && styles.permDotActive]} />
-              <AppText variant="caption" weight="bold" color={notificationGranted ? 'success' : 'primary'}>
-                {notificationGranted ? 'Notification Listener Enabled' : 'Enable Notification Access'}
+              <View style={[styles.permDot, styles.permDotActive]} />
+              <AppText variant="caption" weight="bold" color="success">
+                Share Sheet & Clipboard Active
               </AppText>
             </View>
-            {notificationGranted ? (
-              <Check size={16} color={Colors.success} />
-            ) : (
-              <ArrowRight size={14} color={Colors.primary} />
-            )}
-          </TouchableOpacity>
+            <Check size={16} color={Colors.success} />
+          </View>
         )}
       </View>
 

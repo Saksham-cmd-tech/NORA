@@ -1,4 +1,4 @@
-package com.nora.wallet.bridge
+package dev.saksham.nora.bridge
 
 import android.view.View
 import com.facebook.react.ReactPackage
@@ -7,7 +7,7 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.uimanager.ReactShadowNode
 import com.facebook.react.uimanager.ViewManager
 
-import com.nora.wallet.widget.NoraWidgetModule
+import dev.saksham.nora.widget.NoraWidgetModule
 
 class NoraPackage : ReactPackage {
     override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {

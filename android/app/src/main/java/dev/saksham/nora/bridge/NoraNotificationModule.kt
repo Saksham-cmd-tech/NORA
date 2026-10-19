@@ -1,4 +1,4 @@
-package com.nora.wallet.bridge
+package dev.saksham.nora.bridge
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,8 +12,8 @@ import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.modules.core.DeviceEventManagerModule
-import com.nora.wallet.notification.NoraNotificationHelper
-import com.nora.wallet.notification.NoraNotificationScheduler
+import dev.saksham.nora.notification.NoraNotificationHelper
+import dev.saksham.nora.notification.NoraNotificationScheduler
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
@@ -87,53 +87,21 @@ class NoraNotificationModule(reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
+    fun getInitialSharedText(promise: Promise) {
+        val text = pendingSharedText
+        pendingSharedText = null
+        promise.resolve(text)
+    }
+
+    @ReactMethod
+    fun clearSharedText(promise: Promise) {
+        pendingSharedText = null
+        promise.resolve(true)
+    }
+
+    @ReactMethod
     fun scanSmsInbox(promise: Promise) {
-        try {
-            val context = reactApplicationContext
-            val uri = android.net.Uri.parse("content://sms/inbox")
-            val projection = arrayOf("_id", "address", "body", "date")
-            val cursor = context.contentResolver.query(
-                uri,
-                projection,
-                null,
-                null,
-                "date DESC LIMIT 300"
-            )
-
-            val results = Arguments.createArray()
-            cursor?.use {
-                val addressIdx = it.getColumnIndex("address")
-                val bodyIdx = it.getColumnIndex("body")
-                val dateIdx = it.getColumnIndex("date")
-
-                while (it.moveToNext()) {
-                    val address = if (addressIdx != -1) it.getString(addressIdx) ?: "" else ""
-                    val body = if (bodyIdx != -1) it.getString(bodyIdx) ?: "" else ""
-                    val date = if (dateIdx != -1) it.getLong(dateIdx) else 0L
-
-                    val isRailMessage = body.contains("IRCTC", ignoreCase = true) ||
-                            body.contains("redRail", ignoreCase = true) ||
-                            body.contains("PNR", ignoreCase = true) ||
-                            body.contains("TRN:", ignoreCase = true) ||
-                            body.contains("DOJ:", ignoreCase = true) ||
-                            address.contains("IRCTC", ignoreCase = true) ||
-                            address.contains("RAIL", ignoreCase = true)
-
-                    if (isRailMessage && body.isNotBlank()) {
-                        val map = Arguments.createMap().apply {
-                            putString("address", address)
-                            putString("body", body)
-                            putDouble("date", date.toDouble())
-                        }
-                        results.pushMap(map)
-                    }
-                }
-            }
-
-            promise.resolve(results)
-        } catch (e: Exception) {
-            promise.reject("ERROR_READING_SMS", e.message, e)
-        }
+        promise.resolve(Arguments.createArray())
     }
 
     @ReactMethod
@@ -388,6 +356,26 @@ class NoraNotificationModule(reactContext: ReactApplicationContext) :
         private var instanceContext: ReactApplicationContext? = null
         private var pendingAction: WritableMap? = null
         private var isLiveJourneyPinned: Boolean = false
+        var pendingSharedText: String? = null
+
+        fun handleSharedText(text: String?) {
+            if (text.isNullOrBlank()) return
+            pendingSharedText = text
+
+            val context = instanceContext ?: return
+            if (!context.hasActiveReactInstance()) return
+
+            try {
+                val params = Arguments.createMap().apply {
+                    putString("text", text)
+                }
+                context
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                    .emit("onSharedTextReceived", params)
+            } catch (e: Exception) {
+                // Ignore if JS not yet attached
+            }
+        }
 
         fun handleNotificationAction(actionType: String, pnr: String, trainNumber: String) {
             if (actionType == NoraNotificationHelper.ACTION_DISMISS_LIVE_ACTIVITY) {

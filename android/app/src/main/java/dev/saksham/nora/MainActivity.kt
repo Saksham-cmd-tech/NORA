@@ -1,4 +1,4 @@
-package com.nora.wallet
+package dev.saksham.nora
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,8 +6,8 @@ import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
-import com.nora.wallet.bridge.NoraNotificationModule
-import com.nora.wallet.notification.NoraNotificationHelper
+import dev.saksham.nora.bridge.NoraNotificationModule
+import dev.saksham.nora.notification.NoraNotificationHelper
 
 class MainActivity : ReactActivity() {
 
@@ -19,6 +19,7 @@ class MainActivity : ReactActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     handleNotificationIntent(intent)
+    handleShareIntent(intent)
   }
 
   override fun onNewIntent(intent: Intent?) {
@@ -26,6 +27,18 @@ class MainActivity : ReactActivity() {
     setIntent(intent)
     if (intent != null) {
       handleNotificationIntent(intent)
+      handleShareIntent(intent)
+    }
+  }
+
+  private fun handleShareIntent(intent: Intent?) {
+    if (intent == null) return
+    if (Intent.ACTION_SEND == intent.action && intent.type != null) {
+      val sharedText = intent.getStringExtra(Intent.EXTRA_TEXT)
+        ?: intent.getCharSequenceExtra(Intent.EXTRA_TEXT)?.toString()
+      if (!sharedText.isNullOrBlank()) {
+        NoraNotificationModule.handleSharedText(sharedText)
+      }
     }
   }
 

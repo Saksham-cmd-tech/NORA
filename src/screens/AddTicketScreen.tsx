@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,32 +7,21 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
 } from 'react-native';
 import {
-  ArrowLeft,
-  HelpCircle,
-  Zap,
-  Edit3,
-  ShieldCheck,
-  RefreshCw,
-  Clipboard as ClipboardIcon,
-  Sparkles,
-  Lock,
-  ArrowRight,
-  User,
-  Ticket as TicketIcon,
+  Check,
+  X,
+  Plus,
 } from 'lucide-react-native';
-import Clipboard from '@react-native-clipboard/clipboard';
 import { Colors } from '../theme/colors';
 import { Spacing } from '../theme/spacing';
-import { NormalizedTicket } from '../types/ticket';
+import { NormalizedTicket, TicketStatus } from '../types/ticket';
 import { AppText } from '../components/common/AppText';
-import { AppButton } from '../components/common/AppButton';
-import { StatusBadge } from '../components/common/StatusBadge';
-import { SegmentedControl } from '../components/common/SegmentedControl';
-import { parseBookingNotification } from '../parsers/notificationParser';
 import { ticketRepository } from '../database/repositories/ticketRepository';
-import { isTicketValidAndUpcoming } from '../utils/dateUtils';
+import { getStationName, getTrainName } from '../utils/stationLookup';
 
 interface AddTicketScreenProps {
   onBack: () => void;
@@ -40,556 +29,631 @@ interface AddTicketScreenProps {
   onCheckActiveTickets?: () => Promise<void>;
 }
 
+const CLASS_OPTIONS = ['CC', 'EC', '3A', '2A', '1A', 'SL', '3E', '2S'];
+const STATUS_OPTIONS: TicketStatus[] = ['CONFIRMED', 'RAC', 'WAITLISTED'];
+
 export const AddTicketScreen: React.FC<AddTicketScreenProps> = ({
   onBack,
   onProceedToVerify,
-  onCheckActiveTickets,
 }) => {
-  const [mode, setMode] = useState<'auto' | 'manual'>('auto');
-  const [detectedTicket, setDetectedTicket] = useState<NormalizedTicket | null>(null);
-  const [isDuplicateTicket, setIsDuplicateTicket] = useState(false);
-  const [rawSmsInput, setRawSmsInput] = useState<string>('');
-
   // Manual Entry Form State
-  const [manualPnr, setManualPnr] = useState('');
-  const [manualTrainNo, setManualTrainNo] = useState('');
-  const [manualTrainName, setManualTrainName] = useState('');
-  const [manualFrom, setManualFrom] = useState('');
-  const [manualTo, setManualTo] = useState('');
-  const [manualDate, setManualDate] = useState('');
-  const [manualPassenger, setManualPassenger] = useState('');
-  const [manualCoach, setManualCoach] = useState('');
-  const [manualSeat, setManualSeat] = useState('');
-  const [manualClass, setManualClass] = useState('CC');
-  const [manualFare, setManualFare] = useState('');
+  const [pnr, setPnr] = useState('');
+  const [trainNo, setTrainNo] = useState('');
+  const [trainName, setTrainName] = useState('');
+  const [fromStation, setFromStation] = useState('');
+  const [toStation, setToStation] = useState('');
+  const [date, setDate] = useState('');
+  const [departureTime, setDepartureTime] = useState('');
+  const [passengerName, setPassengerName] = useState('');
+  const [travelClass, setTravelClass] = useState('CC');
+  const [coach, setCoach] = useState('');
+  const [seat, setSeat] = useState('');
+  const [status, setStatus] = useState<TicketStatus>('CONFIRMED');
+  const [fare, setFare] = useState('');
 
-  const handleCheckActiveTickets = async () => {
-    if (onCheckActiveTickets) {
-      await onCheckActiveTickets();
-      return;
+  // Keyboard avoidance and view preservation state
+  const scrollRef = useRef<ScrollView>(null);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSub = Keyboard.addListener(showEvent, (e) => {
+      setKeyboardHeight(e.endCoordinates.height);
+    });
+    const hideSub = Keyboard.addListener(hideEvent, () => {
+      setKeyboardHeight(0);
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
+  // Auto-scroll helper when inputs receive focus
+  const scrollToInput = (offset: number) => {
+    setTimeout(() => {
+      scrollRef.current?.scrollTo({ y: offset, animated: true });
+    }, 120);
+  };
+
+  const handleTrainNoChange = (text: string) => {
+    setTrainNo(text);
+    if (text.length === 5) {
+      const detectedName = getTrainName(text);
+      if (detectedName && !trainName) {
+        setTrainName(detectedName);
+      }
     }
-    const list = await ticketRepository.getTickets();
-    const activeTickets = list.filter(
-      (t) =>
-        isTicketValidAndUpcoming(t.journey?.date, t.status, t.journey?.departure) &&
-        t.status !== 'COMPLETED' &&
-        t.status !== 'CANCELLED'
-    );
-    if (activeTickets.length > 0) {
+  };
+
+  // Quick date helper chips
+  const applyQuickDate = (offsetDays: number) => {
+    const d = new Date();
+    d.setDate(d.getDate() + offsetDays);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = d.toLocaleString('en-US', { month: 'short' });
+    const year = d.getFullYear();
+    setDate(`${day} ${month} ${year}`);
+  };
+
+  // Check if form has unsaved edits
+  const hasUnsavedChanges = Boolean(
+    pnr || trainNo || trainName || fromStation || toStation || date || passengerName
+  );
+
+  // Validate form
+  const isPnrValid = pnr.trim().length === 10;
+  const isTrainNoValid = trainNo.trim().length >= 4;
+  const isRouteValid = fromStation.trim().length >= 2 && toStation.trim().length >= 2;
+  const isDateValid = date.trim().length >= 6;
+  const canSubmit = isPnrValid && isTrainNoValid && isRouteValid && isDateValid;
+
+  const handleCancelPress = () => {
+    if (hasUnsavedChanges) {
       Alert.alert(
-        `Active Tickets (${activeTickets.length})`,
-        `You have ${activeTickets.length} active ticket(s) in your wallet:\n\n${activeTickets
-          .map(
-            (t, i) =>
-              `${i + 1}. Train ${t.train.number} ${t.train.name || ''}\n   Route: ${t.journey.from} → ${t.journey.to} (${t.journey.date})\n   PNR: ${t.pnr}`
-          )
-          .join('\n\n')}`,
+        'Discard Ticket?',
+        'Any details you have entered will not be saved.',
         [
-          { text: 'View in Wallet', onPress: onBack },
-          { text: 'Close', style: 'cancel' },
+          { text: 'Keep Editing', style: 'cancel' },
+          { text: 'Discard', style: 'destructive', onPress: onBack },
         ]
       );
     } else {
-      Alert.alert(
-        'Check Active Tickets',
-        'You have 0 active train tickets in your wallet.\n\nPaste an IRCTC or redRail booking SMS above, or enter details manually.',
-        [{ text: 'OK' }]
-      );
+      onBack();
     }
   };
 
-  const handlePaste = async () => {
-    try {
-      const text = await Clipboard.getString();
-      if (text && text.trim().length > 0) {
-        setRawSmsInput(text);
-        const result = parseBookingNotification(text);
-        if (result) {
-          const isDup = await ticketRepository.isDuplicatePNR(result.pnr);
-          setIsDuplicateTicket(isDup);
-          setDetectedTicket(result);
-          if (isDup) {
-            Alert.alert(
-              'Ticket Already in Wallet',
-              `Found booking for PNR ${result.pnr}.\n\nThis ticket is already in your wallet. Reviewing details will update/merge the existing ticket without adding a duplicate.`
-            );
-          } else {
-            Alert.alert('SMS Detected', `Found booking for PNR ${result.pnr} from ${result.source}!`);
-          }
-        }
-      } else {
-        Alert.alert('Clipboard Empty', 'No text found in clipboard to paste.');
-      }
-    } catch {
-      Alert.alert('Clipboard', 'Could not read from clipboard.');
-    }
-  };
-
-  const handleExtractFromText = async () => {
-    if (!rawSmsInput.trim()) {
-      Alert.alert('Empty Input', 'Please paste a booking SMS or notification text first.');
+  const handleSubmit = async () => {
+    const cleanPnr = pnr.trim();
+    if (cleanPnr.length !== 10) {
+      Alert.alert('Invalid PNR', 'Please enter a complete 10-digit PNR number.');
       return;
     }
-    const result = parseBookingNotification(rawSmsInput);
-    if (result) {
-      const isDup = await ticketRepository.isDuplicatePNR(result.pnr);
-      setIsDuplicateTicket(isDup);
-      setDetectedTicket(result);
-      if (isDup) {
-        Alert.alert(
-          'Ticket Already in Wallet',
-          `Ticket PNR ${result.pnr} is already in your wallet.\n\nReviewing details will update the existing ticket without creating a duplicate.`
-        );
-      } else {
-        Alert.alert('Ticket Extracted', `Successfully parsed PNR ${result.pnr} from ${result.source}!`);
-      }
-    } else {
-      Alert.alert(
-        'Parse Notice',
-        'Could not automatically detect IRCTC or redRail booking structure. You can enter details using Manual Entry.'
-      );
-    }
-  };
-
-  const handleManualProceed = async () => {
-    if (!manualPnr.trim() || manualPnr.trim().length < 10) {
-      Alert.alert('Invalid PNR', 'Please enter a valid 10-digit PNR number.');
+    if (!trainNo.trim()) {
+      Alert.alert('Missing Train Number', 'Please enter the train number.');
       return;
     }
-    if (!manualTrainNo.trim()) {
-      Alert.alert('Missing Train Number', 'Please enter the 5-digit train number.');
+    if (!fromStation.trim() || !toStation.trim()) {
+      Alert.alert('Missing Route', 'Please enter both Origin and Destination station codes.');
+      return;
+    }
+    if (!date.trim()) {
+      Alert.alert('Missing Date', 'Please enter the journey date.');
       return;
     }
 
-    const isDup = await ticketRepository.isDuplicatePNR(manualPnr.trim());
+    const cleanFrom = fromStation.trim().toUpperCase();
+    const cleanTo = toStation.trim().toUpperCase();
+    const resolvedFromName = getStationName(cleanFrom) || `${cleanFrom} Station`;
+    const resolvedToName = getStationName(cleanTo) || `${cleanTo} Station`;
+    const finalTrainName = trainName.trim() || getTrainName(trainNo.trim()) || `Train ${trainNo.trim()}`;
 
-    const manualTicket: NormalizedTicket = {
-      id: `ticket_${manualPnr.trim()}`,
+    const newTicket: NormalizedTicket = {
+      id: `ticket_${cleanPnr}`,
       source: 'MANUAL',
-      pnr: manualPnr.trim(),
+      pnr: cleanPnr,
       train: {
-        number: manualTrainNo.trim(),
-        name: manualTrainName.trim() || `Train ${manualTrainNo.trim()}`,
-        type: `SUPERFAST ${manualTrainNo.trim()}`,
+        number: trainNo.trim(),
+        name: finalTrainName,
+        type: `SUPERFAST ${trainNo.trim()}`,
       },
       journey: {
-        from: manualFrom.trim().toUpperCase() || 'ORIGIN',
-        to: manualTo.trim().toUpperCase() || 'DEST',
-        date: manualDate.trim() || 'Journey Date',
+        from: cleanFrom,
+        fromName: resolvedFromName,
+        to: cleanTo,
+        toName: resolvedToName,
+        date: date.trim(),
+        departure: departureTime.trim() || undefined,
       },
       passenger: {
-        name: manualPassenger.trim() || 'Passenger',
-        coach: manualCoach.trim(),
-        seat: manualSeat.trim(),
-        class: manualClass,
-        className: `${manualClass} Class`,
-        bookingStatus: 'CONFIRMED',
+        name: passengerName.trim() || 'Passenger',
+        coach: coach.trim().toUpperCase() || undefined,
+        seat: seat.trim() || undefined,
+        class: travelClass,
+        className: `${travelClass} Class`,
+        bookingStatus: status,
       },
-      fare: manualFare ? { total: parseFloat(manualFare) } : undefined,
-      status: 'CONFIRMED',
+      fare: fare.trim() ? { total: parseFloat(fare.trim()) } : undefined,
+      status: status,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       isUpcoming: true,
     };
 
+    const isDup = await ticketRepository.isDuplicatePNR(cleanPnr);
     if (isDup) {
       Alert.alert(
         'Ticket Already in Wallet',
-        `PNR ${manualPnr.trim()} already exists in your wallet.\n\nProceeding will update the existing ticket details instead of adding a duplicate.`,
+        `PNR ${cleanPnr} already exists in your wallet.\n\nProceeding will update your existing ticket with these new details.`,
         [
           { text: 'Cancel', style: 'cancel' },
           {
             text: 'Update Existing',
-            onPress: () => onProceedToVerify(manualTicket),
+            onPress: () => onProceedToVerify(newTicket),
           },
         ]
       );
       return;
     }
 
-    onProceedToVerify(manualTicket);
+    onProceedToVerify(newTicket);
   };
+
+  const fromResolvedName = fromStation.trim().length >= 2 ? getStationName(fromStation.trim()) : '';
+  const toResolvedName = toStation.trim().length >= 2 ? getStationName(toStation.trim()) : '';
 
   return (
     <View style={styles.safeArea}>
       <StatusBar barStyle="light-content" />
-      {/* Top Header */}
+
+      {/* Apple-style Modal Header */}
       <View style={styles.header}>
         <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={onBack}
-          style={styles.backBtn}
+          activeOpacity={0.7}
+          onPress={handleCancelPress}
+          style={styles.headerButton}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <ArrowLeft size={20} color={Colors.textPrimary} />
+          <AppText variant="body" color="primary" weight="medium">
+            Cancel
+          </AppText>
         </TouchableOpacity>
 
-        <AppText variant="subheading" weight="heavy" uppercase letterSpacing={1} color="primary">
-          ADD TICKET
+        <AppText variant="bodyLg" weight="bold" color="primary">
+          New Ticket
         </AppText>
 
         <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => {
-            Alert.alert(
-              'Add Ticket Guide',
-              'NORA automatically reads booking notifications from IRCTC and redRail. You can also paste SMS text manually.'
-            );
-          }}
-          style={styles.helpBtn}
+          activeOpacity={0.7}
+          onPress={handleSubmit}
+          disabled={!canSubmit}
+          style={styles.headerButton}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <HelpCircle size={18} color={Colors.textSecondary} />
+          <AppText
+            variant="body"
+            weight="bold"
+            color={canSubmit ? 'orange' : 'muted'}
+          >
+            Add
+          </AppText>
         </TouchableOpacity>
       </View>
 
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainer}
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
       >
-        {/* Auto Detect vs Manual Segmented Control */}
-        <View style={styles.toggleWrapper}>
-          <SegmentedControl
-            options={[
-              { value: 'auto', label: 'AUTO-DETECT' },
-              { value: 'manual', label: 'MANUAL ENTRY' },
-            ]}
-            selectedValue={mode}
-            onSelect={(val) => setMode(val as 'auto' | 'manual')}
-          />
-        </View>
+        <ScrollView
+          ref={scrollRef}
+          style={styles.container}
+          contentContainerStyle={[
+            styles.contentContainer,
+            { paddingBottom: keyboardHeight > 0 ? keyboardHeight + 80 : 60 },
+          ]}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Section 1: JOURNEY & TRAIN */}
+          <AppText
+            variant="micro"
+            weight="bold"
+            color="secondary"
+            uppercase
+            letterSpacing={0.8}
+            style={styles.groupHeader}
+          >
+            JOURNEY & TRAIN
+          </AppText>
 
-        {/* ================= AUTO DETECT MODE ================= */}
-        {mode === 'auto' && (
-          <View>
-            {detectedTicket ? (
-              <View>
-                {/* Step Indicator */}
-                <View style={styles.stepHeader}>
-                  <AppText variant="micro" uppercase weight="bold" color="muted" letterSpacing={0.8}>
-                    STEP 1 OF 2 · READY TO IMPORT
-                  </AppText>
-                  <StatusBadge label="Ticket Detected" variant="orange" dot />
-                </View>
-
-                {/* Detected Ticket Preview Card */}
-                <View style={styles.detectedCard}>
-                  <View style={styles.detectedCardHeader}>
-                    <StatusBadge
-                      label={detectedTicket.train.name ? detectedTicket.train.name.toUpperCase() : `TRAIN ${detectedTicket.train.number}`}
-                      variant="dark"
-                    />
-                    <StatusBadge
-                      label={detectedTicket.passenger.seat ? `${detectedTicket.passenger.class || 'CC'} · ${detectedTicket.passenger.seat}` : (detectedTicket.passenger.class || 'CC')}
-                      variant="orange"
-                    />
-                  </View>
-
-                  {/* Route Display */}
-                  <View style={styles.routeRow}>
-                    <View style={styles.stationBlockLeft}>
-                      <AppText variant="heading" weight="heavy" color="primary">
-                        {detectedTicket.journey.from}
-                      </AppText>
-                      {detectedTicket.journey.fromName && (
-                        <AppText variant="micro" color="secondary" numberOfLines={1}>
-                          {detectedTicket.journey.fromName}
-                        </AppText>
-                      )}
-                    </View>
-
-                    <View style={styles.arrowBetween}>
-                      {detectedTicket.journey.departure && (
-                        <AppText variant="tiny" color="orange" weight="bold">
-                          {detectedTicket.journey.departure}
-                        </AppText>
-                      )}
-                      <AppText variant="tiny" color="secondary">
-                        →
-                      </AppText>
-                    </View>
-
-                    <View style={styles.stationBlockRight}>
-                      <AppText variant="heading" weight="heavy" color="primary">
-                        {detectedTicket.journey.to}
-                      </AppText>
-                      {detectedTicket.journey.toName && (
-                        <AppText variant="micro" color="secondary" numberOfLines={1}>
-                          {detectedTicket.journey.toName}
-                        </AppText>
-                      )}
-                    </View>
-                  </View>
-
-                  <View style={styles.cardDivider} />
-
-                  {/* Passenger & PNR Row */}
-                  <View style={styles.passengerPnrRow}>
-                    <View style={styles.passengerInline}>
-                      <AppText variant="caption" weight="bold" color="primary" numberOfLines={1}>
-                        {detectedTicket.passenger.name || 'Passenger'}
-                      </AppText>
-                    </View>
-
-                    <AppText variant="caption" weight="bold" color="orange">
-                      {`PNR ${detectedTicket.pnr}`}
-                    </AppText>
-                  </View>
-
-                  <View style={styles.sourceRow}>
-                    <View style={styles.sourceBadge}>
-                      <ShieldCheck size={12} color={Colors.success} style={{ marginRight: 4 }} />
-                      <AppText variant="micro" weight="medium" color="secondary">
-                        {`Parsed from ${detectedTicket.source}`}
-                      </AppText>
-                    </View>
-
-                    <TouchableOpacity
-                      activeOpacity={0.8}
-                      onPress={() => onProceedToVerify(detectedTicket)}
-                    >
-                      <AppText variant="micro" weight="bold" color="orange">
-                        Review Details →
-                      </AppText>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-
-                {isDuplicateTicket && (
-                  <View style={styles.duplicateWarningBox}>
-                    <ShieldCheck size={13} color={Colors.warning} style={{ marginRight: 6 }} />
-                    <AppText variant="micro" weight="bold" color="warning">
-                      ALREADY IN WALLET · UPDATE MODE (NO DUPLICATE)
-                    </AppText>
-                  </View>
-                )}
-
-                {/* Primary CTA Button */}
-                <View style={styles.ctaWrapper}>
-                  <AppButton
-                    title={
-                      isDuplicateTicket
-                        ? `REVIEW & UPDATE TICKET (PNR ${detectedTicket.pnr})`
-                        : 'REVIEW & CONFIRM DETAILS'
-                    }
-                    variant="primary"
-                    icon={<ArrowRight size={16} color="#000000" />}
-                    onPress={() => onProceedToVerify(detectedTicket)}
-                  />
-                </View>
-              </View>
-            ) : (
-              <View style={styles.listenCard}>
-                <View style={styles.listenIconCircle}>
-                  <Sparkles size={28} color={Colors.primary} />
-                </View>
-                <AppText variant="subheading" weight="bold" color="primary" center style={styles.listenTitle}>
-                  Auto-Detecting Bookings
-                </AppText>
-                <AppText variant="caption" color="secondary" center style={styles.listenSubtitle}>
-                  NORA runs a background NotificationListenerService to intercept train booking notifications from IRCTC and redRail.
-                </AppText>
-              </View>
-            )}
-
-            {/* Read-only SMS Parser Box */}
-            <View style={styles.smsBox}>
-              <View style={styles.smsBoxHeader}>
-                <View style={styles.smsBoxHeaderLeft}>
-                  <Lock size={13} color={Colors.textSecondary} style={{ marginRight: 6 }} />
-                  <AppText variant="micro" weight="bold" color="secondary" uppercase>
-                    PASTE SMS / NOTIFICATION TEXT
-                  </AppText>
-                </View>
-
-                <TouchableOpacity activeOpacity={0.8} onPress={handlePaste} style={styles.pasteIconBtn}>
-                  <ClipboardIcon size={12} color={Colors.primary} style={{ marginRight: 4 }} />
-                  <AppText variant="micro" weight="bold" color="orange">
-                    PASTE
-                  </AppText>
-                </TouchableOpacity>
-              </View>
-
-              <TextInput
-                value={rawSmsInput}
-                onChangeText={setRawSmsInput}
-                placeholder="Paste IRCTC or redRail booking SMS text here..."
-                placeholderTextColor={Colors.textMuted}
-                multiline
-                numberOfLines={4}
-                style={styles.smsTextInput}
-              />
-
-              <View style={styles.extractBtnWrapper}>
-                <AppButton
-                  title="PARSE TICKET FROM TEXT"
-                  variant="secondary"
-                  onPress={handleExtractFromText}
-                />
-              </View>
-
-              {/* Check Current Active Tickets Button */}
-              <View style={styles.checkActiveBtnWrapper}>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={handleCheckActiveTickets}
-                  style={styles.checkActiveBtn}
-                >
-                  <TicketIcon size={14} color={Colors.primary} style={{ marginRight: 8 }} />
-                  <AppText variant="micro" weight="bold" color="orange" uppercase letterSpacing={0.8}>
-                    CHECK CURRENT ACTIVE TICKETS
-                  </AppText>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        )}
-
-        {/* ================= MANUAL ENTRY MODE ================= */}
-        {mode === 'manual' && (
-          <View style={styles.manualForm}>
-            <View style={styles.inputGroup}>
-              <AppText variant="micro" uppercase color="muted" weight="bold" style={styles.inputLabel}>
-                PNR NUMBER (10 DIGITS) *
+          <View style={styles.groupCard}>
+            {/* PNR Number */}
+            <View style={styles.inputRow}>
+              <AppText variant="body" weight="medium" color="secondary" style={styles.rowLabel}>
+                PNR
               </AppText>
               <TextInput
-                value={manualPnr}
-                onChangeText={setManualPnr}
-                placeholder="e.g. 8354766445"
-                placeholderTextColor={Colors.textMuted}
+                value={pnr}
+                onChangeText={setPnr}
+                placeholder="10-digit PNR"
+                placeholderTextColor={Colors.appleTertiaryLabel}
                 keyboardType="number-pad"
                 maxLength={10}
-                style={styles.manualInput}
+                style={styles.rowInput}
               />
+              {pnr.length === 10 ? (
+                <View style={styles.validCheck}>
+                  <Check size={16} color={Colors.appleGreen} strokeWidth={2.6} />
+                </View>
+              ) : pnr.length > 0 ? (
+                <TouchableOpacity onPress={() => setPnr('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                  <X size={15} color={Colors.appleTertiaryLabel} />
+                </TouchableOpacity>
+              ) : null}
             </View>
 
-            <View style={styles.rowInputs}>
-              <View style={styles.halfCol}>
-                <AppText variant="micro" uppercase color="muted" weight="bold" style={styles.inputLabel}>
-                  TRAIN NUMBER *
-                </AppText>
-                <TextInput
-                  value={manualTrainNo}
-                  onChangeText={setManualTrainNo}
-                  placeholder="e.g. 26101"
-                  placeholderTextColor={Colors.textMuted}
-                  keyboardType="number-pad"
-                  maxLength={5}
-                  style={styles.manualInput}
-                />
-              </View>
-              <View style={styles.colSpacing} />
-              <View style={styles.halfCol}>
-                <AppText variant="micro" uppercase color="muted" weight="bold" style={styles.inputLabel}>
-                  TRAIN NAME
-                </AppText>
-                <TextInput
-                  value={manualTrainName}
-                  onChangeText={setManualTrainName}
-                  placeholder="e.g. Vande Bharat"
-                  placeholderTextColor={Colors.textMuted}
-                  style={styles.manualInput}
-                />
-              </View>
-            </View>
+            <View style={styles.separator} />
 
-            <View style={styles.rowInputs}>
-              <View style={styles.halfCol}>
-                <AppText variant="micro" uppercase color="muted" weight="bold" style={styles.inputLabel}>
-                  FROM STATION *
-                </AppText>
-                <TextInput
-                  value={manualFrom}
-                  onChangeText={setManualFrom}
-                  placeholder="e.g. PUNE"
-                  placeholderTextColor={Colors.textMuted}
-                  autoCapitalize="characters"
-                  maxLength={5}
-                  style={styles.manualInput}
-                />
-              </View>
-              <View style={styles.colSpacing} />
-              <View style={styles.halfCol}>
-                <AppText variant="micro" uppercase color="muted" weight="bold" style={styles.inputLabel}>
-                  TO STATION *
-                </AppText>
-                <TextInput
-                  value={manualTo}
-                  onChangeText={setManualTo}
-                  placeholder="e.g. BD"
-                  placeholderTextColor={Colors.textMuted}
-                  autoCapitalize="characters"
-                  maxLength={5}
-                  style={styles.manualInput}
-                />
-              </View>
-            </View>
-
-            <View style={styles.inputGroup}>
-              <AppText variant="micro" uppercase color="muted" weight="bold" style={styles.inputLabel}>
-                JOURNEY DATE *
+            {/* Train Number */}
+            <View style={styles.inputRow}>
+              <AppText variant="body" weight="medium" color="secondary" style={styles.rowLabel}>
+                Train No.
               </AppText>
               <TextInput
-                value={manualDate}
-                onChangeText={setManualDate}
-                placeholder="e.g. 08 Oct 2026"
-                placeholderTextColor={Colors.textMuted}
-                style={styles.manualInput}
+                value={trainNo}
+                onChangeText={handleTrainNoChange}
+                placeholder="5 digits, e.g. 26101"
+                placeholderTextColor={Colors.appleTertiaryLabel}
+                keyboardType="number-pad"
+                maxLength={5}
+                style={styles.rowInput}
               />
             </View>
 
-            <View style={styles.inputGroup}>
-              <AppText variant="micro" uppercase color="muted" weight="bold" style={styles.inputLabel}>
-                PASSENGER NAME *
+            <View style={styles.separator} />
+
+            {/* Train Name */}
+            <View style={styles.inputRow}>
+              <AppText variant="body" weight="medium" color="secondary" style={styles.rowLabel}>
+                Train Name
               </AppText>
               <TextInput
-                value={manualPassenger}
-                onChangeText={setManualPassenger}
-                placeholder="e.g. Rahul Sharma"
-                placeholderTextColor={Colors.textMuted}
-                style={styles.manualInput}
-              />
-            </View>
-
-            <View style={styles.rowInputs}>
-              <View style={styles.halfCol}>
-                <AppText variant="micro" uppercase color="muted" weight="bold" style={styles.inputLabel}>
-                  COACH
-                </AppText>
-                <TextInput
-                  value={manualCoach}
-                  onChangeText={setManualCoach}
-                  placeholder="e.g. C5"
-                  placeholderTextColor={Colors.textMuted}
-                  autoCapitalize="characters"
-                  style={styles.manualInput}
-                />
-              </View>
-              <View style={styles.colSpacing} />
-              <View style={styles.halfCol}>
-                <AppText variant="micro" uppercase color="muted" weight="bold" style={styles.inputLabel}>
-                  SEAT NUMBER
-                </AppText>
-                <TextInput
-                  value={manualSeat}
-                  onChangeText={setManualSeat}
-                  placeholder="e.g. 64"
-                  placeholderTextColor={Colors.textMuted}
-                  keyboardType="number-pad"
-                  style={styles.manualInput}
-                />
-              </View>
-            </View>
-
-            <View style={styles.ctaWrapper}>
-              <AppButton
-                title="CONTINUE TO REVIEW"
-                variant="primary"
-                onPress={handleManualProceed}
+                value={trainName}
+                onChangeText={setTrainName}
+                placeholder="Optional name"
+                placeholderTextColor={Colors.appleTertiaryLabel}
+                autoCapitalize="words"
+                style={styles.rowInput}
               />
             </View>
           </View>
-        )}
-      </ScrollView>
+
+          {/* Section 2: ROUTE & SCHEDULE */}
+          <AppText
+            variant="micro"
+            weight="bold"
+            color="secondary"
+            uppercase
+            letterSpacing={0.8}
+            style={styles.groupHeader}
+          >
+            ROUTE & SCHEDULE
+          </AppText>
+
+          <View style={styles.groupCard}>
+            {/* From Station */}
+            <View style={styles.inputRow}>
+              <AppText variant="body" weight="medium" color="secondary" style={styles.rowLabel}>
+                From
+              </AppText>
+              <View style={{ flex: 1 }}>
+                <TextInput
+                  value={fromStation}
+                  onChangeText={setFromStation}
+                  onFocus={() => scrollToInput(120)}
+                  placeholder="Station code, e.g. PUNE"
+                  placeholderTextColor={Colors.appleTertiaryLabel}
+                  autoCapitalize="characters"
+                  maxLength={5}
+                  style={styles.rowInputInline}
+                />
+                {fromResolvedName ? (
+                  <AppText variant="micro" color="secondary" style={styles.stationHint}>
+                    {fromResolvedName}
+                  </AppText>
+                ) : null}
+              </View>
+            </View>
+
+            <View style={styles.separator} />
+
+            {/* To Station */}
+            <View style={styles.inputRow}>
+              <AppText variant="body" weight="medium" color="secondary" style={styles.rowLabel}>
+                To
+              </AppText>
+              <View style={{ flex: 1 }}>
+                <TextInput
+                  value={toStation}
+                  onChangeText={setToStation}
+                  onFocus={() => scrollToInput(160)}
+                  placeholder="Station code, e.g. SBC"
+                  placeholderTextColor={Colors.appleTertiaryLabel}
+                  autoCapitalize="characters"
+                  maxLength={5}
+                  style={styles.rowInputInline}
+                />
+                {toResolvedName ? (
+                  <AppText variant="micro" color="secondary" style={styles.stationHint}>
+                    {toResolvedName}
+                  </AppText>
+                ) : null}
+              </View>
+            </View>
+
+            <View style={styles.separator} />
+
+            {/* Journey Date */}
+            <View style={styles.inputRow}>
+              <AppText variant="body" weight="medium" color="secondary" style={styles.rowLabel}>
+                Date
+              </AppText>
+              <TextInput
+                value={date}
+                onChangeText={setDate}
+                onFocus={() => scrollToInput(220)}
+                placeholder="e.g. 28 Oct 2026"
+                placeholderTextColor={Colors.appleTertiaryLabel}
+                style={styles.rowInput}
+              />
+            </View>
+
+            {/* Quick Date Helper Chips */}
+            <View style={styles.quickDateRow}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => applyQuickDate(0)}
+                style={styles.quickDateChip}
+              >
+                <AppText variant="tiny" weight="medium" color="primary">
+                  Today
+                </AppText>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => applyQuickDate(1)}
+                style={styles.quickDateChip}
+              >
+                <AppText variant="tiny" weight="medium" color="primary">
+                  Tomorrow
+                </AppText>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => applyQuickDate(7)}
+                style={styles.quickDateChip}
+              >
+                <AppText variant="tiny" weight="medium" color="primary">
+                  Next Week
+                </AppText>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.separator} />
+
+            {/* Departure Time */}
+            <View style={styles.inputRow}>
+              <AppText variant="body" weight="medium" color="secondary" style={styles.rowLabel}>
+                Departure
+              </AppText>
+              <TextInput
+                value={departureTime}
+                onChangeText={setDepartureTime}
+                onFocus={() => scrollToInput(280)}
+                placeholder="Optional, e.g. 06:25 AM"
+                placeholderTextColor={Colors.appleTertiaryLabel}
+                style={styles.rowInput}
+              />
+            </View>
+          </View>
+
+          {/* Section 3: PASSENGER & BERTH */}
+          <AppText
+            variant="micro"
+            weight="bold"
+            color="secondary"
+            uppercase
+            letterSpacing={0.8}
+            style={styles.groupHeader}
+          >
+            PASSENGER & BERTH
+          </AppText>
+
+          <View style={styles.groupCard}>
+            {/* Passenger Name */}
+            <View style={styles.inputRow}>
+              <AppText variant="body" weight="medium" color="secondary" style={styles.rowLabel}>
+                Passenger
+              </AppText>
+              <TextInput
+                value={passengerName}
+                onChangeText={setPassengerName}
+                onFocus={() => scrollToInput(360)}
+                placeholder="Passenger name"
+                placeholderTextColor={Colors.appleTertiaryLabel}
+                autoCapitalize="words"
+                style={styles.rowInput}
+              />
+            </View>
+
+            <View style={styles.separator} />
+
+            {/* Travel Class Selector */}
+            <View style={styles.classSelectorRow}>
+              <AppText variant="body" weight="medium" color="secondary" style={styles.rowLabel}>
+                Class
+              </AppText>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.classPillList}
+              >
+                {CLASS_OPTIONS.map((cls) => {
+                  const isSelected = travelClass === cls;
+                  return (
+                    <TouchableOpacity
+                      key={cls}
+                      activeOpacity={0.8}
+                      onPress={() => setTravelClass(cls)}
+                      style={[styles.classPill, isSelected && styles.classPillActive]}
+                    >
+                      <AppText
+                        variant="caption"
+                        weight="bold"
+                        color={isSelected ? 'dark' : 'primary'}
+                      >
+                        {cls}
+                      </AppText>
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            </View>
+
+            <View style={styles.separator} />
+
+            {/* Coach & Seat */}
+            <View style={styles.coachSeatRow}>
+              <View style={styles.halfCol}>
+                <AppText variant="body" weight="medium" color="secondary" style={styles.halfLabel}>
+                  Coach
+                </AppText>
+                <TextInput
+                  value={coach}
+                  onChangeText={setCoach}
+                  onFocus={() => scrollToInput(480)}
+                  placeholder="e.g. B1"
+                  placeholderTextColor={Colors.appleTertiaryLabel}
+                  autoCapitalize="characters"
+                  style={styles.halfInput}
+                />
+              </View>
+
+              <View style={styles.verticalSeparator} />
+
+              <View style={styles.halfCol}>
+                <AppText variant="body" weight="medium" color="secondary" style={styles.halfLabel}>
+                  Seat / Berth
+                </AppText>
+                <TextInput
+                  value={seat}
+                  onChangeText={setSeat}
+                  onFocus={() => scrollToInput(480)}
+                  placeholder="e.g. 22"
+                  placeholderTextColor={Colors.appleTertiaryLabel}
+                  style={styles.halfInput}
+                />
+              </View>
+            </View>
+          </View>
+
+          {/* Section 4: STATUS & FARE (Optional) */}
+          <AppText
+            variant="micro"
+            weight="bold"
+            color="secondary"
+            uppercase
+            letterSpacing={0.8}
+            style={styles.groupHeader}
+          >
+            STATUS & FARE
+          </AppText>
+
+          <View style={styles.groupCard}>
+            <View style={styles.statusRow}>
+              <AppText variant="body" weight="medium" color="secondary" style={styles.rowLabel}>
+                Status
+              </AppText>
+              <View style={styles.statusPillGroup}>
+                {STATUS_OPTIONS.map((st) => {
+                  const isSelected = status === st;
+                  return (
+                    <TouchableOpacity
+                      key={st}
+                      activeOpacity={0.8}
+                      onPress={() => setStatus(st)}
+                      style={[styles.statusPill, isSelected && styles.statusPillActive]}
+                    >
+                      <AppText
+                        variant="caption"
+                        weight="bold"
+                        color={isSelected ? 'dark' : 'secondary'}
+                      >
+                        {st}
+                      </AppText>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
+
+            <View style={styles.separator} />
+
+            <View style={styles.inputRow}>
+              <AppText variant="body" weight="medium" color="secondary" style={styles.rowLabel}>
+                Fare (₹)
+              </AppText>
+              <TextInput
+                value={fare}
+                onChangeText={setFare}
+                onFocus={() => scrollToInput(600)}
+                placeholder="Optional fare amount"
+                placeholderTextColor={Colors.appleTertiaryLabel}
+                keyboardType="number-pad"
+                style={styles.rowInput}
+              />
+            </View>
+          </View>
+
+          {/* Primary Action Button */}
+          <View style={styles.submitSection}>
+            <TouchableOpacity
+              activeOpacity={0.85}
+              onPress={handleSubmit}
+              disabled={!canSubmit}
+              style={[styles.submitButton, !canSubmit && styles.submitButtonDisabled]}
+            >
+              <Plus size={18} color={canSubmit ? '#000000' : Colors.appleSecondaryLabel} strokeWidth={2.4} style={{ marginRight: 6 }} />
+              <AppText
+                variant="bodyLg"
+                weight="heavy"
+                color={canSubmit ? 'dark' : 'secondary'}
+              >
+                Add to Wallet
+              </AppText>
+            </TouchableOpacity>
+
+            {!canSubmit && (
+              <AppText variant="tiny" color="secondary" center style={styles.helperText}>
+                {!isPnrValid
+                  ? 'Enter a valid 10-digit PNR to continue'
+                  : !isTrainNoValid
+                  ? 'Enter train number'
+                  : !isRouteValid
+                  ? 'Enter station codes'
+                  : 'Enter journey date'}
+              </AppText>
+            )}
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 };
@@ -605,234 +669,167 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: Spacing.screenPadding,
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.borderSubtle,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: Colors.appleSeparator,
   },
-  backBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: Colors.surfaceHigh,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  helpBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: Colors.surfaceHigh,
-    alignItems: 'center',
-    justifyContent: 'center',
+  headerButton: {
+    minWidth: 60,
   },
   container: {
     flex: 1,
   },
   contentContainer: {
     paddingHorizontal: Spacing.screenPadding,
-    paddingTop: 14,
-    paddingBottom: 32,
+    paddingTop: 16,
+    paddingBottom: 40,
   },
-  toggleWrapper: {
-    marginBottom: 16,
-  },
-  stepHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  detectedCard: {
-    backgroundColor: Colors.surface,
-    borderRadius: Spacing.borderRadiusLg,
-    padding: Spacing.lg,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
-    marginBottom: 16,
-  },
-  detectedCardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-  },
-  routeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  stationBlockLeft: {
-    flex: 1,
-    alignItems: 'flex-start',
-  },
-  stationBlockRight: {
-    flex: 1,
-    alignItems: 'flex-end',
-  },
-  arrowBetween: {
-    alignItems: 'center',
-    paddingHorizontal: 8,
-  },
-  cardDivider: {
-    height: 1,
-    backgroundColor: Colors.divider,
-    marginVertical: 12,
-  },
-  passengerPnrRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  passengerInline: {
-    flex: 1,
-    marginRight: 10,
-  },
-  sourceRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: Colors.divider,
-  },
-  sourceBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  listenCard: {
-    backgroundColor: Colors.surface,
-    borderRadius: Spacing.borderRadiusLg,
-    padding: 24,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
-    marginBottom: 16,
-  },
-  listenIconCircle: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: Colors.surfaceHigh,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(242, 86, 35, 0.2)',
-  },
-  listenTitle: {
+  groupHeader: {
+    marginLeft: 12,
     marginBottom: 6,
+    marginTop: 18,
   },
-  listenSubtitle: {
-    maxWidth: 280,
-    lineHeight: 18,
-  },
-  smsBox: {
-    backgroundColor: Colors.surface,
-    borderRadius: Spacing.borderRadiusLg,
-    padding: Spacing.lg,
+  groupCard: {
+    backgroundColor: Colors.appleGroupedBg,
+    borderRadius: 12,
+    overflow: 'hidden',
     borderWidth: 1,
-    borderColor: Colors.borderSubtle,
-    marginBottom: 20,
+    borderColor: Colors.appleSeparator,
   },
-  smsBoxHeader: {
+  inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  smsBoxHeaderLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  pasteIconBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(242, 86, 35, 0.1)',
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: 6,
-  },
-  smsTextInput: {
-    backgroundColor: Colors.surfaceHigh,
-    borderRadius: Spacing.borderRadiusMd,
-    padding: 12,
-    color: Colors.textPrimary,
-    fontSize: 13,
-    minHeight: 80,
-    textAlignVertical: 'top',
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
-  },
-  extractBtnWrapper: {
-    marginTop: 12,
-  },
-  duplicateWarningBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(234, 179, 8, 0.1)',
-    borderRadius: Spacing.borderRadiusSm,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(234, 179, 8, 0.3)',
-    marginTop: 10,
-  },
-  checkActiveBtnWrapper: {
-    marginTop: 14,
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: Colors.divider,
-    alignItems: 'center',
-  },
-  checkActiveBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(242, 86, 35, 0.1)',
-    paddingVertical: 10,
     paddingHorizontal: 16,
-    borderRadius: Spacing.borderRadiusMd,
-    borderWidth: 1,
-    borderColor: 'rgba(242, 86, 35, 0.25)',
-    width: '100%',
+    minHeight: 48,
   },
-  manualForm: {
-    backgroundColor: Colors.surface,
-    borderRadius: Spacing.borderRadiusLg,
-    padding: Spacing.lg,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+  rowLabel: {
+    width: 90,
   },
-  inputGroup: {
-    marginBottom: 14,
+  rowInput: {
+    flex: 1,
+    fontSize: 16,
+    color: Colors.appleLabel,
+    paddingVertical: 12,
   },
-  inputLabel: {
+  rowInputInline: {
+    fontSize: 16,
+    color: Colors.appleLabel,
+    paddingVertical: 8,
+  },
+  stationHint: {
+    marginTop: -4,
     marginBottom: 6,
   },
-  manualInput: {
-    backgroundColor: Colors.surfaceHigh,
-    borderRadius: Spacing.borderRadiusMd,
-    paddingHorizontal: 14,
-    height: 48,
-    color: Colors.textPrimary,
-    fontSize: 14,
-    fontWeight: '600',
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+  separator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Colors.appleSeparator,
+    marginLeft: 16,
   },
-  rowInputs: {
+  validCheck: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: 'rgba(48, 209, 88, 0.18)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quickDateRow: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingBottom: 10,
+    gap: 8,
+  },
+  quickDateChip: {
+    backgroundColor: Colors.appleSecondaryBg,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
+  },
+  classSelectorRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  classPillList: {
+    flexDirection: 'row',
+    gap: 6,
+  },
+  classPill: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: Colors.appleSecondaryBg,
+  },
+  classPillActive: {
+    backgroundColor: Colors.primary,
+  },
+  coachSeatRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   halfCol: {
     flex: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
-  colSpacing: {
-    width: 12,
+  halfLabel: {
+    fontSize: 12,
+    marginBottom: 2,
   },
-  ctaWrapper: {
+  halfInput: {
+    fontSize: 16,
+    color: Colors.appleLabel,
+    paddingVertical: 4,
+  },
+  verticalSeparator: {
+    width: StyleSheet.hairlineWidth,
+    height: 40,
+    backgroundColor: Colors.appleSeparator,
+  },
+  statusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  statusPillGroup: {
+    flex: 1,
+    flexDirection: 'row',
+    gap: 6,
+  },
+  statusPill: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: Colors.appleSecondaryBg,
+  },
+  statusPillActive: {
+    backgroundColor: Colors.primary,
+  },
+  submitSection: {
+    marginTop: 28,
+  },
+  submitButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.primary,
+    height: 52,
+    borderRadius: 26,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  submitButtonDisabled: {
+    backgroundColor: Colors.appleSecondaryBg,
+    shadowOpacity: 0,
+    elevation: 0,
+  },
+  helperText: {
     marginTop: 10,
-    marginBottom: 16,
   },
 });

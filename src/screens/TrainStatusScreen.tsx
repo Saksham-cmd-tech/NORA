@@ -1082,28 +1082,29 @@ export const TrainStatusScreen: React.FC<TrainStatusScreenProps> = ({
     <View style={styles.safeArea}>
       <StatusBar barStyle="light-content" />
 
-      {/* Top Header */}
+      {/* Apple-style Navigation Header */}
       <View style={styles.header}>
         <TouchableOpacity
-          activeOpacity={0.8}
+          activeOpacity={0.7}
           onPress={onBack}
-          style={styles.backBtn}
+          style={styles.navButton}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <ArrowLeft size={20} color={Colors.textPrimary} />
+          <ArrowLeft size={20} color={Colors.appleLabel} />
         </TouchableOpacity>
 
-        <AppText
-          variant="subheading"
-          weight="heavy"
-          uppercase
-          letterSpacing={1}
-          color="primary"
-          style={styles.headerTitle}
-        >
-          TRAIN & COACH STATUS
+        <AppText variant="bodyLg" weight="bold" color="primary">
+          Train & Coach Status
         </AppText>
 
-        <View style={styles.headerSpacer} />
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={handleShareTrip}
+          style={styles.navButton}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Share2 size={18} color={Colors.appleLabel} />
+        </TouchableOpacity>
       </View>
 
       <ScrollView
@@ -1589,7 +1590,7 @@ export const TrainStatusScreen: React.FC<TrainStatusScreenProps> = ({
       {/* Bottom Sticky Action Bar */}
       <View style={styles.bottomBar}>
         <TouchableOpacity
-          activeOpacity={0.8}
+          activeOpacity={0.7}
           onPress={handleFetchTrainLocation}
           disabled={refreshingLive}
           style={styles.refreshBtn}
@@ -1603,20 +1604,28 @@ export const TrainStatusScreen: React.FC<TrainStatusScreenProps> = ({
           }
         >
           {refreshingLive ? (
-            <ActivityIndicator size="small" color={Colors.textPrimary} />
+            <ActivityIndicator size="small" color={Colors.appleOrange} style={{ marginRight: 8 }} />
           ) : (
-            <RotateCw size={20} color={Colors.textPrimary} />
+            <RotateCw size={15} color={Colors.appleOrange} style={{ marginRight: 8 }} />
           )}
+          <AppText variant="caption" weight="bold" color="primary">
+            {refreshingLive ? 'Syncing...' : 'Refresh Radar'}
+          </AppText>
         </TouchableOpacity>
 
+        <View style={{ width: 10 }} />
+
         <TouchableOpacity
-          activeOpacity={0.8}
+          activeOpacity={0.7}
           onPress={handleShareTrip}
           style={styles.shareTripBtn}
           accessibilityRole="button"
           accessibilityLabel="Share trip"
         >
-          <Share2 size={20} color="#000000" />
+          <Share2 size={15} color={Colors.appleGreen} style={{ marginRight: 8 }} />
+          <AppText variant="caption" weight="bold" color="primary">
+            Share Status
+          </AppText>
         </TouchableOpacity>
       </View>
 
@@ -1640,8 +1649,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: Spacing.screenPadding,
-    paddingVertical: Spacing.sm,
+    paddingVertical: 12,
     backgroundColor: Colors.background,
+  },
+  navButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: Colors.appleSecondaryBg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
   },
   backBtn: {
     width: 38,
@@ -1649,7 +1668,9 @@ const styles = StyleSheet.create({
     borderRadius: 19,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.surfaceHigh,
+    backgroundColor: Colors.appleSecondaryBg,
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
   },
   headerTitle: {
     flex: 1,
@@ -1669,13 +1690,18 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.xl,
   },
   trainCard: {
-    backgroundColor: Colors.surface,
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 12,
+    backgroundColor: Colors.appleGroupedBg,
+    borderRadius: 20,
+    padding: 18,
+    marginBottom: 14,
     borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderColor: Colors.appleSeparator,
     overflow: 'hidden',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 3,
   },
   trainTopRow: {
     flexDirection: 'row',
@@ -1688,11 +1714,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   trainNumBadge: {
-    backgroundColor: Colors.surfaceHigh,
+    backgroundColor: Colors.appleSecondaryBg,
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 6,
     marginRight: 8,
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
   },
   trainTypeBadgeText: {
     fontSize: 11,
@@ -1700,16 +1728,13 @@ const styles = StyleSheet.create({
   statusPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.successMuted,
+    backgroundColor: 'rgba(48, 209, 88, 0.12)',
     paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingVertical: 3,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(16, 185, 129, 0.3)',
   },
   delayedPill: {
-    backgroundColor: 'rgba(245, 51, 44, 0.14)',
-    borderColor: 'rgba(245, 51, 44, 0.35)',
+    backgroundColor: 'rgba(255, 159, 10, 0.12)',
   },
   statusDot: {
     width: 6,
@@ -1718,10 +1743,10 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   dotGreen: {
-    backgroundColor: Colors.success,
+    backgroundColor: Colors.appleGreen,
   },
   dotOrange: {
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.appleOrange,
   },
   trainNameRow: {
     marginBottom: 4,
@@ -1731,8 +1756,8 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   trainCardDivider: {
-    height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Colors.appleSeparator,
     marginVertical: 14,
   },
   passengerSection: {
@@ -1760,28 +1785,33 @@ const styles = StyleSheet.create({
   coachSeatPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(245, 51, 44, 0.12)',
+    backgroundColor: Colors.appleSecondaryBg,
     borderWidth: 1,
-    borderColor: 'rgba(245, 51, 44, 0.32)',
+    borderColor: Colors.appleSeparator,
     borderRadius: 8,
-    paddingHorizontal: 7,
-    paddingVertical: 3,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     marginTop: 4,
   },
   berthBadgeInline: {
     marginLeft: 6,
     paddingLeft: 6,
     borderLeftWidth: 1,
-    borderLeftColor: 'rgba(255, 255, 255, 0.2)',
+    borderLeftColor: Colors.appleSeparator,
   },
   sectionCard: {
-    backgroundColor: Colors.surface,
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 12,
+    backgroundColor: Colors.appleGroupedBg,
+    borderRadius: 20,
+    padding: 18,
+    marginBottom: 14,
     borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderColor: Colors.appleSeparator,
     overflow: 'hidden',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 3,
   },
   timelineHeaderRow: {
     flexDirection: 'row',
@@ -1991,10 +2021,12 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   engineBadge: {
-    backgroundColor: Colors.surfaceHigh,
+    backgroundColor: Colors.appleSecondaryBg,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
   },
   rakeScrollContainer: {
     flexDirection: 'row',
@@ -2002,41 +2034,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   locoCoachBox: {
-    width: 58,
-    height: 48,
-    borderRadius: 8,
-    backgroundColor: Colors.surfaceHigh,
+    width: 56,
+    height: 50,
+    borderRadius: 10,
+    backgroundColor: Colors.appleSecondaryBg,
     borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderColor: Colors.appleSeparator,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 8,
   },
   rakeCoachBox: {
-    width: 48,
-    height: 48,
-    borderRadius: 8,
-    backgroundColor: Colors.surfaceLow,
+    width: 50,
+    height: 50,
+    borderRadius: 10,
+    backgroundColor: Colors.appleSecondaryBg,
     borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderColor: Colors.appleSeparator,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 8,
   },
   userRakeCoachBox: {
-    backgroundColor: Colors.primary,
-    borderColor: Colors.primaryLight,
+    backgroundColor: Colors.appleOrange,
+    borderColor: Colors.appleOrange,
     borderWidth: 1.5,
-    shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.6,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowColor: Colors.appleOrange,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 3,
   },
   selectedRakeCoachBox: {
-    borderColor: Colors.primary,
+    borderColor: Colors.appleOrange,
     borderWidth: 1.5,
-    backgroundColor: 'rgba(255, 75, 43, 0.12)',
+    backgroundColor: 'rgba(255, 159, 10, 0.15)',
   },
   youBadgeText: {
     fontSize: 9,
@@ -2050,10 +2082,10 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 75, 43, 0.1)',
+    backgroundColor: Colors.appleSecondaryBg,
     borderWidth: 1,
-    borderColor: 'rgba(255, 75, 43, 0.3)',
-    borderRadius: 8,
+    borderColor: Colors.appleSeparator,
+    borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 8,
     marginTop: 10,
@@ -2061,12 +2093,12 @@ const styles = StyleSheet.create({
   pillarNoticeBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surfaceLow,
-    borderRadius: 10,
+    backgroundColor: Colors.appleSecondaryBg,
+    borderRadius: 12,
     padding: 12,
     marginTop: 12,
     borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderColor: Colors.appleSeparator,
   },
   pillarPinIcon: {
     marginRight: 8,
@@ -2270,39 +2302,40 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: Colors.background,
-    borderTopWidth: 1,
-    borderTopColor: Colors.borderSubtle,
+    backgroundColor: Colors.appleGroupedBg,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: Colors.appleSeparator,
     flexDirection: 'row',
     paddingHorizontal: Spacing.screenPadding,
-    paddingVertical: 12,
+    paddingTop: 12,
+    paddingBottom: 22,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 8,
   },
   refreshBtn: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.surfaceHigh,
+    backgroundColor: Colors.appleSecondaryBg,
     borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderColor: Colors.appleSeparator,
     borderRadius: 12,
-    paddingVertical: 14,
-    marginRight: 8,
+    paddingVertical: 13,
   },
   shareTripBtn: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.appleSecondaryBg,
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
     borderRadius: 12,
-    paddingVertical: 14,
-    marginLeft: 8,
-    shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.45,
-    shadowRadius: 8,
-    elevation: 4,
+    paddingVertical: 13,
   },
   btnIconSpacing: {
     marginRight: 6,
@@ -2352,9 +2385,9 @@ const styles = StyleSheet.create({
   },
   platformPill: {
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    backgroundColor: Colors.appleSecondaryBg,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.12)',
+    borderColor: Colors.appleSeparator,
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 6,
@@ -2362,9 +2395,9 @@ const styles = StyleSheet.create({
   },
   platformPillRight: {
     alignSelf: 'flex-end',
-    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    backgroundColor: Colors.appleSecondaryBg,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.12)',
+    borderColor: Colors.appleSeparator,
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 6,
@@ -2385,35 +2418,35 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.appleOrange,
   },
   trackDotDest: {
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: Colors.textMuted,
+    backgroundColor: Colors.appleSecondaryLabel,
   },
   trackSolidLine: {
     width: 14,
     height: 2,
-    backgroundColor: Colors.borderSubtle,
+    backgroundColor: Colors.appleSeparator,
     marginHorizontal: 4,
   },
   preJourneyNotice: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    backgroundColor: Colors.appleSecondaryBg,
     padding: 12,
-    borderRadius: 10,
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderColor: Colors.appleSeparator,
     marginBottom: 12,
   },
   noticeIconCircle: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: 'rgba(245, 51, 44, 0.12)',
+    backgroundColor: 'rgba(255, 159, 10, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
@@ -2424,14 +2457,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 12,
     paddingHorizontal: 14,
-    backgroundColor: Colors.surfaceLow,
-    borderRadius: 10,
+    backgroundColor: Colors.appleSecondaryBg,
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderColor: Colors.appleSeparator,
   },
   previewScheduleBtnExpanded: {
-    borderColor: 'rgba(245, 51, 44, 0.35)',
-    backgroundColor: 'rgba(245, 51, 44, 0.08)',
+    borderColor: 'rgba(255, 159, 10, 0.35)',
+    backgroundColor: 'rgba(255, 159, 10, 0.08)',
   },
   previewBtnLeft: {
     flexDirection: 'row',

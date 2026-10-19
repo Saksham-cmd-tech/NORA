@@ -1,4 +1,4 @@
-package com.nora.wallet.notification
+package dev.saksham.nora.notification
 
 import android.app.AlarmManager
 import android.app.PendingIntent

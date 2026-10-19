@@ -1,4 +1,4 @@
-package com.nora.wallet.widget
+package dev.saksham.nora.widget
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -8,8 +8,8 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
-import com.nora.wallet.MainActivity
-import com.nora.wallet.R
+import dev.saksham.nora.MainActivity
+import dev.saksham.nora.R
 import org.json.JSONObject
 
 class ActiveTicketWidgetProvider : AppWidgetProvider() {
@@ -52,7 +52,7 @@ class ActiveTicketWidgetProvider : AppWidgetProvider() {
     companion object {
         const val PREFS_NAME = "nora_widget_prefs"
         const val KEY_ACTIVE_TICKET = "active_ticket_data"
-        const val ACTION_FLIP_TICKET = "com.nora.wallet.ACTION_FLIP_TICKET"
+        const val ACTION_FLIP_TICKET = "dev.saksham.nora.ACTION_FLIP_TICKET"
 
         fun updateWidget(context: Context, appWidgetManager: AppWidgetManager, widgetId: Int) {
             val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)

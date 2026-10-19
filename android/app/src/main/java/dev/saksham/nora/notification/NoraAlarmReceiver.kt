@@ -1,4 +1,4 @@
-package com.nora.wallet.notification
+package dev.saksham.nora.notification
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -9,7 +9,7 @@ import android.util.Log
 class NoraAlarmReceiver : BroadcastReceiver() {
 
     companion object {
-        const val ACTION_JOURNEY_REMINDER = "com.nora.wallet.ALARM_JOURNEY_REMINDER"
+        const val ACTION_JOURNEY_REMINDER = "dev.saksham.nora.ALARM_JOURNEY_REMINDER"
         private const val TAG = "NoraAlarmReceiver"
     }
 

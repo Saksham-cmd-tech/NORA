@@ -5,19 +5,20 @@ import {
   ScrollView,
   StatusBar,
   TouchableOpacity,
-  Alert,
-  Share,
   Linking,
+  RefreshControl,
 } from 'react-native';
-import { Ticket as TicketIcon, Bell, Plus, ShieldCheck, RefreshCw } from 'lucide-react-native';
+import {
+  Ticket as TicketIcon,
+  Plus,
+  Settings as SettingsIcon,
+  Clock,
+  Sparkles,
+} from 'lucide-react-native';
 import { Colors } from '../theme/colors';
 import { Spacing } from '../theme/spacing';
 import { NormalizedTicket } from '../types/ticket';
 import { AppText } from '../components/common/AppText';
-import { StatusBadge } from '../components/common/StatusBadge';
-import { SegmentedControl } from '../components/common/SegmentedControl';
-import { SectionHeader } from '../components/common/SectionHeader';
-import { AppButton } from '../components/common/AppButton';
 import { TicketCard } from '../components/ticket/TicketCard';
 import { PastJourneyCard } from '../components/ticket/PastJourneyCard';
 import { NoraModal } from '../components/common/NoraModal';
@@ -41,6 +42,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onRefreshTickets,
 }) => {
   const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
+  const [refreshing, setRefreshing] = useState(false);
   const [shareModalVisible, setShareModalVisible] = useState(false);
   const [shareData, setShareData] = useState<ShareTicketData | null>(null);
   const [modalConfig, setModalConfig] = useState<{
@@ -48,7 +50,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     title: string;
     subtitle?: string;
     iconVariant?: 'orange' | 'green';
-    tickets?: NormalizedTicket[];
   } | null>(null);
 
   const upcomingTickets = tickets.filter(
@@ -64,93 +65,105 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       t.status === 'CANCELLED'
   );
 
-  const activeTicket = upcomingTickets[0];
-
-  const handleCheckActiveTickets = async () => {
-    if (onRefreshTickets) {
+  const handleRefresh = async () => {
+    if (!onRefreshTickets) return;
+    setRefreshing(true);
+    try {
       await onRefreshTickets();
-      return;
-    }
-    const currentUpcoming = tickets.filter(
-      (t) =>
-        isTicketValidAndUpcoming(t.journey?.date, t.status, t.journey?.departure) &&
-        t.status !== 'COMPLETED' &&
-        t.status !== 'CANCELLED'
-    );
-    if (currentUpcoming.length > 0) {
-      setActiveTab('upcoming');
-      setModalConfig({
-        visible: true,
-        title: `Active Tickets (${currentUpcoming.length})`,
-        subtitle: `Found ${currentUpcoming.length} active journey(s) in your wallet. All details are saved offline.`,
-        iconVariant: 'green',
-        tickets: currentUpcoming,
-      });
-    } else {
-      setModalConfig({
-        visible: true,
-        title: 'Check Active Tickets',
-        subtitle: 'You have 0 active train tickets in your wallet.\n\nTickets booked via IRCTC or redRail will automatically appear here once notifications are received.',
-        iconVariant: 'orange',
-      });
+    } finally {
+      setRefreshing(false);
     }
   };
+
+  // Apple-style formatted date e.g. "MONDAY, 19 OCTOBER"
+  const formattedToday = new Date()
+    .toLocaleDateString('en-US', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+    })
+    .toUpperCase();
 
   return (
     <View style={styles.safeArea}>
       <StatusBar barStyle="light-content" />
+
+      {/* Apple-style Top Navigation Header */}
+      <View style={styles.header}>
+        <View style={styles.headerLeft}>
+          <AppText variant="tiny" weight="bold" color="secondary" style={styles.headerDate}>
+            {formattedToday}
+          </AppText>
+          <AppText variant="huge" weight="heavy" color="primary" style={styles.largeTitle}>
+            Wallet
+          </AppText>
+        </View>
+
+        <View style={styles.headerRight}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={onNavigateAdd}
+            style={styles.navButton}
+            accessibilityLabel="Add Ticket"
+          >
+            <Plus size={20} color={Colors.appleLabel} strokeWidth={2.4} />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Apple-style Segmented Picker */}
+      <View style={styles.segmentedContainer}>
+        <View style={styles.segmentedTrack}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => setActiveTab('upcoming')}
+            style={[styles.segmentTab, activeTab === 'upcoming' && styles.segmentTabActive]}
+          >
+            <AppText
+              variant="caption"
+              weight="bold"
+              color={activeTab === 'upcoming' ? 'primary' : 'secondary'}
+            >
+              {`Upcoming${upcomingTickets.length > 0 ? ` (${upcomingTickets.length})` : ''}`}
+            </AppText>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => setActiveTab('past')}
+            style={[styles.segmentTab, activeTab === 'past' && styles.segmentTabActive]}
+          >
+            <AppText
+              variant="caption"
+              weight="bold"
+              color={activeTab === 'past' ? 'primary' : 'secondary'}
+            >
+              {`Past${pastTickets.length > 0 ? ` (${pastTickets.length})` : ''}`}
+            </AppText>
+          </TouchableOpacity>
+        </View>
+      </View>
+
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
-      >
-        {/* Top Header Row with Active Badge & Check Active Button */}
-        <View style={styles.headerRow}>
-          <View>
-            <AppText variant="tiny" weight="bold" color="orange" uppercase letterSpacing={1.5}>
-              NORA
-            </AppText>
-            <AppText variant="title" weight="heavy" color="primary" style={styles.screenTitle}>
-              My Tickets
-            </AppText>
-          </View>
-
-          <View style={styles.headerRight}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={handleCheckActiveTickets}
-              style={styles.headerCheckBtn}
-            >
-              <RefreshCw size={11} color={Colors.primary} style={{ marginRight: 4 }} />
-              <AppText variant="micro" weight="bold" color="orange">
-                CHECK
-              </AppText>
-            </TouchableOpacity>
-
-            <StatusBadge
-              label={`${upcomingTickets.length} ACTIVE`}
-              variant="dark"
+        refreshControl={
+          onRefreshTickets ? (
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              tintColor={Colors.primary}
+              colors={[Colors.primary]}
             />
-          </View>
-        </View>
-
-        {/* Segmented Control */}
-        <View style={styles.segmentWrapper}>
-          <SegmentedControl
-            options={[
-              { value: 'upcoming', label: 'UPCOMING', count: upcomingTickets.length },
-              { value: 'past', label: 'PAST', count: pastTickets.length },
-            ]}
-            selectedValue={activeTab}
-            onSelect={(val) => setActiveTab(val as 'upcoming' | 'past')}
-          />
-        </View>
-
-        {/* ================= UPCOMING TAB CONTENT ================= */}
+          ) : undefined
+        }
+      >
+        {/* ================= UPCOMING TAB ================= */}
         {activeTab === 'upcoming' && (
           <View>
-            {activeTicket ? (
-              <View>
+            {upcomingTickets.length > 0 ? (
+              <View style={styles.ticketList}>
                 {upcomingTickets.map((t) => (
                   <TicketCard
                     key={t.id}
@@ -162,13 +175,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     }}
                     onAddToCalendar={async () => {
                       try {
-                        const title = encodeURIComponent(`🚆 Train ${t.train.number}: ${t.journey.from} to ${t.journey.to}`);
+                        const title = encodeURIComponent(
+                          `🚆 Train ${t.train.number}: ${t.journey.from} to ${t.journey.to}`
+                        );
                         const details = encodeURIComponent(
                           `Train: ${t.train.number} ${t.train.name || ''}\n` +
-                          `Coach: ${t.passenger.coach || '-'} · Seat: ${t.passenger.seat || '-'}\n` +
-                          `PNR: ${t.pnr}`
+                            `Coach: ${t.passenger.coach || '-'} · Seat: ${t.passenger.seat || '-'}\n` +
+                            `PNR: ${t.pnr}`
                         );
-                        const location = encodeURIComponent(`${t.journey.fromName || t.journey.from} Railway Station`);
+                        const location = encodeURIComponent(
+                          `${t.journey.fromName || t.journey.from} Railway Station`
+                        );
                         const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}`;
                         await Linking.openURL(calendarUrl);
                       } catch (e) {
@@ -179,102 +196,72 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 ))}
               </View>
             ) : (
-              <View style={styles.emptyContainer}>
+              /* Apple Wallet Minimal Empty State */
+              <View style={styles.emptyState}>
                 <View style={styles.emptyIconCircle}>
-                  <TicketIcon size={32} color={Colors.primary} />
-                </View>
-                <AppText variant="subheading" weight="bold" color="primary" center style={styles.emptyTitle}>
-                  Wallet is Empty
-                </AppText>
-                <AppText variant="caption" color="secondary" center style={styles.emptySubtitle}>
-                  Train tickets booked via IRCTC or redRail will automatically appear here as digital boarding passes.
-                </AppText>
-
-                <View style={styles.emptyCtaWrapper}>
-                  <AppButton
-                    title="ADD TICKET / PASTE SMS"
-                    variant="primary"
-                    icon={<Plus size={16} color="#000000" />}
-                    onPress={onNavigateAdd}
-                  />
+                  <TicketIcon size={32} color={Colors.primary} strokeWidth={1.8} />
                 </View>
 
-                <View style={styles.emptyCheckActiveWrapper}>
-                  <AppButton
-                    title="CHECK CURRENT ACTIVE TICKETS"
-                    variant="secondary"
-                    icon={<TicketIcon size={16} color={Colors.primary} />}
-                    onPress={handleCheckActiveTickets}
-                  />
-                </View>
+                <AppText variant="heading" weight="bold" color="primary" center style={styles.emptyTitle}>
+                  No Upcoming Journeys
+                </AppText>
+
+                <AppText variant="body" color="secondary" center style={styles.emptySubtitle}>
+                  Your saved train passes will appear here with departure times, platform, and coach layout.
+                </AppText>
 
                 <TouchableOpacity
                   activeOpacity={0.8}
-                  onPress={onOpenSettings}
-                  style={styles.emptyListenerLink}
+                  onPress={onNavigateAdd}
+                  style={styles.emptyAddButton}
                 >
-                  <Bell size={13} color={Colors.textSecondary} style={{ marginRight: 6 }} />
-                  <AppText variant="micro" weight="medium" color="secondary">
-                    Check Notification Listener Permission
+                  <Plus size={18} color="#000000" strokeWidth={2.6} style={{ marginRight: 6 }} />
+                  <AppText variant="body" weight="heavy" color="dark">
+                    Add Ticket
                   </AppText>
                 </TouchableOpacity>
-              </View>
-            )}
-
-            {/* Past Journeys Section below active pass */}
-            {pastTickets.length > 0 && (
-              <View style={styles.pastSectionMargin}>
-                <SectionHeader
-                  title="PAST JOURNEYS"
-                  rightElement={
-                    <AppText variant="tiny" color="muted">
-                      {`${pastTickets.length} completed`}
-                    </AppText>
-                  }
-                />
-                {pastTickets.map((t) => (
-                  <PastJourneyCard
-                    key={t.id}
-                    ticket={t}
-                    onPress={() => onSelectTicket(t)}
-                  />
-                ))}
               </View>
             )}
           </View>
         )}
 
-        {/* ================= PAST TAB CONTENT ================= */}
+        {/* ================= PAST TAB ================= */}
         {activeTab === 'past' && (
           <View>
             {pastTickets.length > 0 ? (
-              <View>
-                <SectionHeader
-                  title="COMPLETED JOURNEYS"
-                  rightElement={
-                    <AppText variant="tiny" color="muted">
-                      {`${pastTickets.length} trips`}
-                    </AppText>
-                  }
-                />
-                {pastTickets.map((t) => (
-                  <PastJourneyCard
-                    key={t.id}
-                    ticket={t}
-                    onPress={() => onSelectTicket(t)}
-                  />
-                ))}
+              <View style={styles.pastSection}>
+                <AppText
+                  variant="micro"
+                  weight="bold"
+                  color="secondary"
+                  uppercase
+                  letterSpacing={0.8}
+                  style={styles.sectionHeader}
+                >
+                  ARCHIVED JOURNEYS
+                </AppText>
+                <View style={styles.pastCardGroup}>
+                  {pastTickets.map((t) => (
+                    <PastJourneyCard
+                      key={t.id}
+                      ticket={t}
+                      onPress={() => onSelectTicket(t)}
+                    />
+                  ))}
+                </View>
               </View>
             ) : (
-              <View style={styles.emptyContainer}>
+              <View style={styles.emptyState}>
                 <View style={styles.emptyIconCircle}>
-                  <ShieldCheck size={32} color={Colors.textMuted} />
+                  <Clock size={30} color={Colors.appleSecondaryLabel} strokeWidth={1.8} />
                 </View>
-                <AppText variant="subheading" weight="bold" color="primary" center style={styles.emptyTitle}>
+
+                <AppText variant="heading" weight="bold" color="primary" center style={styles.emptyTitle}>
                   No Past Journeys
                 </AppText>
-                <AppText variant="caption" color="secondary" center style={styles.emptySubtitle}>
-                  Completed trips will be archived here for your travel history.
+
+                <AppText variant="body" color="secondary" center style={styles.emptySubtitle}>
+                  Completed train trips will be archived here for your travel history.
                 </AppText>
               </View>
             )}
@@ -282,19 +269,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         )}
       </ScrollView>
 
-      {modalConfig ? (
+      {modalConfig && (
         <NoraModal
           visible={modalConfig.visible}
           title={modalConfig.title}
           subtitle={modalConfig.subtitle}
           iconVariant={modalConfig.iconVariant}
-          tickets={modalConfig.tickets}
           onClose={() => setModalConfig(null)}
           onPrimaryPress={() => setModalConfig(null)}
         />
-      ) : null}
+      )}
 
-      {/* Share Ticket Image Modal */}
+      {/* Share Pass Image Modal */}
       <ShareTicketModal
         visible={shareModalVisible}
         data={shareData}
@@ -309,86 +295,127 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.screenPadding,
+    paddingTop: 8,
+    paddingBottom: 12,
+  },
+  headerLeft: {
+    flex: 1,
+  },
+  headerDate: {
+    letterSpacing: 0.6,
+    marginBottom: 2,
+  },
+  largeTitle: {
+    fontSize: 32,
+    lineHeight: 38,
+    letterSpacing: -0.5,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom: 4,
+  },
+  navButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: Colors.appleGroupedBg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
+  },
+  segmentedContainer: {
+    paddingHorizontal: Spacing.screenPadding,
+    marginBottom: 12,
+  },
+  segmentedTrack: {
+    flexDirection: 'row',
+    backgroundColor: Colors.appleGroupedBg,
+    borderRadius: 10,
+    padding: 3,
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
+  },
+  segmentTab: {
+    flex: 1,
+    paddingVertical: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+  },
+  segmentTabActive: {
+    backgroundColor: Colors.appleSecondaryBg,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 2,
+  },
   container: {
     flex: 1,
   },
   contentContainer: {
     paddingHorizontal: Spacing.screenPadding,
-    paddingTop: 12,
-    paddingBottom: 24,
+    paddingBottom: 32,
   },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 16,
+  ticketList: {
+    paddingTop: 4,
   },
-  screenTitle: {
-    marginTop: 2,
-  },
-  headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  segmentWrapper: {
-    marginBottom: 8,
-  },
-  emptyContainer: {
-    backgroundColor: Colors.surface,
-    padding: 24,
-    borderRadius: Spacing.borderRadiusLg,
-    alignItems: 'center',
-    marginVertical: 14,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
-  },
-  emptyIconCircle: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: Colors.surfaceHigh,
+  emptyState: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 14,
+    paddingVertical: 56,
+    paddingHorizontal: 24,
+  },
+  emptyIconCircle: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: Colors.appleGroupedBg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
     borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderColor: Colors.appleSeparator,
   },
   emptyTitle: {
-    marginBottom: 6,
+    fontSize: 20,
+    marginBottom: 8,
+    letterSpacing: -0.3,
   },
   emptySubtitle: {
-    maxWidth: 280,
-    lineHeight: 18,
-    marginBottom: 20,
+    maxWidth: 290,
+    lineHeight: 21,
+    marginBottom: 28,
   },
-  emptyCtaWrapper: {
-    width: '100%',
-    maxWidth: 280,
-    marginBottom: 12,
-  },
-  headerCheckBtn: {
+  emptyAddButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(242, 86, 35, 0.12)',
-    paddingHorizontal: 8,
-    paddingVertical: 5,
-    borderRadius: Spacing.borderRadiusSm,
-    marginRight: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(242, 86, 35, 0.25)',
+    justifyContent: 'center',
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 24,
+    paddingVertical: 13,
+    borderRadius: 24,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
-  emptyCheckActiveWrapper: {
-    width: '100%',
-    maxWidth: 280,
-    marginBottom: 14,
+  pastSection: {
+    paddingTop: 6,
   },
-  emptyListenerLink: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+  sectionHeader: {
+    marginBottom: 10,
+    marginLeft: 4,
   },
-  pastSectionMargin: {
-    marginTop: 18,
+  pastCardGroup: {
+    gap: 8,
   },
 });

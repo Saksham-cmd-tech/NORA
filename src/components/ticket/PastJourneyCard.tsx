@@ -42,15 +42,15 @@ export const PastJourneyCard: React.FC<PastJourneyCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: Colors.surface,
-    borderRadius: Spacing.borderRadiusMd,
-    padding: 14,
+    backgroundColor: Colors.appleGroupedBg,
+    borderRadius: 14,
+    padding: 16,
     borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderColor: Colors.appleSeparator,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginBottom: 8,
   },
   leftCol: {
     flex: 1,

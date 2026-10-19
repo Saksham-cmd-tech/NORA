@@ -13,100 +13,14 @@ export interface ScanSmsResult {
 }
 
 export async function requestSmsPermission(): Promise<boolean> {
-  if (Platform.OS !== 'android') return true;
-  try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.READ_SMS,
-      {
-        title: 'SMS Access for Ticket Detection',
-        message: 'NORA requires SMS read permission to automatically detect train tickets from IRCTC and redRail.',
-        buttonPositive: 'Allow',
-        buttonNegative: 'Deny',
-      }
-    );
-    return granted === PermissionsAndroid.RESULTS.GRANTED;
-  } catch (err) {
-    console.log('[NORA] Error requesting SMS permission:', err);
-    return false;
-  }
+  return true;
 }
 
 export async function scanSmsForTickets(): Promise<ScanSmsResult> {
-  if (Platform.OS !== 'android' || !NoraNotificationModule) {
-    return { permissionGranted: true, tickets: [], messagesScanned: 0 };
-  }
-
-  try {
-    const hasPerm = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_SMS);
-    let granted = hasPerm;
-    if (!granted) {
-      granted = await requestSmsPermission();
-    }
-
-    if (!granted) {
-      return { permissionGranted: false, tickets: [], messagesScanned: 0 };
-    }
-
-    if (!NoraNotificationModule.scanSmsInbox) {
-      return { permissionGranted: true, tickets: [], messagesScanned: 0 };
-    }
-
-    const rawMessages: Array<{ address: string; body: string; date: number }> =
-      await NoraNotificationModule.scanSmsInbox();
-
-    const ticketMap = new Map<string, NormalizedTicket>();
-
-    for (const msg of rawMessages) {
-      if (!msg.body) continue;
-      const parsed = parseBookingNotification(msg.body, msg.address);
-      if (parsed && parsed.pnr) {
-        // Strict upcoming and validity check: reject cancelled, completed, past, or dateless tickets
-        const isValid = isTicketValidAndUpcoming(
-          parsed.journey?.date,
-          parsed.status,
-          parsed.journey?.departure
-        );
-
-        if (!isValid || parsed.status === 'CANCELLED' || parsed.status === 'COMPLETED') {
-          continue;
-        }
-
-        const cleanPnr = parsed.pnr.replace(/[\s-]+/g, '').trim().toUpperCase();
-        const existing = ticketMap.get(cleanPnr);
-        if (existing) {
-          const merged = mergeTickets(existing, parsed);
-          if (
-            isTicketValidAndUpcoming(
-              merged.journey?.date,
-              merged.status,
-              merged.journey?.departure
-            )
-          ) {
-            ticketMap.set(cleanPnr, merged);
-          }
-        } else {
-          ticketMap.set(cleanPnr, parsed);
-        }
-      }
-    }
-
-    const detectedTickets = Array.from(ticketMap.values()).filter(
-      (t) =>
-        isTicketValidAndUpcoming(t.journey?.date, t.status, t.journey?.departure) &&
-        t.status !== 'CANCELLED' &&
-        t.status !== 'COMPLETED'
-    );
-
-    return {
-      permissionGranted: true,
-      tickets: detectedTickets,
-      messagesScanned: rawMessages.length,
-    };
-  } catch (err) {
-    console.log('[NORA] Error scanning SMS inbox:', err);
-    return { permissionGranted: true, tickets: [], messagesScanned: 0 };
-  }
+  return { permissionGranted: true, tickets: [], messagesScanned: 0 };
 }
+
+
 
 export async function checkNotificationAccess(): Promise<boolean> {
   if (Platform.OS !== 'android') return true;

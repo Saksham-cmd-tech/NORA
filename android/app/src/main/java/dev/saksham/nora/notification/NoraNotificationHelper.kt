@@ -1,4 +1,4 @@
-package com.nora.wallet.notification
+package dev.saksham.nora.notification
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -10,8 +10,8 @@ import android.os.Build
 import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.nora.wallet.MainActivity
-import com.nora.wallet.R
+import dev.saksham.nora.MainActivity
+import dev.saksham.nora.R
 import kotlin.math.abs
 
 object NoraNotificationHelper {
@@ -22,7 +22,7 @@ object NoraNotificationHelper {
 
     const val LIVE_JOURNEY_NOTIFICATION_ID = 50001
 
-    private const val ACTION_NOTIFICATION_CLICK = "com.nora.wallet.NOTIFICATION_ACTION"
+    private const val ACTION_NOTIFICATION_CLICK = "dev.saksham.nora.NOTIFICATION_ACTION"
 
     // Action types
     const val ACTION_VIEW_TICKET = "VIEW_TICKET"

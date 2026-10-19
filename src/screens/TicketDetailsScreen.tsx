@@ -5,7 +5,6 @@ import {
   ScrollView,
   StatusBar,
   TouchableOpacity,
-  Share,
   Linking,
 } from 'react-native';
 import {
@@ -14,14 +13,14 @@ import {
   Calendar,
   Train,
   ShieldCheck,
-  CheckCircle2,
   Check,
+  ChevronRight,
+  Radio,
 } from 'lucide-react-native';
 import { Colors } from '../theme/colors';
 import { Spacing } from '../theme/spacing';
 import { NormalizedTicket } from '../types/ticket';
 import { AppText } from '../components/common/AppText';
-import { StatusBadge } from '../components/common/StatusBadge';
 import { TicketDetailsPass } from '../components/ticket/TicketDetailsPass';
 import { NoraModal } from '../components/common/NoraModal';
 import { getTrainName } from '../utils/stationLookup';
@@ -63,37 +62,37 @@ export const TicketDetailsScreen: React.FC<TicketDetailsScreenProps> = ({
     iconVariant?: 'orange' | 'green';
     primaryButtonText?: string;
     onPrimaryPress?: () => void;
-    secondaryButtonText?: string;
-    onSecondaryPress?: () => void;
   } | null>(null);
 
-  const effectiveTrainName = (ticket.train.name && ticket.train.name.trim().length > 0 && !/^\d+$/.test(ticket.train.name.trim()) && ticket.train.name.trim() !== ticket.train.number)
-    ? ticket.train.name
-    : (getTrainName(ticket.train.number) || 'Indian Railways Superfast');
+  const effectiveTrainName =
+    ticket.train.name &&
+    ticket.train.name.trim().length > 0 &&
+    !/^\d+$/.test(ticket.train.name.trim()) &&
+    ticket.train.name.trim() !== ticket.train.number
+      ? ticket.train.name
+      : getTrainName(ticket.train.number) || 'Indian Railways Superfast';
 
   const trainLower = effectiveTrainName.toLowerCase();
   const trainCategory = trainLower.includes('vande bharat')
-    ? 'VANDE BHARAT EXPRESS'
+    ? 'Vande Bharat Express'
     : trainLower.includes('rajdhani')
-    ? 'RAJDHANI EXPRESS'
+    ? 'Rajdhani Express'
     : trainLower.includes('shatabdi')
-    ? 'SHATABDI EXPRESS'
+    ? 'Shatabdi Express'
     : trainLower.includes('humsafar')
-    ? 'HUMSAFAR EXPRESS'
+    ? 'Humsafar Express'
     : trainLower.includes('garib rath')
-    ? 'GARIB RATH'
-    : 'SUPERFAST EXPRESS';
+    ? 'Garib Rath Express'
+    : 'Superfast Express';
 
   const detailedDate = getDetailedDateString(ticket.journey.date);
 
-  // 1. Working Share with Styled Ticket Card Image
   const handleShare = () => {
     const data = buildShareTicketData(ticket);
     setShareData(data);
     setShareModalVisible(true);
   };
 
-  // 2. Real Working Calendar Integration with Nora Themed Modal
   const handleCalendar = () => {
     const parsedDate = parseTicketJourneyDate(ticket.journey.date);
     let dateQuery = '';
@@ -104,24 +103,29 @@ export const TicketDetailsScreen: React.FC<TicketDetailsScreenProps> = ({
       dateQuery = `&dates=${y}${m}${d}/${y}${m}${d}`;
     }
 
-    const title = encodeURIComponent(`🚆 Train ${ticket.train.number}: ${ticket.journey.from} to ${ticket.journey.to}`);
+    const title = encodeURIComponent(
+      `🚆 Train ${ticket.train.number}: ${ticket.journey.from} to ${ticket.journey.to}`
+    );
     const details = encodeURIComponent(
       `Train: ${ticket.train.number} · ${effectiveTrainName}\n` +
-      `Coach: ${ticket.passenger.coach || '-'} · Seat: ${ticket.passenger.seat || '-'}\n` +
-      `PNR: ${ticket.pnr}\n` +
-      `Passenger: ${ticket.passenger.name || '-'}\n` +
-      `Departure Time: ${ticket.journey.departure || '06:25 AM'}`
+        `Coach: ${ticket.passenger.coach || '-'} · Seat: ${ticket.passenger.seat || '-'}\n` +
+        `PNR: ${ticket.pnr}\n` +
+        `Passenger: ${ticket.passenger.name || '-'}\n` +
+        `Departure: ${ticket.journey.departure || 'Scheduled Time'}`
     );
-    const location = encodeURIComponent(`${ticket.journey.fromName || ticket.journey.from} Railway Station`);
+    const location = encodeURIComponent(
+      `${ticket.journey.fromName || ticket.journey.from} Railway Station`
+    );
     const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}${dateQuery}`;
 
     setModalConfig({
       visible: true,
       title: 'Add to Calendar',
-      subtitle: `Sync your journey for ${ticket.train.number} ${effectiveTrainName} departing on ${detailedDate || ticket.journey.date} at ${ticket.journey.departure || '06:25 AM'} to Google Calendar.`,
+      subtitle: `Sync journey for Train ${ticket.train.number} departing on ${
+        detailedDate || ticket.journey.date
+      } to your Google Calendar.`,
       iconVariant: 'orange',
-      primaryButtonText: 'OPEN GOOGLE CALENDAR',
-      secondaryButtonText: 'CANCEL',
+      primaryButtonText: 'OPEN CALENDAR',
       onPrimaryPress: async () => {
         setIsAddedToCalendar(true);
         setModalConfig(null);
@@ -131,30 +135,38 @@ export const TicketDetailsScreen: React.FC<TicketDetailsScreenProps> = ({
           console.log('Error opening calendar:', e);
         }
       },
-      onSecondaryPress: () => {
-        setModalConfig(null);
-      },
     });
   };
+
+  const isConfirmed = ticket.status === 'CONFIRMED' || !ticket.status;
 
   return (
     <View style={styles.safeArea}>
       <StatusBar barStyle="light-content" />
-      {/* Top Header */}
+
+      {/* Apple-style Top Navigation Header */}
       <View style={styles.header}>
         <TouchableOpacity
-          activeOpacity={0.8}
+          activeOpacity={0.7}
           onPress={onBack}
-          style={styles.backBtn}
+          style={styles.navButton}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <ArrowLeft size={20} color={Colors.textPrimary} />
+          <ArrowLeft size={20} color={Colors.appleLabel} />
         </TouchableOpacity>
 
-        <AppText variant="subheading" weight="heavy" uppercase letterSpacing={1} color="primary">
-          TICKET DETAILS
+        <AppText variant="bodyLg" weight="bold" color="primary">
+          Ticket Details
         </AppText>
 
-        <View style={styles.headerRightSpacer} />
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={handleShare}
+          style={styles.navButton}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Share2 size={18} color={Colors.appleLabel} />
+        </TouchableOpacity>
       </View>
 
       <ScrollView
@@ -171,275 +183,312 @@ export const TicketDetailsScreen: React.FC<TicketDetailsScreenProps> = ({
               title: 'PNR Copied',
               subtitle: `PNR reference ${ticket.pnr} copied to clipboard.`,
               iconVariant: 'orange',
+              primaryButtonText: 'OK',
+              onPrimaryPress: () => setModalConfig(null),
             });
           }}
         />
 
-        {/* Action Buttons Row: 3-Card Balanced Layout (TRAIN STATUS, SHARE PASS, CALENDAR) */}
+        {/* Action Row: Apple Inset Action Cards */}
         <View style={styles.actionsRow}>
+          {/* Live Train Status */}
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => onOpenTrainStatus?.(ticket)}
             style={styles.actionCard}
           >
-            <View style={styles.actionIconCircle}>
-              <Train size={16} color={Colors.primary} />
+            <View style={[styles.actionIconCircle, { backgroundColor: 'rgba(10, 132, 255, 0.15)' }]}>
+              <Train size={18} color={Colors.appleBlue} />
             </View>
-            <AppText variant="tiny" weight="heavy" color="primary" uppercase letterSpacing={0.5}>
-              TRAIN STATUS
+            <AppText variant="caption" weight="bold" color="primary" style={styles.actionTitle}>
+              Live Status
             </AppText>
-            <AppText variant="micro" color="secondary" style={styles.actionSubtext}>
-              Live Running
+            <AppText variant="micro" color="secondary">
+              Platform & Run
             </AppText>
           </TouchableOpacity>
 
+          {/* Share Pass */}
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={handleShare}
             style={styles.actionCard}
           >
-            <View style={styles.actionIconCircle}>
-              <Share2 size={16} color={Colors.primary} />
+            <View style={[styles.actionIconCircle, { backgroundColor: 'rgba(48, 209, 88, 0.15)' }]}>
+              <Share2 size={18} color={Colors.appleGreen} />
             </View>
-            <AppText variant="tiny" weight="heavy" color="primary" uppercase letterSpacing={0.5}>
-              SHARE PASS
+            <AppText variant="caption" weight="bold" color="primary" style={styles.actionTitle}>
+              Share Pass
             </AppText>
-            <AppText variant="micro" color="secondary" style={styles.actionSubtext}>
-              Send Ticket
+            <AppText variant="micro" color="secondary">
+              Export Card
             </AppText>
           </TouchableOpacity>
 
+          {/* Add to Calendar */}
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={handleCalendar}
             style={styles.actionCard}
           >
-            <View style={[styles.actionIconCircle, isAddedToCalendar && styles.actionIconCircleGreen]}>
+            <View
+              style={[
+                styles.actionIconCircle,
+                {
+                  backgroundColor: isAddedToCalendar
+                    ? 'rgba(48, 209, 88, 0.15)'
+                    : 'rgba(255, 159, 10, 0.15)',
+                },
+              ]}
+            >
               {isAddedToCalendar ? (
-                <Check size={16} color={Colors.success} />
+                <Check size={18} color={Colors.appleGreen} strokeWidth={2.4} />
               ) : (
-                <Calendar size={16} color={Colors.primary} />
+                <Calendar size={18} color={Colors.appleOrange} />
               )}
             </View>
             <AppText
-              variant="tiny"
-              weight="heavy"
+              variant="caption"
+              weight="bold"
               color={isAddedToCalendar ? 'success' : 'primary'}
-              uppercase
-              letterSpacing={0.5}
+              style={styles.actionTitle}
             >
-              CALENDAR
+              Calendar
             </AppText>
-            <AppText
-              variant="micro"
-              color={isAddedToCalendar ? 'success' : 'secondary'}
-              style={styles.actionSubtext}
-            >
-              {isAddedToCalendar ? 'Added ✓' : 'Add Event'}
+            <AppText variant="micro" color={isAddedToCalendar ? 'success' : 'secondary'}>
+              {isAddedToCalendar ? 'Synced ✓' : 'Add Event'}
             </AppText>
           </TouchableOpacity>
         </View>
 
-        {/* Section 1: Journey & Schedule Specifications */}
-        <View style={styles.detailCard}>
-          <View style={styles.cardSectionHeader}>
-            <View style={styles.headerIconBox}>
-              <Train size={16} color={Colors.primary} />
-            </View>
-            <View style={styles.cardHeaderTitleBox}>
-              <AppText variant="caption" weight="heavy" uppercase letterSpacing={0.8} color="primary">
-                JOURNEY & TRAIN SPECIFICATIONS
-              </AppText>
-              <AppText variant="micro" color="secondary">
-                Verified Route & Timing Details
-              </AppText>
-            </View>
-          </View>
+        {/* Section 1: Journey & Schedule */}
+        <AppText
+          variant="micro"
+          weight="bold"
+          color="secondary"
+          uppercase
+          letterSpacing={0.8}
+          style={styles.groupHeader}
+        >
+          JOURNEY SPECIFICATIONS
+        </AppText>
 
-          <View style={styles.cardDivider} />
-
-          {/* Train Full Info */}
-          <View style={styles.infoRow}>
-            <AppText variant="caption" color="secondary">Train Service</AppText>
-            <View style={styles.infoValueColRight}>
-              <AppText variant="caption" weight="heavy" color="primary" numberOfLines={1}>
-                {ticket.train.number ? `${ticket.train.number} · ${effectiveTrainName}` : effectiveTrainName}
-              </AppText>
-              <AppText variant="micro" color="orange" weight="bold" uppercase>
-                {trainCategory}
-              </AppText>
-            </View>
-          </View>
-
-          {/* Journey Date */}
-          <View style={styles.infoRow}>
-            <AppText variant="caption" color="secondary">Journey Date</AppText>
-            <AppText variant="caption" weight="bold" color="primary">
-              {detailedDate || ticket.journey.date}
+        <View style={styles.groupCard}>
+          {/* Train Service */}
+          <View style={styles.detailRow}>
+            <AppText variant="body" color="secondary" style={styles.rowLabel}>
+              Train Service
+            </AppText>
+            <AppText variant="body" weight="bold" color="primary" style={styles.rowValue} numberOfLines={1}>
+              {ticket.train.number ? `${ticket.train.number} · ${effectiveTrainName}` : effectiveTrainName}
             </AppText>
           </View>
 
-          {/* Boarding From */}
-          <View style={styles.infoRow}>
-            <AppText variant="caption" color="secondary">Boarding Station</AppText>
-            <View style={styles.infoValueColRight}>
-              <AppText variant="caption" weight="bold" color="primary">
+          <View style={styles.separator} />
+
+          {/* Service Category */}
+          <View style={styles.detailRow}>
+            <AppText variant="body" color="secondary" style={styles.rowLabel}>
+              Service Type
+            </AppText>
+            <AppText variant="body" weight="medium" color="primary" style={styles.rowValue}>
+              {trainCategory}
+            </AppText>
+          </View>
+
+          <View style={styles.separator} />
+
+          {/* Boarding Station */}
+          <View style={styles.detailRow}>
+            <AppText variant="body" color="secondary" style={styles.rowLabel}>
+              Boarding From
+            </AppText>
+            <View style={{ flex: 1, alignItems: 'flex-end' }}>
+              <AppText variant="body" weight="bold" color="primary">
                 {ticket.journey.fromName || ticket.journey.from} ({ticket.journey.from})
               </AppText>
               {ticket.journey.departure ? (
-                <AppText variant="micro" color="orange" weight="bold">
+                <AppText variant="micro" color="orange" weight="bold" style={{ marginTop: 2 }}>
                   Departs at {ticket.journey.departure}
                 </AppText>
               ) : null}
             </View>
           </View>
 
-          {/* Destination To */}
-          <View style={styles.infoRow}>
-            <AppText variant="caption" color="secondary">Destination Station</AppText>
-            <View style={styles.infoValueColRight}>
-              <AppText variant="caption" weight="bold" color="primary">
+          <View style={styles.separator} />
+
+          {/* Destination */}
+          <View style={styles.detailRow}>
+            <AppText variant="body" color="secondary" style={styles.rowLabel}>
+              Destination
+            </AppText>
+            <View style={{ flex: 1, alignItems: 'flex-end' }}>
+              <AppText variant="body" weight="bold" color="primary">
                 {ticket.journey.toName || ticket.journey.to} ({ticket.journey.to})
               </AppText>
               {ticket.journey.arrival ? (
-                <AppText variant="micro" color="secondary" weight="bold">
+                <AppText variant="micro" color="secondary" weight="medium" style={{ marginTop: 2 }}>
                   Arrives at {ticket.journey.arrival}
                 </AppText>
               ) : null}
             </View>
           </View>
 
+          <View style={styles.separator} />
+
           {/* Journey Duration */}
-          <View style={[styles.infoRow, styles.lastInfoRow]}>
-            <AppText variant="caption" color="secondary">Travel Duration</AppText>
-            <AppText variant="caption" weight="bold" color="primary">
-              {ticket.journey.duration ? `${ticket.journey.duration} (Direct Service)` : 'Direct Scheduled Run'}
+          <View style={styles.detailRow}>
+            <AppText variant="body" color="secondary" style={styles.rowLabel}>
+              Duration
+            </AppText>
+            <AppText variant="body" weight="medium" color="primary" style={styles.rowValue}>
+              {ticket.journey.duration ? `${ticket.journey.duration} · Direct Run` : 'Direct Scheduled Run'}
+            </AppText>
+          </View>
+
+          <View style={styles.separator} />
+
+          {/* Date */}
+          <View style={styles.detailRow}>
+            <AppText variant="body" color="secondary" style={styles.rowLabel}>
+              Journey Date
+            </AppText>
+            <AppText variant="body" weight="medium" color="primary" style={styles.rowValue}>
+              {detailedDate || ticket.journey.date}
             </AppText>
           </View>
         </View>
 
-        {/* Section 2: Booking & Fare Breakdown */}
-        <View style={styles.detailCard}>
-          <View style={styles.cardSectionHeader}>
-            <View style={styles.headerIconBox}>
-              <ShieldCheck size={16} color={Colors.primary} />
-            </View>
-            <View style={styles.cardHeaderTitleBox}>
-              <AppText variant="caption" weight="heavy" uppercase letterSpacing={0.8} color="primary">
-                BOOKING & FARE BREAKDOWN
-              </AppText>
-              <AppText variant="micro" color="secondary">
-                Official Reservation Details
-              </AppText>
-            </View>
-          </View>
+        {/* Section 2: Reservation & Booking */}
+        <AppText
+          variant="micro"
+          weight="bold"
+          color="secondary"
+          uppercase
+          letterSpacing={0.8}
+          style={styles.groupHeader}
+        >
+          RESERVATION & FARE
+        </AppText>
 
-          <View style={styles.cardDivider} />
-
-          {/* PNR Code */}
-          <View style={styles.infoRow}>
-            <AppText variant="caption" color="secondary">PNR Number</AppText>
-            <View style={styles.pnrTagRow}>
-              <AppText variant="caption" weight="heavy" color="orange" letterSpacing={0.5}>
+        <View style={styles.groupCard}>
+          {/* PNR */}
+          <View style={styles.detailRow}>
+            <AppText variant="body" color="secondary" style={styles.rowLabel}>
+              PNR Number
+            </AppText>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <AppText variant="body" weight="heavy" color="orange" letterSpacing={0.8}>
                 {ticket.pnr}
               </AppText>
               <View style={styles.verifiedTag}>
-                <AppText variant="micro" weight="bold" color="success">VERIFIED</AppText>
-              </View>
-            </View>
-          </View>
-
-          {/* Passenger Name */}
-          <View style={styles.infoRow}>
-            <AppText variant="caption" color="secondary">Passenger</AppText>
-            <AppText variant="caption" weight="bold" color="primary">
-              {ticket.passenger.name && ticket.passenger.name !== '-' ? ticket.passenger.name : '-'}
-            </AppText>
-          </View>
-
-          {/* Booking Status */}
-          <View style={styles.infoRow}>
-            <AppText variant="caption" color="secondary">Booking Status</AppText>
-            <StatusBadge
-              label={ticket.passenger.bookingStatus || 'CONFIRMED'}
-              variant={ticket.passenger.bookingStatus?.includes('WL') ? 'orange' : 'success'}
-            />
-          </View>
-
-          {/* Class, Coach & Seat */}
-          <View style={styles.infoRow}>
-            <AppText variant="caption" color="secondary">Coach & Seat</AppText>
-            <AppText variant="caption" weight="bold" color="primary">
-              {`Coach ${ticket.passenger.coach || '-'} · Seat ${ticket.passenger.seat || '-'} (${ticket.passenger.class || 'CC'})`}
-            </AppText>
-          </View>
-
-          {/* Source */}
-          <View style={styles.infoRow}>
-            <AppText variant="caption" color="secondary">Import Source</AppText>
-            <AppText variant="caption" weight="bold" color="secondary">
-              {`${ticket.source} Notification Service`}
-            </AppText>
-          </View>
-
-          {/* Fare Details */}
-          {ticket.fare?.total ? (
-            <>
-              {ticket.fare.convenienceFee ? (
-                <View style={styles.infoRow}>
-                  <AppText variant="caption" color="secondary">Convenience Charge</AppText>
-                  <AppText variant="caption" color="secondary">
-                    ₹{ticket.fare.convenienceFee.toFixed(2)}
-                  </AppText>
-                </View>
-              ) : null}
-              <View style={[styles.infoRow, styles.lastInfoRow, styles.fareRowHighlight]}>
-                <AppText variant="body" weight="heavy" color="primary">Total Fare Paid</AppText>
-                <AppText variant="heading" weight="heavy" color="orange">
-                  ₹{ticket.fare.total.toLocaleString('en-IN')}
+                <AppText variant="micro" weight="bold" color="success">
+                  VERIFIED
                 </AppText>
               </View>
-            </>
-          ) : (
-            <View style={[styles.infoRow, styles.lastInfoRow]}>
-              <AppText variant="caption" color="secondary">Fare Status</AppText>
-              <AppText variant="caption" weight="bold" color="primary">
-                Fully Paid via {ticket.source}
+            </View>
+          </View>
+
+          <View style={styles.separator} />
+
+          {/* Passenger Name */}
+          <View style={styles.detailRow}>
+            <AppText variant="body" color="secondary" style={styles.rowLabel}>
+              Passenger
+            </AppText>
+            <AppText variant="body" weight="bold" color="primary" style={styles.rowValue} numberOfLines={1}>
+              {ticket.passenger.name && ticket.passenger.name !== '-' ? ticket.passenger.name : 'Passenger'}
+            </AppText>
+          </View>
+
+          <View style={styles.separator} />
+
+          {/* Booking Status */}
+          <View style={styles.detailRow}>
+            <AppText variant="body" color="secondary" style={styles.rowLabel}>
+              Booking Status
+            </AppText>
+            <View style={[styles.statusPill, isConfirmed ? styles.statusPillGreen : styles.statusPillOrange]}>
+              <View style={[styles.statusDot, isConfirmed ? styles.statusDotGreen : styles.statusDotOrange]} />
+              <AppText
+                variant="micro"
+                weight="bold"
+                color={isConfirmed ? 'success' : 'orange'}
+                uppercase
+                letterSpacing={0.6}
+              >
+                {ticket.passenger.bookingStatus || ticket.status || 'CONFIRMED'}
               </AppText>
             </View>
-          )}
+          </View>
+
+          <View style={styles.separator} />
+
+          {/* Coach & Seat */}
+          <View style={styles.detailRow}>
+            <AppText variant="body" color="secondary" style={styles.rowLabel}>
+              Coach & Seat
+            </AppText>
+            <AppText variant="body" weight="bold" color="primary" style={styles.rowValue}>
+              {ticket.passenger.coach
+                ? `Coach ${ticket.passenger.coach} · Seat ${ticket.passenger.seat || '-'}`
+                : ticket.passenger.seat || 'Confirmed'}
+            </AppText>
+          </View>
+
+          <View style={styles.separator} />
+
+          {/* Travel Class */}
+          <View style={styles.detailRow}>
+            <AppText variant="body" color="secondary" style={styles.rowLabel}>
+              Travel Class
+            </AppText>
+            <AppText variant="body" weight="medium" color="primary" style={styles.rowValue}>
+              {ticket.passenger.className || `${ticket.passenger.class || 'CC'} Class`}
+            </AppText>
+          </View>
+
+          <View style={styles.separator} />
+
+          {/* Total Fare */}
+          <View style={styles.detailRow}>
+            <AppText variant="body" color="secondary" style={styles.rowLabel}>
+              Total Fare Paid
+            </AppText>
+            <AppText variant="bodyLg" weight="heavy" color="orange" style={styles.rowValue}>
+              {ticket.fare?.total ? `₹${ticket.fare.total.toLocaleString('en-IN')}` : 'Fully Paid'}
+            </AppText>
+          </View>
         </View>
 
         {/* Section 3: Traveler Notice / Offline Pass Assurance */}
         <View style={styles.noticeCard}>
-          <CheckCircle2 size={18} color={Colors.success} style={styles.noticeIcon} />
+          <ShieldCheck size={20} color={Colors.appleGreen} style={styles.noticeIcon} />
           <View style={styles.noticeContent}>
-            <AppText variant="caption" weight="heavy" color="primary">
-              ENCRYPTED ON-DEVICE WALLET PASS
+            <AppText variant="caption" weight="bold" color="primary">
+              Encrypted Offline Pass
             </AppText>
-            <AppText variant="micro" color="secondary" style={styles.noticeDesc}>
-              This boarding pass is stored offline on your phone. Present this PNR ticket along with a valid original Government Photo ID (Aadhaar / Driving License / Voter ID) when inspected by the TTE.
+            <AppText variant="tiny" color="secondary" style={styles.noticeDesc}>
+              This boarding pass is stored 100% offline on your device. Present this pass along with an original Government Photo ID (Aadhaar, Driving License, Passport) during ticket inspection by the TTE.
             </AppText>
           </View>
         </View>
       </ScrollView>
 
-      {/* Matching Nora Custom Modal */}
-      {modalConfig ? (
+      {/* Modal */}
+      {modalConfig && (
         <NoraModal
           visible={modalConfig.visible}
           title={modalConfig.title}
           subtitle={modalConfig.subtitle}
           iconVariant={modalConfig.iconVariant}
           primaryButtonText={modalConfig.primaryButtonText}
-          secondaryButtonText={modalConfig.secondaryButtonText}
           onPrimaryPress={modalConfig.onPrimaryPress || (() => setModalConfig(null))}
-          onSecondaryPress={modalConfig.onSecondaryPress}
           onClose={() => setModalConfig(null)}
         />
-      ) : null}
+      )}
 
-      {/* Share Ticket / Pass Preview Modal */}
+      {/* Share Pass Modal */}
       <ShareTicketModal
         visible={shareModalVisible}
         data={shareData}
@@ -460,135 +509,130 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: Spacing.screenPadding,
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.borderSubtle,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: Colors.appleSeparator,
   },
-  backBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: Colors.surfaceHigh,
+  navButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: Colors.appleGroupedBg,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  headerRightSpacer: {
-    width: 36,
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
   },
   container: {
     flex: 1,
   },
   contentContainer: {
     paddingHorizontal: Spacing.screenPadding,
-    paddingTop: 12,
+    paddingTop: 10,
     paddingBottom: 40,
   },
   actionsRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginTop: 6,
-    marginBottom: 18,
+    gap: 10,
+    marginTop: 4,
+    marginBottom: 8,
   },
   actionCard: {
     flex: 1,
-    backgroundColor: Colors.surface,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    backgroundColor: Colors.appleGroupedBg,
     borderRadius: 14,
     paddingVertical: 14,
-    paddingHorizontal: 4,
+    paddingHorizontal: 10,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
   },
   actionIconCircle: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: 'rgba(245, 51, 44, 0.14)',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 8,
+  },
+  actionTitle: {
+    marginBottom: 2,
+  },
+  groupHeader: {
+    marginLeft: 12,
     marginBottom: 6,
+    marginTop: 20,
   },
-  actionIconCircleGreen: {
-    backgroundColor: 'rgba(74, 222, 128, 0.15)',
-  },
-  actionSubtext: {
-    marginTop: 2,
-  },
-  detailCard: {
-    backgroundColor: Colors.surface,
-    borderRadius: 16,
-    padding: Spacing.md,
+  groupCard: {
+    backgroundColor: Colors.appleGroupedBg,
+    borderRadius: 14,
+    overflow: 'hidden',
     borderWidth: 1,
-    borderColor: Colors.borderSubtle,
-    marginBottom: 16,
+    borderColor: Colors.appleSeparator,
   },
-  cardSectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  headerIconBox: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(245, 51, 44, 0.14)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 10,
-  },
-  cardHeaderTitleBox: {
-    flex: 1,
-  },
-  cardDivider: {
-    height: 1,
-    backgroundColor: Colors.divider,
-    marginBottom: 12,
-  },
-  infoRow: {
+  detailRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 9,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.04)',
+    paddingHorizontal: 16,
+    paddingVertical: 13,
   },
-  lastInfoRow: {
-    borderBottomWidth: 0,
-    paddingBottom: 2,
+  rowLabel: {
+    width: 120,
   },
-  infoValueColRight: {
-    alignItems: 'flex-end',
-    maxWidth: '65%',
+  rowValue: {
+    flex: 1,
+    textAlign: 'right',
   },
-  pnrTagRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  separator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Colors.appleSeparator,
+    marginLeft: 16,
   },
   verifiedTag: {
-    backgroundColor: 'rgba(74, 222, 128, 0.12)',
+    backgroundColor: 'rgba(48, 209, 88, 0.12)',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
     marginLeft: 8,
   },
-  fareRowHighlight: {
-    paddingTop: 12,
-    marginTop: 4,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.08)',
+  statusPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 12,
+  },
+  statusPillGreen: {
+    backgroundColor: 'rgba(48, 209, 88, 0.12)',
+  },
+  statusPillOrange: {
+    backgroundColor: 'rgba(255, 159, 10, 0.12)',
+  },
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    marginRight: 5,
+  },
+  statusDotGreen: {
+    backgroundColor: Colors.appleGreen,
+  },
+  statusDotOrange: {
+    backgroundColor: Colors.appleOrange,
   },
   noticeCard: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    alignItems: 'flex-start',
+    backgroundColor: Colors.appleGroupedBg,
     borderRadius: 14,
-    padding: Spacing.md,
+    padding: 16,
+    marginTop: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.06)',
-    marginBottom: 24,
+    borderColor: Colors.appleSeparator,
   },
   noticeIcon: {
-    marginRight: 10,
+    marginRight: 12,
     marginTop: 2,
   },
   noticeContent: {
@@ -596,6 +640,6 @@ const styles = StyleSheet.create({
   },
   noticeDesc: {
     marginTop: 4,
-    lineHeight: 16,
+    lineHeight: 18,
   },
 });

@@ -9,6 +9,10 @@ import {
   scanSmsForTickets,
 } from './src/services/notificationService';
 import {
+  initShareAndClipboardListeners,
+  checkClipboardForTicket,
+} from './src/services/shareAndClipboardService';
+import {
   scheduleJourneyReminders,
   cancelJourneyReminders,
   showTicketDetectedNotification,
@@ -84,9 +88,30 @@ export default function App() {
       });
     });
 
+    // Listen for tickets shared via Android Share Sheet or copied into Clipboard
+    const unsubShareAndClipboard = initShareAndClipboardListeners((detected, source) => {
+      setPendingTicket(detected);
+      setCurrentScreen('VerifyDetails');
+      const isClip = source === 'clipboard';
+      const sourceTitle = isClip ? 'Ticket Detected in Clipboard!' : 'Ticket Shared to NORA!';
+      const sourceDesc = isClip
+        ? `Detected a booking message or PNR ${detected.pnr} on your clipboard. Review and confirm details below to save it to your wallet.`
+        : `Received a booking message via Android Share Sheet for PNR ${detected.pnr}. Review and confirm details below to save it to your wallet.`;
+
+      setModalConfig({
+        visible: true,
+        title: sourceTitle,
+        subtitle: sourceDesc,
+        iconVariant: 'orange',
+        primaryButtonText: 'REVIEW DETAILS',
+        onPrimaryPress: () => setModalConfig(null),
+      });
+    });
+
     return () => {
       unsubscribe();
       unsubActions();
+      unsubShareAndClipboard();
     };
   }, []);
 
@@ -181,57 +206,75 @@ export default function App() {
   };
 
   /**
-   * Scans SMS inbox directly on physical phone, filters only valid upcoming tickets,
-   * prunes expired tickets, schedules reminders, and prevents duplicates.
+   * Refreshes wallet tickets and checks clipboard for any newly copied ticket/PNR.
+   * If the ticket is already in the wallet, it will NOT be shown.
+   */
+  const handleHomeRefresh = async () => {
+    // 1. Reload tickets from SQLite and sync widget/reminders
+    await loadTickets();
+
+    // 2. Check clipboard for a copied ticket or PNR
+    try {
+      const clipboardTicket = await checkClipboardForTicket(true);
+      if (clipboardTicket && clipboardTicket.pnr) {
+        // Double-check: ensure ticket is not already present in the wallet
+        const isDuplicate = await ticketRepository.isDuplicatePNR(clipboardTicket.pnr);
+        if (!isDuplicate) {
+          setPendingTicket(clipboardTicket);
+          setCurrentScreen('VerifyDetails');
+          setModalConfig({
+            visible: true,
+            title: 'Ticket Detected in Clipboard!',
+            subtitle: `Detected a booking message or PNR ${clipboardTicket.pnr} on your clipboard. Review and confirm details below to save it to your wallet.`,
+            iconVariant: 'orange',
+            primaryButtonText: 'REVIEW DETAILS',
+            onPrimaryPress: () => setModalConfig(null),
+          });
+        }
+      }
+    } catch (err) {
+      console.log('[NORA App] Clipboard check on refresh error:', err);
+    }
+  };
+
+  /**
+   * Checks clipboard for copied train ticket or PNR, or displays current active tickets in wallet.
    */
   const handleScanAndCheckActiveTickets = async () => {
     try {
-      const scanResult = await scanSmsForTickets();
-      const detectedFromSms = Array.isArray(scanResult?.tickets) ? scanResult.tickets : [];
-      let newlyDetectedCount = 0;
-
-      for (const t of detectedFromSms) {
-        if (isTicketValidAndUpcoming(t.journey?.date, t.status, t.journey?.departure)) {
-          const { ticket: saved, isDuplicate } = await ticketRepository.saveOrMergeTicket(t);
-          await scheduleJourneyReminders(saved);
-          if (!isDuplicate) {
-            await showTicketDetectedNotification(saved);
-          }
-          newlyDetectedCount++;
-        }
+      // 1. Check if user recently copied a ticket or PNR into clipboard
+      const clipboardTicket = await checkClipboardForTicket(true);
+      if (clipboardTicket && clipboardTicket.pnr) {
+        setPendingTicket(clipboardTicket);
+        setCurrentScreen('VerifyDetails');
+        setModalConfig({
+          visible: true,
+          title: 'Ticket Found in Clipboard!',
+          subtitle: `Detected booking for PNR ${clipboardTicket.pnr} from your clipboard. Review and confirm details below to save it to your wallet.`,
+          iconVariant: 'orange',
+          primaryButtonText: 'REVIEW DETAILS',
+          onPrimaryPress: () => setModalConfig(null),
+        });
+        return;
       }
 
+      // 2. Otherwise display active tickets in wallet
       const currentList = await ticketRepository.getTickets();
       setTickets(currentList);
 
-      const activeValidList = currentList.filter(
+      const activeTickets = currentList.filter(
         (t) =>
           isTicketValidAndUpcoming(t.journey?.date, t.status, t.journey?.departure) &&
           t.status !== 'COMPLETED' &&
           t.status !== 'CANCELLED'
       );
-      const activeTickets = activeValidList;
 
-      if (newlyDetectedCount > 0) {
-        setCurrentScreen('Home');
-        setModalConfig({
-          visible: true,
-          title: 'Tickets Detected from SMS!',
-          subtitle: `Found and imported ${newlyDetectedCount} active train booking(s) directly from your SMS messages. Stored safely in your wallet without duplicates.`,
-          iconVariant: 'orange',
-          tickets: activeTickets,
-          primaryButtonText: 'VIEW IN WALLET',
-          onPrimaryPress: () => {
-            setModalConfig(null);
-            setCurrentScreen('Home');
-          },
-        });
-      } else if (activeTickets.length > 0) {
+      if (activeTickets.length > 0) {
         setCurrentScreen('Home');
         setModalConfig({
           visible: true,
           title: `Active Tickets (${activeTickets.length})`,
-          subtitle: `Scanned your SMS inbox. You have ${activeTickets.length} active upcoming train journey(s) in your wallet.`,
+          subtitle: `You have ${activeTickets.length} active upcoming train journey(s) in your wallet.`,
           iconVariant: 'green',
           tickets: activeTickets,
           primaryButtonText: 'VIEW TICKETS',
@@ -243,8 +286,9 @@ export default function App() {
       } else {
         setModalConfig({
           visible: true,
-          title: 'No Upcoming Tickets Found',
-          subtitle: 'Scanned your SMS messages, but no IRCTC or redRail booking SMS was found. When a booking SMS arrives, it will automatically appear here.',
+          title: 'Check Active Tickets',
+          subtitle:
+            'You have 0 active train tickets in your wallet.\n\nTo import a ticket, copy any IRCTC / redRail SMS or use Android Share Sheet to share the message directly to NORA!',
           iconVariant: 'orange',
           primaryButtonText: 'GOT IT',
           onPrimaryPress: () => setModalConfig(null),
@@ -354,7 +398,7 @@ export default function App() {
               onSelectTicket={handleSelectTicket}
               onNavigateAdd={() => setCurrentScreen('AddTicket')}
               onOpenSettings={() => setCurrentScreen('Settings')}
-              onRefreshTickets={handleScanAndCheckActiveTickets}
+              onRefreshTickets={handleHomeRefresh}
             />
           )}
 
@@ -413,7 +457,13 @@ export default function App() {
         {(currentScreen === 'Home' || currentScreen === 'Settings') && (
           <BottomNavigation
             currentScreen={currentScreen}
-            onNavigate={(screen) => setCurrentScreen(screen)}
+            onNavigate={(screen) => {
+              if (screen === 'Home' && currentScreen === 'Home') {
+                handleHomeRefresh();
+              } else {
+                setCurrentScreen(screen);
+              }
+            }}
             onAddPress={() => setCurrentScreen('AddTicket')}
           />
         )}

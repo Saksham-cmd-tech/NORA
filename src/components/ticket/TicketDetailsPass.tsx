@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Copy, Check, Train, Calendar } from 'lucide-react-native';
+import { Copy, Check } from 'lucide-react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { Colors } from '../../theme/colors';
-import { Spacing } from '../../theme/spacing';
 import { NormalizedTicket } from '../../types/ticket';
 import { AppText } from '../common/AppText';
-import { StatusBadge } from '../common/StatusBadge';
 import { StationRoute } from './StationRoute';
 import { getTrainName } from '../../utils/stationLookup';
 
@@ -28,13 +26,17 @@ export const TicketDetailsPass: React.FC<TicketDetailsPassProps> = ({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Format PNR with spaces: e.g. 8354 766 445
-  const formattedPNR = ticket.pnr.replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3');
+  // Format PNR with clean spaces: e.g. 4341  568  676
+  const formattedPNR = ticket.pnr.replace(/(\d{4})(\d{3})(\d{3})/, '$1  $2  $3');
 
   // Compute clean train name and train category
-  const effectiveTrainName = (ticket.train.name && ticket.train.name.trim().length > 0 && !/^\d+$/.test(ticket.train.name.trim()) && ticket.train.name.trim() !== ticket.train.number)
-    ? ticket.train.name
-    : (getTrainName(ticket.train.number) || 'Indian Railways Superfast');
+  const effectiveTrainName =
+    ticket.train.name &&
+    ticket.train.name.trim().length > 0 &&
+    !/^\d+$/.test(ticket.train.name.trim()) &&
+    ticket.train.name.trim() !== ticket.train.number
+      ? ticket.train.name
+      : getTrainName(ticket.train.number) || 'Indian Railways Superfast';
 
   const trainLower = effectiveTrainName.toLowerCase();
   const trainCategory = trainLower.includes('vande bharat')
@@ -53,42 +55,44 @@ export const TicketDetailsPass: React.FC<TicketDetailsPassProps> = ({
     <View style={styles.cardContainer}>
       {/* ================= UPPER SECTION ================= */}
       <View style={styles.upperSection}>
-        {/* Header Row: Status Badge & Journey Date */}
+        {/* Header Row: Service Number and Status Badge */}
         <View style={styles.headerRow}>
-          <StatusBadge
-            label={`${ticket.source || 'IRCTC'} ${ticket.status || 'CONFIRMED'}`}
-            variant={ticket.status === 'WAITLISTED' || ticket.status === 'RAC' ? 'orange' : 'success'}
-            dot
-          />
-          <View style={styles.dateBadge}>
-            <Calendar size={12} color={Colors.textSecondary} style={styles.dateIcon} />
-            <AppText variant="tiny" weight="bold" color="secondary" uppercase>
-              {ticket.journey.date}
-            </AppText>
-          </View>
-        </View>
-
-        {/* Dedicated Prominent Train Banner */}
-        <View style={styles.trainBanner}>
-          <View style={styles.trainIconBox}>
-            <Train size={18} color={Colors.primary} />
-          </View>
-          <View style={styles.trainInfoCol}>
-            <View style={styles.trainTopRow}>
-              <View style={styles.trainPill}>
-                <AppText variant="micro" weight="heavy" color="orange" letterSpacing={0.8}>
-                  {ticket.train.number ? `TRAIN ${ticket.train.number}` : 'TRAIN'}
-                </AppText>
-              </View>
-              <AppText variant="micro" weight="heavy" color="muted" uppercase letterSpacing={0.6}>
-                {trainCategory}
+          <View style={styles.headerLeft}>
+            <View style={styles.servicePill}>
+              <AppText variant="micro" weight="bold" color="primary">
+                {ticket.train.number ? `TRAIN ${ticket.train.number}` : 'TRAIN'}
               </AppText>
             </View>
-            <AppText variant="bodyLg" weight="heavy" color="primary" numberOfLines={1} style={styles.trainName}>
-              {effectiveTrainName}
+            <AppText
+              variant="micro"
+              weight="bold"
+              color="secondary"
+              uppercase
+              letterSpacing={0.6}
+              style={{ marginLeft: 6 }}
+            >
+              {trainCategory}
             </AppText>
           </View>
+
+          {/*<View style={[styles.statusPill, isConfirmed ? styles.statusPillGreen : styles.statusPillOrange]}>
+            <View style={[styles.statusDot, isConfirmed ? styles.statusDotGreen : styles.statusDotOrange]} />
+            <AppText
+              variant="micro"
+              weight="bold"
+              color={isConfirmed ? 'success' : 'orange'}
+              uppercase
+              letterSpacing={0.6}
+            >
+              {ticket.status || 'CONFIRMED'}
+            </AppText>
+          </View>*/}
         </View>
+
+        {/* Large Train Name */}
+        <AppText variant="heading" weight="heavy" color="primary" numberOfLines={1} style={styles.trainName}>
+          {effectiveTrainName}
+        </AppText>
 
         {/* Station Route Section */}
         <StationRoute
@@ -104,54 +108,57 @@ export const TicketDetailsPass: React.FC<TicketDetailsPassProps> = ({
 
         <View style={styles.divider} />
 
-        {/* Passenger & Seat Details Grid (100% Genuine SMS Data) */}
+        {/* Passenger & Seat Details Grid */}
         <View style={styles.detailsGrid}>
-          {/* Row 1: Passenger Name and Travel Class */}
+          {/* Row 1: 4 Key Columns */}
           <View style={styles.gridRow}>
-            <View style={styles.gridColLeft}>
-              <AppText variant="micro" uppercase color="muted" weight="bold">
-                PASSENGER
+            <View style={[styles.gridCol, { flex: 1.25 }]}>
+              <AppText variant="micro" uppercase color="secondary" weight="medium" letterSpacing={0.6}>
+                DATE
               </AppText>
               <AppText variant="body" weight="bold" color="primary" style={styles.valMargin} numberOfLines={1}>
-                {ticket.passenger.name && ticket.passenger.name !== '-' ? ticket.passenger.name : '-'}
-              </AppText>
-              <AppText variant="tiny" color="secondary" style={styles.subLabelMargin}>
-                Status: {ticket.passenger.bookingStatus || 'CONFIRMED'}
+                {ticket.journey.date}
               </AppText>
             </View>
 
-            <View style={styles.gridColRight}>
-              <AppText variant="micro" uppercase color="muted" weight="bold">
-                TRAVEL CLASS
+            <View style={[styles.gridCol, { flex: 0.8 }]}>
+              <AppText variant="micro" uppercase color="secondary" weight="medium" letterSpacing={0.6}>
+                COACH
+              </AppText>
+              <AppText variant="body" weight="bold" color="orange" style={styles.valMargin}>
+                {ticket.passenger.coach && ticket.passenger.coach !== '-' ? ticket.passenger.coach : '—'}
+              </AppText>
+            </View>
+
+            <View style={[styles.gridCol, { flex: 1.15 }]}>
+              <AppText variant="micro" uppercase color="secondary" weight="medium" letterSpacing={0.6}>
+                SEAT
               </AppText>
               <AppText variant="body" weight="bold" color="primary" style={styles.valMargin} numberOfLines={1}>
-                {ticket.passenger.className || ticket.passenger.class || 'CC'}
+                {ticket.passenger.seat && ticket.passenger.seat !== 'CONFIRMED'
+                  ? ticket.passenger.seat
+                  : 'CNF'}
               </AppText>
-              <AppText variant="tiny" color="secondary" style={styles.subLabelMargin}>
-                Class Code: {ticket.passenger.class || 'CC'}
+            </View>
+
+            <View style={[styles.gridCol, { flex: 0.8, alignItems: 'flex-end' }]}>
+              <AppText variant="micro" uppercase color="secondary" weight="medium" letterSpacing={0.6}>
+                CLASS
+              </AppText>
+              <AppText variant="body" weight="bold" color="primary" style={styles.valMargin}>
+                {ticket.passenger.class || 'CC'}
               </AppText>
             </View>
           </View>
 
-          {/* Row 2: Coach and Seat */}
-          <View style={[styles.gridRow, styles.gridRowSpacing]}>
-            <View style={styles.gridColLeft}>
-              <AppText variant="micro" uppercase color="muted" weight="bold">
-                COACH
-              </AppText>
-              <AppText variant="heading" weight="heavy" color="orange" style={styles.valMargin}>
-                {ticket.passenger.coach || '-'}
-              </AppText>
-            </View>
-
-            <View style={styles.gridColRight}>
-              <AppText variant="micro" uppercase color="muted" weight="bold">
-                SEAT NUMBER
-              </AppText>
-              <AppText variant="heading" weight="heavy" color="primary" style={styles.valMargin}>
-                {ticket.passenger.seat || '-'}
-              </AppText>
-            </View>
+          {/* Row 2: Passenger Name */}
+          <View style={styles.passengerRow}>
+            <AppText variant="micro" uppercase color="secondary" weight="medium" letterSpacing={0.6}>
+              PASSENGER
+            </AppText>
+            <AppText variant="body" weight="bold" color="primary" style={styles.valMargin} numberOfLines={1}>
+              {ticket.passenger.name && ticket.passenger.name !== '-' ? ticket.passenger.name : 'Passenger'}
+            </AppText>
           </View>
         </View>
       </View>
@@ -161,70 +168,72 @@ export const TicketDetailsPass: React.FC<TicketDetailsPassProps> = ({
         {/* Left circular cutout notch */}
         <View style={styles.notchLeft} />
         {/* Dashed line */}
-        <View style={styles.perforationLineContainer}>
-          <View style={styles.perforationLine} />
-        </View>
+        <View style={styles.dashedLine} />
         {/* Right circular cutout notch */}
         <View style={styles.notchRight} />
       </View>
 
-      {/* ================= ORANGE PNR STUB ================= */}
-      <View style={styles.orangeStub}>
+      {/* ================= APPLE WALLET PNR & BARCODE STUB ================= */}
+      <View style={styles.stubContainer}>
         {/* Top Header Row of Stub */}
         <View style={styles.stubHeader}>
-          <AppText variant="micro" uppercase weight="heavy" color="dark" letterSpacing={0.8}>
+          <AppText variant="micro" uppercase weight="bold" color="secondary" letterSpacing={0.8}>
             PNR REFERENCE
           </AppText>
+
           <TouchableOpacity
-            activeOpacity={0.8}
+            activeOpacity={0.7}
             onPress={handleCopy}
             style={styles.copyBtn}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
             {copied ? (
-              <Check size={12} color="#0E0E0F" />
+              <Check size={12} color={Colors.appleGreen} strokeWidth={2.4} />
             ) : (
-              <Copy size={12} color="#0E0E0F" />
+              <Copy size={12} color={Colors.appleSecondaryLabel} />
             )}
-            <AppText variant="micro" weight="bold" color="dark" uppercase style={styles.copyText}>
-              {copied ? 'COPIED' : 'COPY'}
+            <AppText
+              variant="micro"
+              weight="bold"
+              color={copied ? 'success' : 'secondary'}
+              uppercase
+              style={styles.copyText}
+            >
+              {copied ? 'Copied' : 'Copy'}
             </AppText>
           </TouchableOpacity>
         </View>
 
         {/* Prominent PNR Display */}
-        <AppText variant="title" weight="heavy" color="dark" letterSpacing={1.2} style={styles.pnrNumber}>
+        <AppText variant="title" weight="heavy" color="primary" letterSpacing={2} style={styles.pnrNumber}>
           {formattedPNR}
         </AppText>
 
         {/* Realistic Barcode Visual Pattern */}
         <View style={styles.barcodeBox}>
           <View style={styles.barcodeBars}>
-            {[3, 1, 2, 4, 1, 3, 2, 1, 4, 2, 1, 3, 2, 4, 1, 2, 3, 1, 4, 2, 1, 3, 2, 1, 4, 2, 3, 1, 2, 4, 1, 3, 2, 1, 4, 2].map((w, idx) => (
-              <View
-                key={idx}
-                style={[
-                  styles.barcodeBar,
-                  { width: w, marginRight: (idx % 3 === 0 ? 3 : 2) },
-                ]}
-              />
-            ))}
+            {[3, 1, 2, 4, 1, 3, 2, 1, 4, 2, 1, 3, 2, 4, 1, 2, 3, 1, 4, 2, 1, 3, 2, 1, 4, 2, 3, 1, 2, 4, 1, 3, 2, 1, 4, 2].map(
+              (w, idx) => (
+                <View
+                  key={idx}
+                  style={[
+                    styles.barcodeBar,
+                    { width: w, marginRight: idx % 3 === 0 ? 3 : 2 },
+                  ]}
+                />
+              )
+            )}
           </View>
         </View>
 
         {/* Stub Footer */}
         <View style={styles.stubFooter}>
-          <AppText variant="micro" weight="bold" color="dark" uppercase letterSpacing={0.5}>
-            {ticket.bookingId ? `PASS ${ticket.bookingId}` : 'DIGITAL BOARDING PASS'}
+          <AppText variant="micro" weight="medium" color="secondary" uppercase letterSpacing={0.5}>
+            DIGITAL BOARDING PASS
           </AppText>
-          {ticket.fare?.total ? (
-            <AppText variant="micro" weight="heavy" color="dark" uppercase letterSpacing={0.5}>
-              {`₹${ticket.fare.total.toLocaleString('en-IN')} FARE PAID`}
-            </AppText>
-          ) : (
-            <AppText variant="micro" weight="heavy" color="dark" uppercase letterSpacing={0.5}>
-              IRCTC OFFICIAL
-            </AppText>
-          )}
+          <AppText variant="micro" weight="medium" color="secondary" uppercase letterSpacing={0.5}>
+            SHOW TO TTE ON TRAIN
+          </AppText>
         </View>
       </View>
     </View>
@@ -234,109 +243,95 @@ export const TicketDetailsPass: React.FC<TicketDetailsPassProps> = ({
 const styles = StyleSheet.create({
   cardContainer: {
     marginVertical: 12,
-    borderRadius: 20,
+    borderRadius: 22,
     overflow: 'hidden',
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.appleGroupedBg,
     borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderColor: Colors.appleSeparator,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 4,
   },
   upperSection: {
-    padding: Spacing.lg,
-    paddingBottom: 16,
+    padding: 18,
+    paddingBottom: 14,
   },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  dateBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
-  dateIcon: {
-    marginRight: 4,
-  },
-  trainBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.03)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.07)',
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    marginTop: 2,
     marginBottom: 8,
   },
-  trainIconBox: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(255, 107, 0, 0.12)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 107, 0, 0.25)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
-  trainInfoCol: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  trainTopRow: {
+  headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 2,
+    flexShrink: 1,
   },
-  trainPill: {
-    backgroundColor: 'rgba(255, 107, 0, 0.15)',
-    paddingHorizontal: 6,
-    paddingVertical: 1,
-    borderRadius: 4,
-    marginRight: 8,
+  servicePill: {
+    backgroundColor: Colors.appleSecondaryBg,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
+  },
+  statusPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 12,
+  },
+  statusPillGreen: {
+    backgroundColor: 'rgba(48, 209, 88, 0.12)',
+  },
+  statusPillOrange: {
+    backgroundColor: 'rgba(255, 159, 10, 0.12)',
+  },
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    marginRight: 5,
+  },
+  statusDotGreen: {
+    backgroundColor: Colors.appleGreen,
+  },
+  statusDotOrange: {
+    backgroundColor: Colors.appleOrange,
   },
   trainName: {
-    marginTop: 1,
-    letterSpacing: 0.3,
+    fontSize: 20,
+    marginTop: 2,
+    marginBottom: 4,
+    letterSpacing: -0.3,
   },
   routePadding: {
-    paddingVertical: 10,
+    paddingVertical: 8,
   },
   divider: {
-    height: 1,
-    backgroundColor: Colors.divider,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Colors.appleSeparator,
     marginVertical: 12,
   },
   detailsGrid: {
-    paddingTop: 4,
+    paddingTop: 2,
   },
   gridRow: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'space-between',
   },
-  gridRowSpacing: {
-    marginTop: 14,
-  },
-  gridColLeft: {
+  gridCol: {
     flex: 1,
-    marginRight: 12,
   },
-  gridColRight: {
-    flex: 1,
-    alignItems: 'flex-end',
-    marginLeft: 12,
+  passengerRow: {
+    marginTop: 12,
   },
   valMargin: {
-    marginTop: 4,
-  },
-  subLabelMargin: {
-    marginTop: 2,
+    marginTop: 3,
   },
 
   // Perforation Divider & Notches
@@ -344,8 +339,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: 24,
-    backgroundColor: 'transparent',
-    overflow: 'visible',
     position: 'relative',
   },
   notchLeft: {
@@ -354,22 +347,14 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: Colors.background,
     marginLeft: -12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-    borderLeftWidth: 0,
-    zIndex: 10,
   },
-  perforationLineContainer: {
+  dashedLine: {
     flex: 1,
     height: 1,
-    overflow: 'hidden',
-    marginHorizontal: 4,
-  },
-  perforationLine: {
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
+    borderColor: Colors.appleSeparator,
     borderStyle: 'dashed',
-    height: 0,
+    marginHorizontal: 4,
   },
   notchRight: {
     width: 24,
@@ -377,18 +362,14 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: Colors.background,
     marginRight: -12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-    borderRightWidth: 0,
-    zIndex: 10,
   },
 
-  // Orange PNR Stub
-  orangeStub: {
-    backgroundColor: Colors.primary,
-    paddingHorizontal: Spacing.lg,
-    paddingTop: 16,
-    paddingBottom: 20,
+  // Apple Wallet PNR & Barcode Stub
+  stubContainer: {
+    backgroundColor: '#161618',
+    paddingHorizontal: 18,
+    paddingTop: 14,
+    paddingBottom: 18,
   },
   stubHeader: {
     flexDirection: 'row',
@@ -398,26 +379,31 @@ const styles = StyleSheet.create({
   copyBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.12)',
+    backgroundColor: Colors.appleSecondaryBg,
     paddingVertical: 4,
     paddingHorizontal: 8,
-    borderRadius: 6,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
   },
   copyText: {
     marginLeft: 4,
-    fontSize: 10,
+    fontSize: 11,
   },
   pnrNumber: {
-    marginTop: 6,
-    marginBottom: 12,
+    fontSize: 24,
+    marginVertical: 10,
+    textAlign: 'center',
   },
   barcodeBox: {
-    backgroundColor: '#000000',
-    borderRadius: 8,
-    paddingVertical: 12,
+    backgroundColor: '#0A0A0C',
+    borderRadius: 10,
+    paddingVertical: 14,
     paddingHorizontal: 16,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
   },
   barcodeBars: {
     flexDirection: 'row',
@@ -426,7 +412,7 @@ const styles = StyleSheet.create({
   },
   barcodeBar: {
     height: '100%',
-    backgroundColor: Colors.creme,
+    backgroundColor: '#FFFFFF',
     borderRadius: 1,
   },
   stubFooter: {
@@ -435,7 +421,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 12,
     paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(0, 0, 0, 0.12)',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: Colors.appleSeparator,
   },
 });

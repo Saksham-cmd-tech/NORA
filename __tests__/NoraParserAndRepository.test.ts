@@ -11,6 +11,15 @@ import { buildShareTicketData } from '../src/services/shareTicketService';
 jest.setTimeout(15000);
 
 describe('NORA Parser & Duplicate Reconciliation Suite', () => {
+  beforeAll(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2026-10-10T12:00:00Z'));
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   const CONFIRMED_BOOKING_MSG =
     'PNR:4341568676,TRAIN:12626,DOJ:12-10-2026,TIME:20:10,CLASS:3A,NDLS TO SBC,NAME:RAKESH KUMAR+,COACH:B1,SEAT:22,FARE:2450,SC:11.80.';
 

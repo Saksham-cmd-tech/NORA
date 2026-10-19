@@ -1,4 +1,4 @@
-package com.nora.wallet.bridge
+package dev.saksham.nora.bridge
 
 import android.content.Intent
 import android.graphics.*

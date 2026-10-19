@@ -41,4 +41,20 @@ export const Colors = {
   borderScarlet: 'rgba(245, 51, 44, 0.38)',
   divider: 'rgba(204, 200, 185, 0.08)',
   perforation: 'rgba(204, 200, 185, 0.22)',
+
+  // Apple Native Dark Tokens
+  appleGroupedBg: '#1C1C1E',
+  appleSecondaryBg: '#2C2C2E',
+  appleTertiaryBg: '#3A3A3C',
+  appleSeparator: 'rgba(255, 255, 255, 0.08)',
+  appleLabel: '#FFFFFF',
+  appleSecondaryLabel: '#8E8E93',
+  appleTertiaryLabel: '#636366',
+  appleDestructive: '#FF453A',
+  appleBlue: '#0A84FF',
+  appleGreen: '#30D158',
+  appleOrange: '#FF9F0A',
+  applePurple: '#BF5AF2',
+  appleTeal: '#64D2FF',
+  appleIndigo: '#5E5CE6',
 };
