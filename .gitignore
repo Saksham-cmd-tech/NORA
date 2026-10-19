@@ -40,6 +40,8 @@ local.properties
 *.keystore
 !debug.keystore
 !nora-release-key.keystore
+*.apk
+*.aab
 .kotlin/
 
 # node.js
