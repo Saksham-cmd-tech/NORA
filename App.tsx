@@ -323,8 +323,48 @@ export default function App() {
     setCurrentScreen('Home');
   };
 
+  const handleTrackSharedTrip = (t: NormalizedTicket) => {
+    const sharedData: SharedTripData = {
+      trainNumber: t.train.number,
+      trainName: t.train.name,
+      trainType: t.train.type,
+      dateOfJourney: t.journey.date,
+      fromStation: t.journey.from,
+      fromStationName: t.journey.fromName,
+      toStation: t.journey.to,
+      toStationName: t.journey.toName,
+      departureTime: t.journey.departure,
+      arrivalTime: t.journey.arrival,
+      coach: t.passenger.coach,
+      seat: t.passenger.seat,
+      status: t.passenger.bookingStatus,
+      pnr: t.pnr.startsWith('SHARED-') ? undefined : t.pnr,
+    };
+    setSharedTripData(sharedData);
+    setCurrentScreen('SharedJourney');
+  };
+
+  const handleDeleteTicket = async (t: NormalizedTicket) => {
+    try {
+      await ticketRepository.deleteTicket(t.id);
+      await loadTickets();
+    } catch (err) {
+      console.log('[App] Error deleting ticket:', err);
+    }
+  };
+
   const handleSelectTicket = (t: NormalizedTicket) => {
     setAutoOpenShareModal(false);
+    const isShared =
+      t.source === 'SHARED_LINK' ||
+      t.id?.startsWith('shared_') ||
+      t.pnr?.startsWith('SHARED-');
+
+    if (isShared) {
+      handleTrackSharedTrip(t);
+      return;
+    }
+
     setSelectedTicket(t);
     setCurrentScreen('TicketDetails');
   };
@@ -415,6 +455,8 @@ export default function App() {
             <HomeScreen
               tickets={tickets}
               onSelectTicket={handleSelectTicket}
+              onTrackSharedTrip={handleTrackSharedTrip}
+              onDeleteTicket={handleDeleteTicket}
               onNavigateAdd={() => setCurrentScreen('AddTicket')}
               onOpenSettings={() => setCurrentScreen('Settings')}
               onRefreshTickets={handleHomeRefresh}

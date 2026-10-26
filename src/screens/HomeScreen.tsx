@@ -20,6 +20,7 @@ import { Spacing } from '../theme/spacing';
 import { NormalizedTicket } from '../types/ticket';
 import { AppText } from '../components/common/AppText';
 import { TicketCard } from '../components/ticket/TicketCard';
+import { SharedTripCard } from '../components/ticket/SharedTripCard';
 import { PastJourneyCard } from '../components/ticket/PastJourneyCard';
 import { NoraModal } from '../components/common/NoraModal';
 import { isTicketValidAndUpcoming } from '../utils/dateUtils';
@@ -29,6 +30,8 @@ import { buildShareTicketData, ShareTicketData } from '../services/shareTicketSe
 interface HomeScreenProps {
   tickets: NormalizedTicket[];
   onSelectTicket: (ticket: NormalizedTicket) => void;
+  onTrackSharedTrip?: (ticket: NormalizedTicket) => void;
+  onDeleteTicket?: (ticket: NormalizedTicket) => void;
   onNavigateAdd: () => void;
   onOpenSettings: () => void;
   onRefreshTickets?: () => Promise<void>;
@@ -37,6 +40,8 @@ interface HomeScreenProps {
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   tickets,
   onSelectTicket,
+  onTrackSharedTrip,
+  onDeleteTicket,
   onNavigateAdd,
   onOpenSettings,
   onRefreshTickets,
@@ -164,36 +169,59 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <View>
             {upcomingTickets.length > 0 ? (
               <View style={styles.ticketList}>
-                {upcomingTickets.map((t) => (
-                  <TicketCard
-                    key={t.id}
-                    ticket={t}
-                    onPress={() => onSelectTicket(t)}
-                    onShare={() => {
-                      setShareData(buildShareTicketData(t));
-                      setShareModalVisible(true);
-                    }}
-                    onAddToCalendar={async () => {
-                      try {
-                        const title = encodeURIComponent(
-                          `🚆 Train ${t.train.number}: ${t.journey.from} to ${t.journey.to}`
-                        );
-                        const details = encodeURIComponent(
-                          `Train: ${t.train.number} ${t.train.name || ''}\n` +
-                            `Coach: ${t.passenger.coach || '-'} · Seat: ${t.passenger.seat || '-'}\n` +
-                            `PNR: ${t.pnr}`
-                        );
-                        const location = encodeURIComponent(
-                          `${t.journey.fromName || t.journey.from} Railway Station`
-                        );
-                        const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}`;
-                        await Linking.openURL(calendarUrl);
-                      } catch (e) {
-                        console.log('Calendar error:', e);
-                      }
-                    }}
-                  />
-                ))}
+                {upcomingTickets.map((t) => {
+                  const isShared =
+                    t.source === 'SHARED_LINK' ||
+                    t.id?.startsWith('shared_') ||
+                    t.pnr?.startsWith('SHARED-');
+
+                  if (isShared) {
+                    return (
+                      <SharedTripCard
+                        key={t.id}
+                        ticket={t}
+                        onPress={() => (onTrackSharedTrip ? onTrackSharedTrip(t) : onSelectTicket(t))}
+                        onTrackLive={() => (onTrackSharedTrip ? onTrackSharedTrip(t) : onSelectTicket(t))}
+                        onShare={() => {
+                          setShareData(buildShareTicketData(t));
+                          setShareModalVisible(true);
+                        }}
+                        onDelete={onDeleteTicket ? () => onDeleteTicket(t) : undefined}
+                      />
+                    );
+                  }
+
+                  return (
+                    <TicketCard
+                      key={t.id}
+                      ticket={t}
+                      onPress={() => onSelectTicket(t)}
+                      onShare={() => {
+                        setShareData(buildShareTicketData(t));
+                        setShareModalVisible(true);
+                      }}
+                      onAddToCalendar={async () => {
+                        try {
+                          const title = encodeURIComponent(
+                            `🚆 Train ${t.train.number}: ${t.journey.from} to ${t.journey.to}`
+                          );
+                          const details = encodeURIComponent(
+                            `Train: ${t.train.number} ${t.train.name || ''}\n` +
+                              `Coach: ${t.passenger.coach || '-'} · Seat: ${t.passenger.seat || '-'}\n` +
+                              `PNR: ${t.pnr}`
+                          );
+                          const location = encodeURIComponent(
+                            `${t.journey.fromName || t.journey.from} Railway Station`
+                          );
+                          const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}`;
+                          await Linking.openURL(calendarUrl);
+                        } catch (e) {
+                          console.log('Calendar error:', e);
+                        }
+                      }}
+                    />
+                  );
+                })}
               </View>
             ) : (
               /* Apple Wallet Minimal Empty State */
