@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { Share2, Radio, Trash2 } from 'lucide-react-native';
+import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Radio, ChevronRight } from 'lucide-react-native';
 import { Colors } from '../../theme/colors';
-import { Spacing } from '../../theme/spacing';
 import { NormalizedTicket } from '../../types/ticket';
 import { getTrainName } from '../../utils/stationLookup';
 import { getLiveTrainStatus, LiveTrainData, formatHaltTime } from '../../services/railService';
 import { AppText } from '../common/AppText';
-import { StationRoute } from './StationRoute';
 
 interface SharedTripCardProps {
   ticket: NormalizedTicket;
@@ -21,10 +19,9 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
   ticket,
   onPress,
   onTrackLive,
-  onShare,
-  onDelete,
 }) => {
   const [liveData, setLiveData] = useState<LiveTrainData | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const resolvedTrainName =
     ticket.train.name &&
@@ -37,11 +34,14 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
     let isMounted = true;
     getLiveTrainStatus(ticket.train.number)
       .then((data) => {
-        if (isMounted && data) {
-          setLiveData(data);
+        if (isMounted) {
+          if (data) setLiveData(data);
+          setLoading(false);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        if (isMounted) setLoading(false);
+      });
 
     return () => {
       isMounted = false;
@@ -53,37 +53,11 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
   const isRunning = liveData?.status === 'running';
   const isCompleted = liveData?.status === 'completed';
 
-  const statusText = isDelayed
-    ? `DELAYED ${delayMinutes}M`
-    : isRunning
-    ? 'ON TIME'
-    : isCompleted
-    ? 'ARRIVED'
-    : 'SCHEDULED';
-
   const nextHalt = liveData?.nextHalt;
   const nextHaltName = nextHalt?.stationName || nextHalt?.stationCode;
   const nextHaltPlatform = nextHalt?.platform ? ` · PF ${nextHalt.platform}` : '';
 
-  const hasSpecificSeat =
-    Boolean(ticket.passenger?.coach && ticket.passenger?.seat) &&
-    ticket.passenger.coach !== 'B1' &&
-    ticket.passenger.seat !== '1';
-
-  const handleDeletePress = () => {
-    Alert.alert(
-      'Remove Shared Trip',
-      `Remove ${resolvedTrainName} (${ticket.train.number}) from your wallet?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Remove',
-          style: 'destructive',
-          onPress: () => onDelete?.(),
-        },
-      ]
-    );
-  };
+  const hasSpecificSeat = Boolean(ticket.passenger?.coach && ticket.passenger?.seat);
 
   const handleCardPress = () => {
     if (onTrackLive) {
@@ -99,181 +73,128 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
       onPress={handleCardPress}
       style={styles.card}
     >
-      {/* 1. Top Header Row: Apple Wallet style transit header */}
-      <View style={styles.headerRow}>
-        <View style={styles.headerLeft}>
-          <View style={styles.trainBadge}>
-            <AppText variant="micro" weight="bold" color="primary">
-              {`TRAIN ${ticket.train.number}`}
-            </AppText>
-          </View>
-          <View style={styles.sharedBadge}>
-            <AppText variant="micro" weight="bold" color="orange">
-              SHARED PASS
-            </AppText>
-          </View>
-        </View>
-
-        {/* Live Running Delay Status Pill */}
-        <View
-          style={[
-            styles.statusPill,
-            isDelayed
-              ? styles.statusPillOrange
-              : isRunning
-              ? styles.statusPillGreen
-              : styles.statusPillMuted,
-          ]}
-        >
-          <View
-            style={[
-              styles.statusDot,
-              isDelayed
-                ? styles.statusDotOrange
-                : isRunning
-                ? styles.statusDotGreen
-                : styles.statusDotMuted,
-            ]}
-          />
+      {/* ================= UPPER SECTION ================= */}
+      <View style={styles.upperSection}>
+        {/* Line 1: Train Name & Train Number */}
+        <View style={styles.trainHeaderRow}>
           <AppText
-            variant="micro"
-            weight="bold"
-            color={isDelayed ? 'orange' : isRunning ? 'success' : 'secondary'}
-            uppercase
-            letterSpacing={0.6}
+            variant="body"
+            weight="heavy"
+            color="primary"
+            numberOfLines={1}
+            style={styles.trainNameText}
           >
-            {statusText}
+            {resolvedTrainName}
           </AppText>
+          <AppText
+            variant="body"
+            weight="bold"
+            color="secondary"
+            style={styles.trainNumberText}
+          >
+            {ticket.train.number}
+          </AppText>
+        </View>
+
+        {/* Line 2: Origin, Connecting Line, and Destination */}
+        <View style={styles.routeRow}>
+          <View style={styles.stationBlockLeft}>
+            <AppText variant="title" weight="heavy" color="primary" style={styles.stationCode}>
+              {ticket.journey.from}
+            </AppText>
+            <AppText variant="caption" weight="bold" color="orange" style={styles.timeText}>
+              {ticket.journey.departure || '--:--'}
+            </AppText>
+          </View>
+
+          <View style={styles.routeCenterLineCol}>
+            <View style={styles.trackLine} />
+          </View>
+
+          <View style={styles.stationBlockRight}>
+            <AppText variant="title" weight="heavy" color="primary" style={styles.stationCode}>
+              {ticket.journey.to}
+            </AppText>
+            <AppText variant="caption" weight="bold" color="primary" style={styles.timeText}>
+              {ticket.journey.arrival || '--:--'}
+            </AppText>
+          </View>
+        </View>
+
+        {/* Line 3: Date | Live status | Shared (or Berth) */}
+        <View style={styles.dataRow}>
+          <View style={styles.dataColLeft}>
+            <AppText variant="caption" weight="medium" color="secondary" numberOfLines={1}>
+              {ticket.journey.date}
+            </AppText>
+          </View>
+
+          <View style={styles.dataColCenter}>
+            <View style={styles.statusRow}>
+              <View
+                style={[
+                  styles.statusDot,
+                  isDelayed
+                    ? styles.statusDotOrange
+                    : isRunning
+                    ? styles.statusDotGreen
+                    : styles.statusDotMuted,
+                ]}
+              />
+              <AppText
+                variant="caption"
+                weight="bold"
+                color={isDelayed ? 'orange' : isRunning ? 'success' : 'secondary'}
+                numberOfLines={1}
+              >
+                {isDelayed ? `${delayMinutes}m Late` : isRunning ? 'On Time' : 'Scheduled'}
+              </AppText>
+            </View>
+          </View>
+
+          <View style={styles.dataColRight}>
+            <AppText variant="caption" weight="bold" color="orange" numberOfLines={1}>
+              {hasSpecificSeat
+                ? `${ticket.passenger.coach} · ${ticket.passenger.seat}`
+                : 'Shared'}
+            </AppText>
+          </View>
         </View>
       </View>
 
-      {/* Train Name Title */}
-      <AppText
-        variant="heading"
-        weight="heavy"
-        color="primary"
-        numberOfLines={1}
-        style={styles.trainNameTitle}
-      >
-        {resolvedTrainName}
-      </AppText>
-
-      {/* 2. Main Station Route */}
-      <StationRoute
-        fromCode={ticket.journey.from}
-        fromName={ticket.journey.fromName}
-        departureTime={ticket.journey.departure}
-        toCode={ticket.journey.to}
-        toName={ticket.journey.toName}
-        arrivalTime={ticket.journey.arrival}
-        duration={ticket.journey.duration}
-      />
-
-      {/* 3. Live Journey Telemetry Strip (Integrated into Ticket) */}
-      <View style={styles.liveTelemetryStrip}>
-        <View style={styles.liveTelemetryLeft}>
-          <Radio size={12} color={Colors.primary} style={{ marginRight: 6 }} />
-          <AppText variant="tiny" weight="semibold" color="primary" numberOfLines={1}>
-            {nextHalt
-              ? `Next: ${nextHaltName}${nextHaltPlatform}`
-              : isRunning
-              ? 'Train en route · Realtime tracking active'
-              : isCompleted
-              ? 'Journey completed at destination'
-              : `Boarding from ${ticket.journey.fromName || ticket.journey.from}`}
-          </AppText>
-        </View>
-        {nextHalt?.arrivalTime && (
-          <AppText variant="tiny" weight="bold" color="orange" style={styles.etaText}>
-            {`ETA ${formatHaltTime(nextHalt.arrivalTime)}`}
-          </AppText>
-        )}
-      </View>
-
-      {/* 4. Perforated Divider Line with Circular Cutout Notches */}
+      {/* ================= PERFORATION NOTCHES & LINE ================= */}
       <View style={styles.perforationContainer}>
         <View style={styles.notchLeft} />
         <View style={styles.dashedLine} />
         <View style={styles.notchRight} />
       </View>
 
-      {/* 5. Journey Detail Grid (Apple Wallet transit data layout) */}
-      <View style={styles.infoGrid}>
-        <View style={styles.infoCol}>
-          <AppText variant="micro" uppercase color="secondary" weight="medium" letterSpacing={0.6}>
-            TRAVEL DATE
-          </AppText>
-          <AppText variant="body" weight="bold" color="primary" style={styles.valueSpacing} numberOfLines={1}>
-            {ticket.journey.date}
-          </AppText>
-        </View>
-
-        <View style={[styles.infoCol, styles.infoColCenter]}>
-          <AppText variant="micro" uppercase color="secondary" weight="medium" letterSpacing={0.6}>
-            LIVE STATUS
-          </AppText>
-          <AppText
-            variant="body"
-            weight="bold"
-            color={isDelayed ? 'orange' : isRunning ? 'success' : 'primary'}
-            style={styles.valueSpacing}
-            numberOfLines={1}
-          >
-            {isDelayed ? `${delayMinutes}m Late` : isRunning ? 'On Time' : 'Scheduled'}
+      {/* ================= LOWER SECTION (STUB) ================= */}
+      <View style={styles.bottomStub}>
+        <View style={styles.stubLeft}>
+          <Radio size={12} color={Colors.primary} style={{ marginRight: 6 }} />
+          <AppText variant="caption" weight="bold" color="primary" numberOfLines={1}>
+            {nextHalt
+              ? `Next: ${nextHaltName}${nextHaltPlatform}`
+              : isRunning
+              ? 'Train en route · Realtime tracking active'
+              : isCompleted
+              ? 'Journey completed at destination'
+              : `Departs from ${ticket.journey.from}`}
           </AppText>
         </View>
 
-        <View style={[styles.infoCol, styles.infoColRight]}>
-          <AppText variant="micro" uppercase color="secondary" weight="medium" letterSpacing={0.6}>
-            BERTH / SEAT
-          </AppText>
-          <AppText variant="body" weight="bold" color="orange" style={styles.valueSpacing} numberOfLines={1}>
-            {hasSpecificSeat
-              ? `${ticket.passenger.coach || 'B1'} · ${ticket.passenger.seat || '1'}`
-              : 'PROTECTED'}
-          </AppText>
+        <View style={styles.stubRight}>
+          {loading ? (
+            <ActivityIndicator size="small" color={Colors.primary} />
+          ) : nextHalt?.arrivalTime ? (
+            <AppText variant="tiny" weight="bold" color="orange">
+              {`ETA ${formatHaltTime(nextHalt.arrivalTime)}`}
+            </AppText>
+          ) : (
+            <ChevronRight size={14} color={Colors.textSecondary} />
+          )}
         </View>
-      </View>
-
-      {/* 6. Card Action Buttons (Apple secondary pill actions) */}
-      <View style={styles.actionsRow}>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={onTrackLive || handleCardPress}
-          style={styles.actionBtnPrimary}
-        >
-          <Radio size={13} color={Colors.primary} style={{ marginRight: 6 }} />
-          <AppText variant="caption" weight="bold" color="orange">
-            Track Live
-          </AppText>
-        </TouchableOpacity>
-
-        <View style={styles.actionBtnSpacing} />
-
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={onShare}
-          style={styles.actionBtn}
-        >
-          <Share2 size={13} color={Colors.appleSecondaryLabel} style={{ marginRight: 6 }} />
-          <AppText variant="caption" weight="medium" color="primary">
-            Share Link
-          </AppText>
-        </TouchableOpacity>
-
-        {onDelete && (
-          <>
-            <View style={styles.actionBtnSpacing} />
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={handleDeletePress}
-              style={styles.deleteBtn}
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            >
-              <Trash2 size={14} color={Colors.appleTertiaryLabel} />
-            </TouchableOpacity>
-          </>
-        )}
       </View>
     </TouchableOpacity>
   );
@@ -282,67 +203,91 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
 const styles = StyleSheet.create({
   card: {
     backgroundColor: Colors.appleGroupedBg,
-    borderRadius: 20,
-    padding: 18,
+    borderRadius: 18,
     borderWidth: 1,
     borderColor: Colors.appleSeparator,
     marginVertical: 8,
+    overflow: 'hidden',
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,
     shadowRadius: 10,
     elevation: 3,
   },
-  headerRow: {
+  upperSection: {
+    paddingHorizontal: 18,
+    paddingTop: 16,
+    paddingBottom: 6,
+  },
+  trainHeaderRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    marginBottom: 10,
   },
-  headerLeft: {
+  trainNameText: {
     flex: 1,
+    fontSize: 16,
+    marginRight: 10,
+  },
+  trainNumberText: {
+    fontSize: 15,
+    letterSpacing: 0.5,
+  },
+  routeRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 8,
-    flexWrap: 'nowrap',
+    justifyContent: 'space-between',
+    marginVertical: 6,
   },
-  trainNameTitle: {
-    fontSize: 18,
-    marginTop: 4,
-    marginBottom: 8,
+  stationBlockLeft: {
+    alignItems: 'flex-start',
+    minWidth: 70,
   },
-  trainBadge: {
-    backgroundColor: Colors.appleSecondaryBg,
-    paddingHorizontal: 7,
-    paddingVertical: 3,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: Colors.appleSeparator,
-    marginRight: 6,
+  stationBlockRight: {
+    alignItems: 'flex-end',
+    minWidth: 70,
   },
-  sharedBadge: {
-    backgroundColor: 'rgba(245, 51, 44, 0.12)',
-    paddingHorizontal: 6,
-    paddingVertical: 3,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: 'rgba(245, 51, 44, 0.28)',
+  stationCode: {
+    fontSize: 24,
+    letterSpacing: 0.5,
   },
-  statusPill: {
+  timeText: {
+    marginTop: 2,
+  },
+  routeCenterLineCol: {
+    flex: 1,
+    paddingHorizontal: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  trackLine: {
+    width: '100%',
+    height: 1.5,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  dataRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 12,
+    justifyContent: 'space-between',
+    marginTop: 12,
+    marginBottom: 4,
   },
-  statusPillGreen: {
-    backgroundColor: 'rgba(48, 209, 88, 0.12)',
+  dataColLeft: {
+    flex: 1,
+    alignItems: 'flex-start',
   },
-  statusPillOrange: {
-    backgroundColor: 'rgba(255, 159, 10, 0.12)',
+  dataColCenter: {
+    flex: 1.2,
+    alignItems: 'center',
   },
-  statusPillMuted: {
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+  dataColRight: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  statusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   statusDot: {
     width: 6,
@@ -359,33 +304,11 @@ const styles = StyleSheet.create({
   statusDotMuted: {
     backgroundColor: Colors.appleSecondaryLabel,
   },
-  liveTelemetryStrip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: Colors.appleSecondaryBg,
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    marginTop: 8,
-    borderWidth: 1,
-    borderColor: Colors.appleSeparator,
-  },
-  liveTelemetryLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-    marginRight: 8,
-  },
-  etaText: {
-    flexShrink: 0,
-  },
   perforationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 14,
     position: 'relative',
-    marginHorizontal: -18,
+    marginVertical: 4,
   },
   notchLeft: {
     width: 16,
@@ -409,62 +332,23 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     marginRight: -8,
   },
-  infoGrid: {
+  bottomStub: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  infoCol: {
-    flex: 1,
-  },
-  infoColCenter: {
-    alignItems: 'center',
-    paddingHorizontal: 6,
-  },
-  infoColRight: {
-    alignItems: 'flex-end',
-  },
-  valueSpacing: {
-    marginTop: 4,
-  },
-  actionsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 16,
-  },
-  actionBtnPrimary: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(245, 51, 44, 0.12)',
-    borderRadius: 10,
-    paddingVertical: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(245, 51, 44, 0.35)',
-  },
-  actionBtn: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: Colors.appleSecondaryBg,
-    borderRadius: 10,
-    paddingVertical: 10,
-    borderWidth: 1,
-    borderColor: Colors.appleSeparator,
+    paddingHorizontal: 16,
+    paddingVertical: 11,
   },
-  deleteBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 10,
-    backgroundColor: Colors.appleSecondaryBg,
+  stubLeft: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: Colors.appleSeparator,
+    flex: 1,
+    marginRight: 8,
   },
-  actionBtnSpacing: {
-    width: 8,
+  stubRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
 });

@@ -10,20 +10,30 @@ import {
 } from 'react-native';
 import {
   ArrowLeft,
-  Train,
-  Calendar,
-  Check,
-  Plus,
   RefreshCw,
-  AlertCircle,
+  Clock,
   Navigation,
+  AlertCircle,
+  Plus,
+  Check,
+  ShieldCheck,
+  Calendar,
 } from 'lucide-react-native';
 import { Colors } from '../theme/colors';
-import { AppText } from '../components/common/AppText';
-import { SharedTripData, convertSharedTripToTicket } from '../services/tripShareService';
-import { getLiveTrainStatus, LiveTrainData, StationHalt } from '../services/railService';
 import { NormalizedTicket } from '../types/ticket';
 import { ticketRepository } from '../database/repositories/ticketRepository';
+import { AppText } from '../components/common/AppText';
+import {
+  SharedTripData,
+  convertSharedTripToTicket,
+} from '../services/tripShareService';
+import {
+  getLiveTrainStatus,
+  LiveTrainData,
+  StationHalt,
+  formatHaltTime,
+} from '../services/railService';
+import { getTrainName } from '../utils/stationLookup';
 
 interface SharedJourneyScreenProps {
   sharedTrip: SharedTripData;
@@ -45,7 +55,6 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
   const [savedTicket, setSavedTicket] = useState<NormalizedTicket | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Check if this journey is already saved in SQLite wallet
   useEffect(() => {
     checkIfAlreadySaved();
     fetchLiveStatus();
@@ -100,16 +109,39 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
     }
   };
 
-  // Determine delay and badge styling
+  const resolvedTrainName =
+    sharedTrip.trainName ||
+    getTrainName(sharedTrip.trainNumber) ||
+    liveData?.trainName ||
+    `Train ${sharedTrip.trainNumber}`;
+
+  // Delay & badge calculations
   const delayMinutes = liveData?.delayMinutes ?? 0;
   const isDelayed = delayMinutes > 5;
+  const isRunning = liveData?.status === 'running';
   const delayText = isDelayed
     ? `Delayed by ${delayMinutes} min`
-    : liveData?.status === 'running'
+    : isRunning
     ? 'Running on time'
     : liveData?.status === 'completed'
     ? 'Arrived at Destination'
     : 'Scheduled Run';
+
+  const nextHalt = liveData?.nextHalt;
+  const nextHaltName = nextHalt?.stationName || nextHalt?.stationCode;
+  const nextHaltPlatform = nextHalt?.platform ? ` · Platform ${nextHalt.platform}` : '';
+  const nextHaltEta = nextHalt?.arrivalTime ? `ETA ${formatHaltTime(nextHalt.arrivalTime)}` : '';
+
+  // Route progress percentage
+  let routeProgressPercent = 0;
+  if (liveData?.route && liveData.route.length > 0) {
+    const passedCount = liveData.route.filter(
+      (h) => h.status === 'departed' || h.status === 'arrived'
+    ).length;
+    routeProgressPercent = Math.min(100, Math.round((passedCount / liveData.route.length) * 100));
+  }
+
+  const hasSpecificSeat = Boolean(sharedTrip.coach || sharedTrip.seat);
 
   return (
     <View style={styles.root}>
@@ -166,99 +198,123 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
           />
         }
       >
-        {/* Main Boarding Pass Card */}
+        {/* ================= 1. BOARDING PASS TICKET CARD ================= */}
         <View style={styles.passCard}>
+          {/* Header Row: Train Number, Badge & Date */}
           <View style={styles.passHeader}>
             <View style={styles.trainInfoCol}>
-              <View style={styles.trainNumberRow}>
-                <AppText variant="subheading" weight="heavy" color="primary">
-                  {sharedTrip.trainNumber}
-                </AppText>
+              <View style={styles.trainBadgeRow}>
+                <View style={styles.trainNumberBadge}>
+                  <AppText variant="micro" weight="bold" color="primary">
+                    {`TRAIN ${sharedTrip.trainNumber}`}
+                  </AppText>
+                </View>
                 <View style={styles.typeBadge}>
-                  <AppText variant="micro" weight="bold" color="dark">
+                  <AppText variant="micro" weight="bold" color="orange">
                     {sharedTrip.trainType || 'SUPERFAST'}
                   </AppText>
                 </View>
               </View>
-              <AppText variant="caption" color="secondary" numberOfLines={1}>
-                {sharedTrip.trainName || liveData?.trainName || 'Express'}
+              <AppText variant="title" weight="heavy" color="primary" numberOfLines={1} style={styles.trainNameText}>
+                {resolvedTrainName}
               </AppText>
             </View>
 
             <View style={styles.datePill}>
               <Calendar size={12} color={Colors.textSecondary} style={{ marginRight: 4 }} />
-              <AppText variant="micro" color="secondary">
+              <AppText variant="micro" weight="semibold" color="secondary">
                 {sharedTrip.dateOfJourney || 'Today'}
               </AppText>
             </View>
           </View>
 
-          {/* Route Section */}
+          {/* Route Display */}
           <View style={styles.routeRow}>
-            <View style={styles.stationBlock}>
-              <AppText variant="title" weight="heavy" color="primary">
+            <View style={styles.stationBlockLeft}>
+              <AppText variant="heading" weight="heavy" color="primary" style={styles.stationCode}>
                 {sharedTrip.fromStation}
               </AppText>
-              <AppText variant="micro" color="secondary" numberOfLines={1}>
+              <AppText variant="tiny" color="secondary" numberOfLines={1} style={styles.stationName}>
                 {sharedTrip.fromStationName || sharedTrip.fromStation}
               </AppText>
-              <AppText variant="caption" weight="bold" color="primary" style={{ marginTop: 4 }}>
+              <AppText variant="body" weight="bold" color="orange" style={styles.timeMargin}>
                 {sharedTrip.departureTime || '--:--'}
               </AppText>
             </View>
 
-            <View style={styles.routeDividerCol}>
-              <Train size={16} color={Colors.primary} />
-              <View style={styles.routeLine} />
-              <ArrowLeft size={12} color={Colors.textMuted} style={{ transform: [{ rotate: '180deg' }] }} />
+            <View style={styles.routeCenterLineCol}>
+              <View style={styles.trackDurationPill}>
+                <AppText variant="micro" weight="bold" color="secondary">
+                  DIRECT
+                </AppText>
+              </View>
+              <View style={styles.trackLineRow}>
+                <View style={styles.trackDot} />
+                <View style={styles.trackLine} />
+                <View style={styles.trackDot} />
+              </View>
             </View>
 
-            <View style={[styles.stationBlock, { alignItems: 'flex-end' }]}>
-              <AppText variant="title" weight="heavy" color="primary">
+            <View style={styles.stationBlockRight}>
+              <AppText variant="heading" weight="heavy" color="primary" style={styles.stationCode}>
                 {sharedTrip.toStation}
               </AppText>
-              <AppText variant="micro" color="secondary" numberOfLines={1}>
+              <AppText variant="tiny" color="secondary" numberOfLines={1} style={styles.stationName}>
                 {sharedTrip.toStationName || sharedTrip.toStation}
               </AppText>
-              <AppText variant="caption" weight="bold" color="primary" style={{ marginTop: 4 }}>
+              <AppText variant="body" weight="bold" color="primary" style={styles.timeMargin}>
                 {sharedTrip.arrivalTime || '--:--'}
               </AppText>
             </View>
           </View>
 
-          {/* Coach & Seat allocation if shared */}
-          {(sharedTrip.coach || sharedTrip.seat) && (
+          {/* Perforated Divider with Circular Notches */}
+          <View style={styles.perforationContainer}>
+            <View style={styles.notchLeft} />
+            <View style={styles.dashedLine} />
+            <View style={styles.notchRight} />
+          </View>
+
+          {/* Coach & Seat allocation or Protected Privacy indicator */}
+          {hasSpecificSeat ? (
             <View style={styles.berthDetailsRow}>
-              {sharedTrip.coach && (
+              {sharedTrip.coach ? (
                 <View style={styles.berthBadge}>
                   <AppText variant="micro" color="secondary">COACH</AppText>
-                  <AppText variant="body" weight="heavy" color="primary">{sharedTrip.coach}</AppText>
+                  <AppText variant="body" weight="heavy" color="orange">{sharedTrip.coach}</AppText>
                 </View>
-              )}
-              {sharedTrip.seat && (
+              ) : null}
+              {sharedTrip.seat ? (
                 <View style={styles.berthBadge}>
                   <AppText variant="micro" color="secondary">SEAT</AppText>
                   <AppText variant="body" weight="heavy" color="primary">{sharedTrip.seat}</AppText>
                 </View>
-              )}
-              {sharedTrip.berthType && (
+              ) : null}
+              {sharedTrip.berthType ? (
                 <View style={styles.berthBadge}>
                   <AppText variant="micro" color="secondary">BERTH</AppText>
                   <AppText variant="body" weight="heavy" color="primary">{sharedTrip.berthType}</AppText>
                 </View>
-              )}
+              ) : null}
+            </View>
+          ) : (
+            <View style={styles.protectedBerthRow}>
+              <ShieldCheck size={13} color={Colors.appleGreen} style={{ marginRight: 6 }} />
+              <AppText variant="caption" weight="medium" color="secondary">
+                Coach & seat details kept private by traveler
+              </AppText>
             </View>
           )}
         </View>
 
-        {/* Real-time Status Card */}
+        {/* ================= 2. REAL-TIME RADAR TELEMETRY CARD ================= */}
         <View style={styles.statusCard}>
           <View style={styles.statusHeaderRow}>
             <View style={styles.statusHeaderLeft}>
               <View
                 style={[
                   styles.statusDot,
-                  { backgroundColor: isDelayed ? Colors.warning : Colors.success },
+                  { backgroundColor: isDelayed ? Colors.appleOrange : Colors.appleGreen },
                 ]}
               />
               <AppText variant="body" weight="bold" color="primary">
@@ -266,13 +322,13 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
               </AppText>
             </View>
 
-            {liveData?.nextHalt?.platform && (
+            {liveData?.nextHalt?.platform ? (
               <View style={styles.platformBadge}>
                 <AppText variant="micro" weight="bold" color="primary">
                   PF {liveData.nextHalt.platform}
                 </AppText>
               </View>
-            )}
+            ) : null}
           </View>
 
           {loading ? (
@@ -291,40 +347,54 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
             </View>
           ) : (
             <>
-              {/* Current / Next Location */}
+              {/* Current / Next Location Hero Capsule */}
               <View style={styles.locationContainer}>
                 <View style={styles.locationIconCircle}>
-                  <Navigation size={16} color={Colors.primary} />
+                  <Navigation size={15} color={Colors.primary} />
                 </View>
                 <View style={{ flex: 1 }}>
-                  <AppText variant="micro" color="secondary">
-                    {liveData?.nextHalt ? 'NEXT UPCOMING HALT' : 'CURRENT POSITION'}
+                  <AppText variant="micro" uppercase weight="bold" color="secondary" letterSpacing={0.5}>
+                    {nextHalt ? 'NEXT UPCOMING HALT' : 'CURRENT POSITION'}
                   </AppText>
-                  <AppText variant="body" weight="bold" color="primary">
-                    {liveData?.nextHalt?.stationName ||
-                      liveData?.currentLocation?.stationName ||
-                      liveData?.status ||
-                      'En route'}
+                  <AppText variant="bodyLg" weight="heavy" color="primary" style={{ marginTop: 1 }}>
+                    {nextHalt ? `${nextHaltName}${nextHaltPlatform}` : liveData?.currentLocation?.stationName || 'En route'}
                   </AppText>
+                  {nextHaltEta ? (
+                    <AppText variant="tiny" weight="semibold" color="orange" style={{ marginTop: 2 }}>
+                      {nextHaltEta}
+                    </AppText>
+                  ) : null}
                 </View>
               </View>
 
-              {liveData?.fullUpdate ? (
-                <View style={styles.fullUpdateBox}>
-                  <AppText variant="micro" color="secondary" style={styles.fullUpdateText}>
-                    {liveData.fullUpdate}
-                  </AppText>
+              {/* Live Journey Progress Bar */}
+              {isRunning && routeProgressPercent > 0 && (
+                <View style={styles.progressContainer}>
+                  <View style={styles.progressBarBg}>
+                    <View style={[styles.progressBarFill, { width: `${routeProgressPercent}%` }]} />
+                  </View>
+                  <View style={styles.progressLabelRow}>
+                    <AppText variant="micro" color="secondary">
+                      {sharedTrip.fromStation}
+                    </AppText>
+                    <AppText variant="micro" weight="bold" color="orange">
+                      {`${routeProgressPercent}% completed`}
+                    </AppText>
+                    <AppText variant="micro" color="secondary">
+                      {sharedTrip.toStation}
+                    </AppText>
+                  </View>
                 </View>
-              ) : null}
+              )}
 
-              {/* Station Halts List Preview */}
+              {/* Station Halts Timeline */}
               {Array.isArray(liveData?.route) && liveData.route.length > 0 && (
                 <View style={styles.timelineSection}>
                   <AppText variant="caption" weight="bold" color="secondary" style={styles.timelineTitle}>
                     SCHEDULED HALTS & TIMINGS
                   </AppText>
 
-                  {liveData.route.slice(0, 8).map((stn: StationHalt, idx: number) => {
+                  {liveData.route.slice(0, 10).map((stn: StationHalt, idx: number) => {
                     const isStationPassed = stn.status === 'departed' || stn.status === 'arrived';
                     const hasDelay = stn.delayArrival !== undefined && stn.delayArrival > 0;
                     return (
@@ -336,7 +406,7 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
                               isStationPassed ? styles.timelineDotPassed : styles.timelineDotActive,
                             ]}
                           />
-                          {idx < Math.min(liveData.route.length, 8) - 1 && <View style={styles.timelineConnector} />}
+                          {idx < Math.min(liveData.route.length, 10) - 1 && <View style={styles.timelineConnector} />}
                         </View>
                         <View style={styles.timelineStationDetails}>
                           <AppText variant="caption" weight="bold" color={isStationPassed ? 'muted' : 'primary'}>
@@ -365,7 +435,7 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
         </View>
       </ScrollView>
 
-      {/* Persistent Bottom Action Bar */}
+      {/* ================= 3. PERSISTENT BOTTOM ACTION BAR ================= */}
       <View style={styles.bottomBar}>
         {isSaved ? (
           <TouchableOpacity
@@ -373,8 +443,8 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
             onPress={() => savedTicket && onViewInWallet && onViewInWallet(savedTicket)}
             style={styles.savedButton}
           >
-            <Check size={18} color={Colors.success} style={{ marginRight: 8 }} />
-            <AppText variant="body" weight="bold" color="success">
+            <Check size={18} color={Colors.appleGreen} style={{ marginRight: 8 }} />
+            <AppText variant="body" weight="bold" style={{ color: Colors.appleGreen }}>
               SAVED IN YOUR WALLET
             </AppText>
           </TouchableOpacity>
@@ -413,7 +483,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.appleGroupedBg,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -429,7 +499,7 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: Colors.success,
+    backgroundColor: Colors.appleGreen,
     marginRight: 5,
   },
   liveTagText: {
@@ -441,7 +511,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.appleGroupedBg,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -450,91 +520,185 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 16,
-    paddingBottom: 100,
+    paddingBottom: 40,
   },
   passCard: {
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.appleGroupedBg,
     borderRadius: 20,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
     padding: 18,
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
     marginBottom: 16,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 3,
   },
   passHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   trainInfoCol: {
     flex: 1,
+    marginRight: 10,
   },
-  trainNumberRow: {
+  trainBadgeRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    marginBottom: 2,
+    marginBottom: 6,
+  },
+  trainNumberBadge: {
+    backgroundColor: Colors.appleSecondaryBg,
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
+    marginRight: 6,
   },
   typeBadge: {
-    backgroundColor: Colors.primary,
+    backgroundColor: 'rgba(245, 51, 44, 0.12)',
     paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
+    paddingVertical: 3,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(245, 51, 44, 0.28)',
+  },
+  trainNameText: {
+    fontSize: 18,
   },
   datePill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surfaceHigh,
+    backgroundColor: Colors.appleSecondaryBg,
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
   },
   routeRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: Colors.borderSubtle,
-  },
-  stationBlock: {
-    flex: 1,
-  },
-  routeDividerCol: {
-    alignItems: 'center',
-    paddingHorizontal: 12,
-  },
-  routeLine: {
-    width: 28,
-    height: 1,
-    backgroundColor: Colors.borderSubtle,
     marginVertical: 4,
+  },
+  stationBlockLeft: {
+    alignItems: 'flex-start',
+    minWidth: 70,
+  },
+  stationBlockRight: {
+    alignItems: 'flex-end',
+    minWidth: 70,
+  },
+  stationCode: {
+    fontSize: 24,
+    letterSpacing: 0.5,
+  },
+  stationName: {
+    marginTop: 2,
+    marginBottom: 2,
+  },
+  timeMargin: {
+    marginTop: 2,
+  },
+  routeCenterLineCol: {
+    flex: 1,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  trackDurationPill: {
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    marginBottom: 4,
+  },
+  trackLineRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    justifyContent: 'center',
+  },
+  trackDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: Colors.primary,
+  },
+  trackLine: {
+    flex: 1,
+    height: 1.5,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    marginHorizontal: 3,
+  },
+  perforationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 14,
+    position: 'relative',
+    marginHorizontal: -18,
+  },
+  notchLeft: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: '#000000',
+    marginLeft: -8,
+  },
+  dashedLine: {
+    flex: 1,
+    height: 1,
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
+    borderStyle: 'dashed',
+    marginHorizontal: 4,
+  },
+  notchRight: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: '#000000',
+    marginRight: -8,
   },
   berthDetailsRow: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
   },
   berthBadge: {
-    backgroundColor: Colors.surfaceHigh,
-    borderRadius: 10,
-    paddingHorizontal: 12,
+    backgroundColor: Colors.appleSecondaryBg,
+    borderRadius: 8,
+    paddingHorizontal: 14,
     paddingVertical: 6,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
+  },
+  protectedBerthRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 4,
   },
   statusCard: {
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.appleGroupedBg,
     borderRadius: 20,
-    borderWidth: 1,
-    borderColor: Colors.borderSubtle,
     padding: 18,
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
     marginBottom: 16,
   },
   statusHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 14,
   },
   statusHeaderLeft: {
     flexDirection: 'row',
@@ -550,7 +714,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.08)',
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: 8,
+    borderRadius: 6,
   },
   loadingContainer: {
     paddingVertical: 20,
@@ -559,50 +723,67 @@ const styles = StyleSheet.create({
   errorContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
+    backgroundColor: Colors.surface,
+    padding: 12,
+    borderRadius: 8,
   },
   locationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surfaceHigh,
-    borderRadius: 12,
+    backgroundColor: Colors.appleSecondaryBg,
+    borderRadius: 14,
     padding: 12,
-    marginBottom: 14,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
   },
   locationIconCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(229, 57, 53, 0.15)',
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: 'rgba(245, 51, 44, 0.14)',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
   },
-  fullUpdateBox: {
-    backgroundColor: 'rgba(255, 255, 255, 0.04)',
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 16,
+  progressContainer: {
+    marginBottom: 14,
   },
-  fullUpdateText: {
-    lineHeight: 16,
+  progressBarBg: {
+    height: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  progressBarFill: {
+    height: '100%',
+    backgroundColor: Colors.appleGreen,
+    borderRadius: 2,
+  },
+  progressLabelRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 4,
   },
   timelineSection: {
     marginTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: Colors.appleSeparator,
+    paddingTop: 12,
   },
   timelineTitle: {
-    fontSize: 10,
-    letterSpacing: 0.5,
     marginBottom: 12,
+    letterSpacing: 0.5,
   },
   timelineItem: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 12,
+    minHeight: 40,
   },
   timelineLeftCol: {
-    width: 20,
     alignItems: 'center',
+    width: 20,
+    marginRight: 10,
   },
   timelineDot: {
     width: 8,
@@ -610,53 +791,48 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginTop: 4,
   },
-  timelineDotPassed: {
-    backgroundColor: Colors.textMuted,
-  },
   timelineDotActive: {
     backgroundColor: Colors.primary,
   },
+  timelineDotPassed: {
+    backgroundColor: Colors.appleTertiaryLabel,
+  },
   timelineConnector: {
-    width: 1,
-    height: 24,
-    backgroundColor: Colors.borderSubtle,
-    marginTop: 2,
+    width: 1.5,
+    flex: 1,
+    backgroundColor: Colors.appleSeparator,
+    marginVertical: 2,
   },
   timelineStationDetails: {
     flex: 1,
-    marginLeft: 10,
+    paddingBottom: 10,
   },
   privacyNoteBox: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: 20,
+    marginTop: 8,
   },
   bottomBar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.92)',
+    padding: 16,
     borderTopWidth: 1,
-    borderTopColor: Colors.borderSubtle,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    borderTopColor: Colors.appleSeparator,
+    backgroundColor: '#000000',
   },
   saveButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: Colors.primary,
     borderRadius: 14,
     paddingVertical: 14,
-  },
-  savedButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  savedButton: {
     backgroundColor: 'rgba(48, 209, 88, 0.12)',
-    borderWidth: 1,
-    borderColor: Colors.success,
     borderRadius: 14,
     paddingVertical: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(48, 209, 88, 0.35)',
   },
 });

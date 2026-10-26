@@ -275,9 +275,17 @@ export function convertSharedTripToTicket(shared: SharedTripData): NormalizedTic
     },
     passenger: {
       name: 'Passenger',
-      coach: shared.coach || 'B1',
-      seat: shared.seat || '1',
-      class: shared.coach?.startsWith('C') || shared.coach?.startsWith('E') ? 'CC' : shared.coach?.startsWith('B') ? '3A' : shared.coach?.startsWith('A') ? '2A' : 'SL',
+      coach: shared.coach?.trim() || undefined,
+      seat: shared.seat?.trim() || undefined,
+      class: shared.coach
+        ? shared.coach.startsWith('C') || shared.coach.startsWith('E')
+          ? 'CC'
+          : shared.coach.startsWith('B')
+          ? '3A'
+          : shared.coach.startsWith('A')
+          ? '2A'
+          : 'SL'
+        : undefined,
       bookingStatus: shared.status || 'CONFIRMED',
     },
     status: 'CONFIRMED',

@@ -79,9 +79,8 @@ const mockSharedTicketPrivate: NormalizedTicket = {
   },
   passenger: {
     name: 'Passenger',
-    coach: 'B1',
-    seat: '1',
-    class: '3A',
+    coach: undefined,
+    seat: undefined,
     bookingStatus: 'CONFIRMED',
   },
   status: 'CONFIRMED',
@@ -91,41 +90,39 @@ const mockSharedTicketPrivate: NormalizedTicket = {
 };
 
 describe('SharedTripCard Component', () => {
-  it('renders shared trip card formatted as an authentic ticket pass', async () => {
+  it('renders shared trip card matching compact ticket reference placement', async () => {
     let root: any;
     await act(async () => {
       root = ReactTestRenderer.create(
         <SharedTripCard
           ticket={mockSharedTicketWithSeat}
           onTrackLive={jest.fn()}
-          onShare={jest.fn()}
         />
       );
     });
 
     const json = JSON.stringify(root.toJSON());
-    expect(json).toContain('SHARED');
     expect(json).toContain('Mumbai Rajdhani Express');
+    expect(json).toContain('12951');
     expect(json).toContain('BCT');
     expect(json).toContain('NDLS');
     expect(json).toContain('B3 · 45');
-    expect(json).toContain('Track Live');
+    expect(json).toContain('Next: Ahmednagar Jn · PF 1');
   });
 
-  it('renders PROTECTED in berth column when coach & seat were hidden for privacy', async () => {
+  it('renders Shared in right column when coach & seat are not provided', async () => {
     let root: any;
     await act(async () => {
       root = ReactTestRenderer.create(
         <SharedTripCard
           ticket={mockSharedTicketPrivate}
           onTrackLive={jest.fn()}
-          onShare={jest.fn()}
         />
       );
     });
 
     const json = JSON.stringify(root.toJSON());
-    expect(json).toContain('PROTECTED');
+    expect(json).toContain('Shared');
   });
 
   it('renders SharedTripCard in HomeScreen matching ticket style', async () => {
@@ -143,7 +140,7 @@ describe('SharedTripCard Component', () => {
     });
 
     const json = JSON.stringify(root.toJSON());
-    expect(json).toContain('SHARED');
-    expect(json).toContain('Track Live');
+    expect(json).toContain('Mumbai Rajdhani Express');
+    expect(json).toContain('12951');
   });
 });
