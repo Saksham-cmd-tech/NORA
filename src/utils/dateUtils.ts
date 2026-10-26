@@ -237,3 +237,52 @@ export function getDetailedDateString(dateStr?: string): string {
   return `${dayName}, ${formatDoj(dateStr)}`;
 }
 
+/**
+ * Returns true if the journey date is not of today, or if departure time is greater than 1 hour away.
+ * When true, live radar telemetry and station fetching should NOT be triggered.
+ */
+export function isEarlyJourney(dateStr?: string, departureTime?: string): boolean {
+  if (!dateStr && !departureTime) return false;
+  const now = new Date();
+  let year = now.getFullYear();
+  let month = now.getMonth();
+  let day = now.getDate();
+
+  if (dateStr && dateStr.trim().toLowerCase() !== 'today') {
+    const parsed = parseDateComponents(dateStr);
+    if (parsed) {
+      year = parsed.year;
+      month = parsed.month;
+      day = parsed.day;
+    } else {
+      const p = new Date(dateStr);
+      if (!isNaN(p.getTime())) {
+        year = /\d{4}/.test(dateStr) ? p.getFullYear() : now.getFullYear();
+        month = p.getMonth();
+        day = p.getDate();
+      }
+    }
+  }
+
+  let hours = 0;
+  let minutes = 0;
+  if (departureTime && departureTime.trim().length > 0) {
+    const timeClean = departureTime.trim().toUpperCase();
+    const timeMatch = timeClean.match(/(\d{1,2}):(\d{2})(?:\s*(AM|PM))?/);
+    if (timeMatch) {
+      let h = parseInt(timeMatch[1], 10);
+      const m = parseInt(timeMatch[2], 10);
+      const period = timeMatch[3];
+      if (period === 'PM' && h < 12) h += 12;
+      if (period === 'AM' && h === 12) h = 0;
+      hours = h;
+      minutes = m;
+    }
+  }
+
+  const journeyDate = new Date(year, month, day, hours, minutes, 0, 0);
+  const diffMs = journeyDate.getTime() - now.getTime();
+  return diffMs > 60 * 60 * 1000;
+}
+
+

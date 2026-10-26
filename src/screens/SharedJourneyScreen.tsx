@@ -36,6 +36,7 @@ import {
   formatHaltTime,
 } from '../services/railService';
 import { getTrainName, getStationName } from '../utils/stationLookup';
+import { isEarlyJourney as isEarlyJourneyCheck } from '../utils/dateUtils';
 
 interface SharedJourneyScreenProps {
   sharedTrip: SharedTripData;
@@ -44,50 +45,13 @@ interface SharedJourneyScreenProps {
   onViewInWallet?: (ticket: NormalizedTicket) => void;
 }
 
-function shouldShowEarlyJourneyNotice(dateStr?: string, timeStr?: string): boolean {
-  if (!dateStr && !timeStr) return false;
-  const now = new Date();
-  let year = now.getFullYear();
-  let month = now.getMonth();
-  let day = now.getDate();
-
-  if (dateStr && dateStr.toLowerCase() !== 'today') {
-    const isoMatch = dateStr.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
-    if (isoMatch) {
-      year = parseInt(isoMatch[1], 10);
-      month = parseInt(isoMatch[2], 10) - 1;
-      day = parseInt(isoMatch[3], 10);
-    } else {
-      const p = new Date(dateStr);
-      if (!isNaN(p.getTime())) {
-        year = /\d{4}/.test(dateStr) ? p.getFullYear() : now.getFullYear();
-        month = p.getMonth();
-        day = p.getDate();
-      }
-    }
-  }
-
-  let h = 0, m = 0;
-  if (timeStr) {
-    const tm = timeStr.match(/(\d{1,2}):(\d{2})/);
-    if (tm) {
-      h = parseInt(tm[1], 10);
-      m = parseInt(tm[2], 10);
-    }
-  }
-
-  const journeyDate = new Date(year, month, day, h, m, 0);
-  const diffMs = journeyDate.getTime() - now.getTime();
-  return diffMs > 60 * 60 * 1000;
-}
-
 export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
   sharedTrip,
   onBack,
   onSaveToWallet,
   onViewInWallet,
 }) => {
-  const isEarlyJourney = shouldShowEarlyJourneyNotice(
+  const isEarlyJourney = isEarlyJourneyCheck(
     sharedTrip.dateOfJourney,
     sharedTrip.departureTime
   );

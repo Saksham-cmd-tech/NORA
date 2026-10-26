@@ -89,8 +89,17 @@ const mockSharedTicketPrivate: NormalizedTicket = {
   isUpcoming: true,
 };
 
+const mockSharedTicketTodayLive: NormalizedTicket = {
+  ...mockSharedTicketWithSeat,
+  journey: {
+    ...mockSharedTicketWithSeat.journey,
+    date: 'Today',
+    departure: '01:00 AM',
+  },
+};
+
 describe('SharedTripCard Component', () => {
-  it('renders shared trip card matching compact ticket reference placement', async () => {
+  it('does NOT show radar info on main screen when journey is in future or > 1 hr away', async () => {
     let root: any;
     await act(async () => {
       root = ReactTestRenderer.create(
@@ -107,6 +116,25 @@ describe('SharedTripCard Component', () => {
     expect(json).toContain('BCT');
     expect(json).toContain('NDLS');
     expect(json).toContain('B3 · 45');
+    // Does NOT show live radar halt or radar pill
+    expect(json).not.toContain('Next: Ahmednagar Jn · PF 1');
+    expect(json).toContain('Departs from Mumbai Central');
+    expect(json).toContain('Pass');
+  });
+
+  it('shows live radar info when journey is active today within 1 hour', async () => {
+    let root: any;
+    await act(async () => {
+      root = ReactTestRenderer.create(
+        <SharedTripCard
+          ticket={mockSharedTicketTodayLive}
+          onTrackLive={jest.fn()}
+        />
+      );
+    });
+
+    const json = JSON.stringify(root.toJSON());
+    expect(json).toContain('Mumbai Rajdhani Express');
     expect(json).toContain('Next: Ahmednagar Jn · PF 1');
   });
 

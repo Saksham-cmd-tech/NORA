@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Radio, ChevronRight, ShieldCheck, ArrowRight } from 'lucide-react-native';
+import { Radio, ChevronRight, ShieldCheck, ArrowRight, Clock } from 'lucide-react-native';
 import { Colors } from '../../theme/colors';
 import { NormalizedTicket } from '../../types/ticket';
 import { getTrainName, getStationName } from '../../utils/stationLookup';
 import { getLiveTrainStatus, LiveTrainData, formatHaltTime } from '../../services/railService';
+import { isEarlyJourney } from '../../utils/dateUtils';
 import { AppText } from '../common/AppText';
 
 interface SharedTripCardProps {
@@ -33,7 +34,16 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
   const fromStationName = ticket.journey.fromName || getStationName(ticket.journey.from);
   const toStationName = ticket.journey.toName || getStationName(ticket.journey.to);
 
+  const isEarly = isEarlyJourney(ticket.journey.date, ticket.journey.departure);
+
   useEffect(() => {
+    // If date is not of today and departure time is greater than 1 hour away,
+    // do NOT query radar / live train status on the main screen!
+    if (isEarly) {
+      setLoading(false);
+      return;
+    }
+
     let isMounted = true;
     getLiveTrainStatus(ticket.train.number, true)
       .then((data) => {
@@ -49,7 +59,7 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
     return () => {
       isMounted = false;
     };
-  }, [ticket.train.number]);
+  }, [ticket.train.number, isEarly]);
 
   const delayMinutes = liveData?.delayMinutes ?? 0;
   const isDelayed = delayMinutes > 5;
@@ -169,7 +179,9 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
             <View
               style={[
                 styles.statusCapsule,
-                isDelayed
+                isEarly
+                  ? styles.statusCapsuleNeutral
+                  : isDelayed
                   ? styles.statusCapsuleDelayed
                   : isRunning
                   ? styles.statusCapsuleGreen
@@ -179,7 +191,9 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
               <View
                 style={[
                   styles.statusDot,
-                  isDelayed
+                  isEarly
+                    ? styles.statusDotNeutral
+                    : isDelayed
                     ? styles.statusDotDelayed
                     : isRunning
                     ? styles.statusDotGreen
@@ -189,10 +203,10 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
               <AppText
                 variant="micro"
                 weight="heavy"
-                color={isRunning ? 'success' : 'primary'}
+                color={!isEarly && isRunning ? 'success' : 'primary'}
                 numberOfLines={1}
               >
-                {isDelayed ? `${delayMinutes}m Late` : isRunning ? 'On Time' : 'Scheduled'}
+                {isEarly ? 'Scheduled' : isDelayed ? `${delayMinutes}m Late` : isRunning ? 'On Time' : 'Scheduled'}
               </AppText>
             </View>
           </View>
@@ -231,7 +245,11 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
       <View style={styles.bottomStub}>
         <View style={styles.stubLeft}>
           <View style={styles.radioIconCircle}>
-            <Radio size={12} color={Colors.primary} />
+            {isEarly ? (
+              <Clock size={12} color={Colors.appleSecondaryLabel} />
+            ) : (
+              <Radio size={12} color={Colors.primary} />
+            )}
           </View>
           <AppText
             variant="caption"
@@ -240,30 +258,39 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
             numberOfLines={1}
             style={styles.stubText}
           >
-            {nextHalt
+            {isEarly
+              ? `Departs from ${fromStationName || ticket.journey.from}`
+              : nextHalt
               ? `Next: ${nextHaltName}${nextHaltPlatform}`
               : isRunning
               ? 'Train en route · Realtime tracking active'
               : isCompleted
               ? 'Journey completed at destination'
-              : `Departs from ${ticket.journey.from}`}
+              : `Departs from ${fromStationName || ticket.journey.from}`}
           </AppText>
         </View>
 
         <View style={styles.stubRight}>
           {loading ? (
             <ActivityIndicator size="small" color={Colors.primary} />
-          ) : nextHalt?.arrivalTime ? (
+          ) : !isEarly && nextHalt?.arrivalTime ? (
             <View style={styles.etaBadge}>
               <AppText variant="micro" weight="heavy" color="primary">
                 {`ETA ${formatHaltTime(nextHalt.arrivalTime)}`}
               </AppText>
               <ChevronRight size={12} color={Colors.appleTertiaryLabel} style={{ marginLeft: 2 }} />
             </View>
-          ) : (
+          ) : !isEarly ? (
             <View style={styles.openRadarPill}>
               <AppText variant="micro" weight="bold" color="secondary" style={{ marginRight: 2 }}>
                 Radar
+              </AppText>
+              <ChevronRight size={12} color={Colors.appleTertiaryLabel} />
+            </View>
+          ) : (
+            <View style={styles.openRadarPill}>
+              <AppText variant="micro" weight="bold" color="secondary" style={{ marginRight: 2 }}>
+                Pass
               </AppText>
               <ChevronRight size={12} color={Colors.appleTertiaryLabel} />
             </View>
