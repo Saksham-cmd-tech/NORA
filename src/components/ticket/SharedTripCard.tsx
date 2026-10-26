@@ -116,7 +116,7 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
             <AppText variant="title" weight="heavy" color="primary" style={styles.stationCode}>
               {ticket.journey.from}
             </AppText>
-            <AppText variant="caption" weight="heavy" color="orange" style={styles.timeText}>
+            <AppText variant="caption" weight="heavy" color="primary" style={styles.timeText}>
               {ticket.journey.departure || '--:--'}
             </AppText>
             {fromStationName ? (
@@ -170,7 +170,7 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
               style={[
                 styles.statusCapsule,
                 isDelayed
-                  ? styles.statusCapsuleOrange
+                  ? styles.statusCapsuleDelayed
                   : isRunning
                   ? styles.statusCapsuleGreen
                   : styles.statusCapsuleNeutral,
@@ -180,7 +180,7 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
                 style={[
                   styles.statusDot,
                   isDelayed
-                    ? styles.statusDotOrange
+                    ? styles.statusDotDelayed
                     : isRunning
                     ? styles.statusDotGreen
                     : styles.statusDotNeutral,
@@ -189,7 +189,7 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
               <AppText
                 variant="micro"
                 weight="heavy"
-                color={isDelayed ? 'orange' : isRunning ? 'success' : 'secondary'}
+                color={isRunning ? 'success' : 'primary'}
                 numberOfLines={1}
               >
                 {isDelayed ? `${delayMinutes}m Late` : isRunning ? 'On Time' : 'Scheduled'}
@@ -204,7 +204,7 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
             </AppText>
             {hasSpecificSeat ? (
               <View style={styles.seatCapsule}>
-                <AppText variant="caption" weight="heavy" color="orange" numberOfLines={1}>
+                <AppText variant="caption" weight="heavy" color="primary" numberOfLines={1}>
                   {`${ticket.passenger.coach} · ${ticket.passenger.seat}`}
                 </AppText>
               </View>
@@ -255,10 +255,10 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
             <ActivityIndicator size="small" color={Colors.primary} />
           ) : nextHalt?.arrivalTime ? (
             <View style={styles.etaBadge}>
-              <AppText variant="micro" weight="heavy" color="orange">
+              <AppText variant="micro" weight="heavy" color="primary">
                 {`ETA ${formatHaltTime(nextHalt.arrivalTime)}`}
               </AppText>
-              <ChevronRight size={12} color={Colors.appleOrange} style={{ marginLeft: 2 }} />
+              <ChevronRight size={12} color={Colors.appleTertiaryLabel} style={{ marginLeft: 2 }} />
             </View>
           ) : (
             <View style={styles.openRadarPill}>
@@ -426,9 +426,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(48, 209, 88, 0.12)',
     borderColor: 'rgba(48, 209, 88, 0.3)',
   },
-  statusCapsuleOrange: {
-    backgroundColor: 'rgba(255, 159, 10, 0.12)',
-    borderColor: 'rgba(255, 159, 10, 0.3)',
+  statusCapsuleDelayed: {
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderColor: 'rgba(255, 255, 255, 0.14)',
   },
   statusCapsuleNeutral: {
     backgroundColor: 'rgba(255, 255, 255, 0.06)',
@@ -443,8 +443,8 @@ const styles = StyleSheet.create({
   statusDotGreen: {
     backgroundColor: Colors.appleGreen,
   },
-  statusDotOrange: {
-    backgroundColor: Colors.appleOrange,
+  statusDotDelayed: {
+    backgroundColor: '#FF453A',
   },
   statusDotNeutral: {
     backgroundColor: Colors.appleSecondaryLabel,
@@ -527,12 +527,12 @@ const styles = StyleSheet.create({
   etaBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 159, 10, 0.12)',
-    paddingHorizontal: 7,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    paddingHorizontal: 8,
     paddingVertical: 3.5,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255, 159, 10, 0.25)',
+    borderColor: 'rgba(255, 255, 255, 0.12)',
   },
   openRadarPill: {
     flexDirection: 'row',
