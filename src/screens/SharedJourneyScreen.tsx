@@ -139,26 +139,35 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
     route.find((h) => h.status !== 'departed' && h.status !== 'arrived') ||
     liveData?.nextHalt;
 
+  // Real active station where train is or has just departed (prioritize NTES currentLocation)
   const currentStationName =
+    liveData?.currentLocation?.stationName ||
     liveData?.previousHalt?.stationName ||
     lastPassedHalt?.stationName ||
-    liveData?.currentLocation?.stationName ||
     sharedTrip.fromStationName ||
     getStationName(sharedTrip.fromStation) ||
     sharedTrip.fromStation;
 
   const currentStationCode =
+    liveData?.currentLocation?.stationCode ||
     liveData?.previousHalt?.stationCode ||
     lastPassedHalt?.stationCode ||
-    liveData?.currentLocation?.stationCode ||
     sharedTrip.fromStation;
 
-  const currentStationTime =
-    liveData?.previousHalt?.departureTime ||
-    lastPassedHalt?.actualDeparture ||
-    lastPassedHalt?.scheduledDeparture ||
-    sharedTrip.departureTime ||
-    '';
+  let currentStationTimeDisplay = '';
+  if (
+    liveData?.currentLocation?.status &&
+    liveData.currentLocation.status.toLowerCase().includes('departed')
+  ) {
+    const match = liveData.currentLocation.status.match(/at\s+([\d:]+\s*(?:[A-Za-z0-9\-]+)?)/i);
+    currentStationTimeDisplay = match ? `Departed at ${match[1]}` : liveData.currentLocation.status;
+  } else if (liveData?.previousHalt?.departureTime) {
+    currentStationTimeDisplay = `Departed ${liveData.previousHalt.departureTime}`;
+  } else if (lastPassedHalt?.actualDeparture || lastPassedHalt?.scheduledDeparture) {
+    currentStationTimeDisplay = `Departed ${lastPassedHalt.actualDeparture || lastPassedHalt.scheduledDeparture}`;
+  } else if (sharedTrip.departureTime) {
+    currentStationTimeDisplay = `Scheduled ${sharedTrip.departureTime}`;
+  }
 
   const nextStationName =
     liveData?.nextHalt?.stationName ||
@@ -289,7 +298,7 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
             <View style={styles.stationColLeft}>
               <View style={styles.sectionHeaderBadge}>
                 <AppText variant="micro" weight="heavy" color="secondary" style={styles.colHeaderLabel}>
-                  {passedHalts.length > 0 ? 'CURRENT / LAST STATION' : 'ORIGIN STATION'}
+                  CURRENT STATION
                 </AppText>
               </View>
               <AppText
@@ -302,7 +311,7 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
                 {currentStationName}
               </AppText>
               <AppText variant="caption" weight="medium" color="secondary" style={styles.stationTimeDetail}>
-                {currentStationTime ? `Departed ${currentStationTime}` : `${currentStationCode}`}
+                {currentStationTimeDisplay || `${currentStationCode}`}
               </AppText>
             </View>
 
@@ -456,7 +465,7 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
           </View>
         </View>
 
-        {/* ================= 3. STATION TIMELINE (CLEAN APPLE LIST) ================= */}
+        {/* ================= 3. STATION TIMELINE (ACCENT FOR COVERED, GRAY FOR OTHERS, HIGHLIGHT CURRENT) ================= */}
         {route.length > 0 && (
           <View style={styles.timelineCard}>
             <View style={styles.timelineHeader}>
@@ -464,15 +473,15 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
                 ROUTE HALTS & SCHEDULE
               </AppText>
               <AppText variant="micro" color="secondary">
-                {`${passedHalts.length} of ${route.length} passed`}
+                {`${passedHalts.length} of ${route.length} covered`}
               </AppText>
             </View>
 
             {route.map((stn: StationHalt, idx: number) => {
               const isPassed = stn.status === 'departed' || stn.status === 'arrived';
-              const isCurrentNext =
-                stn.stationCode === nextStationCode ||
-                stn.stationCode === currentStationCode;
+              // The current station on the halts list is the most recent passed station
+              const isCurrentStation =
+                lastPassedHalt && stn.stationCode === lastPassedHalt.stationCode;
 
               return (
                 <View key={idx} style={styles.timelineRow}>
@@ -481,37 +490,76 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
                     <View
                       style={[
                         styles.timelineDot,
-                        isPassed
-                          ? styles.timelineDotPassed
-                          : isCurrentNext
+                        isCurrentStation
                           ? styles.timelineDotCurrent
+                          : isPassed
+                          ? styles.timelineDotCovered
                           : styles.timelineDotUpcoming,
                       ]}
                     >
-                      {isPassed ? (
-                        <Check size={8} color="#FFFFFF" />
-                      ) : isCurrentNext ? (
+                      {isCurrentStation ? (
                         <View style={styles.innerGlowingDot} />
+                      ) : isPassed ? (
+                        <Check size={8} color="#FFFFFF" />
                       ) : null}
                     </View>
-                    {idx < route.length - 1 && <View style={styles.timelineLine} />}
+                    {idx < route.length - 1 && (
+                      <View
+                        style={[
+                          styles.timelineLine,
+                          isPassed ? styles.timelineLineCovered : styles.timelineLineUpcoming,
+                        ]}
+                      />
+                    )}
                   </View>
 
                   {/* Station info */}
                   <View style={styles.timelineContentCol}>
                     <View style={styles.timelineStationTitleRow}>
-                      <AppText
-                        variant="body"
-                        weight={isCurrentNext ? 'heavy' : 'bold'}
-                        color={isPassed ? 'secondary' : 'primary'}
-                        numberOfLines={1}
-                        style={{ flex: 1 }}
-                      >
-                        {stn.stationName}
-                      </AppText>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, marginRight: 8 }}>
+                        <AppText
+                          variant="body"
+                          weight={isCurrentStation ? 'heavy' : isPassed ? 'bold' : 'medium'}
+                          numberOfLines={1}
+                          style={{
+                            color: isCurrentStation
+                              ? '#FFFFFF'
+                              : isPassed
+                              ? Colors.primary // ACCENT COLOR FOR COVERED STATIONS
+                              : Colors.appleTertiaryLabel, // GRAY FOR OTHER STATIONS
+                          }}
+                        >
+                          {stn.stationName}
+                        </AppText>
+                        {isCurrentStation ? (
+                          <View style={styles.currentStationPill}>
+                            <Radio size={9} color={Colors.primary} style={{ marginRight: 3 }} />
+                            <AppText
+                              variant="micro"
+                              weight="heavy"
+                              color="primary"
+                              style={styles.currentStationPillText}
+                            >
+                              CURRENT
+                            </AppText>
+                          </View>
+                        ) : null}
+                      </View>
+
                       {stn.platform ? (
-                        <View style={styles.platformBadge}>
-                          <AppText variant="micro" weight="bold" color="secondary">
+                        <View
+                          style={[
+                            styles.platformBadge,
+                            isPassed ? styles.platformBadgeCovered : styles.platformBadgeUpcoming,
+                          ]}
+                        >
+                          <AppText
+                            variant="micro"
+                            weight="bold"
+                            style={{
+                              color: isPassed ? Colors.primary : Colors.appleTertiaryLabel,
+                            }}
+                          >
                             {`PF ${stn.platform}`}
                           </AppText>
                         </View>
@@ -519,7 +567,12 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
                     </View>
 
                     <View style={styles.timelineTimeRow}>
-                      <AppText variant="micro" color="secondary">
+                      <AppText
+                        variant="micro"
+                        style={{
+                          color: isPassed ? 'rgba(255, 255, 255, 0.75)' : Colors.appleTertiaryLabel,
+                        }}
+                      >
                         {stn.actualArrival ||
                           stn.scheduledArrival ||
                           stn.actualDeparture ||
@@ -906,11 +959,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  timelineDotPassed: {
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+  timelineDotCovered: {
+    backgroundColor: Colors.primary,
   },
   timelineDotCurrent: {
     backgroundColor: Colors.primary,
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
   },
   innerGlowingDot: {
     width: 6,
@@ -919,32 +974,58 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   timelineDotUpcoming: {
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    borderWidth: 1,
-    borderColor: Colors.appleSeparator,
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    borderWidth: 1.5,
+    borderColor: '#48484A',
   },
   timelineLine: {
-    width: 1.5,
+    width: 2,
     flex: 1,
-    backgroundColor: Colors.appleSeparator,
     marginVertical: 2,
+  },
+  timelineLineCovered: {
+    backgroundColor: Colors.primary,
+  },
+  timelineLineUpcoming: {
+    backgroundColor: '#38383A',
   },
   timelineContentCol: {
     flex: 1,
-    paddingBottom: 10,
+    paddingBottom: 12,
   },
   timelineStationTitleRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  currentStationPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(245, 51, 44, 0.16)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(245, 51, 44, 0.35)',
+    marginLeft: 6,
+  },
+  currentStationPillText: {
+    fontSize: 9,
+    letterSpacing: 0.6,
+  },
   platformBadge: {
-    backgroundColor: Colors.appleSecondaryBg,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: Colors.appleSeparator,
+  },
+  platformBadgeCovered: {
+    backgroundColor: 'rgba(245, 51, 44, 0.12)',
+    borderColor: 'rgba(245, 51, 44, 0.25)',
+  },
+  platformBadgeUpcoming: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: 'rgba(255, 255, 255, 0.08)',
   },
   timelineTimeRow: {
     flexDirection: 'row',

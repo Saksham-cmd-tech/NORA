@@ -1264,6 +1264,9 @@ export async function getLiveTrainStatus(
         let prevHaltObj: LiveTrainData['previousHalt'] = undefined;
         let nextHaltObj: LiveTrainData['nextHalt'] = undefined;
 
+        const departedHalts = halts.filter(h => h.status === 'departed');
+        const lastDepartedHalt = departedHalts.length > 0 ? departedHalts[departedHalts.length - 1] : undefined;
+
         if (json.currentStationCode) {
           const matchedPrev = halts.find(h => h.stationCode === json.currentStationCode.toUpperCase());
           if (matchedPrev) {
@@ -1275,17 +1278,29 @@ export async function getLiveTrainStatus(
               departureTime: matchedPrev.scheduledDeparture,
               platform: matchedPrev.platform,
             };
+          } else {
+            prevHaltObj = {
+              stationCode: json.currentStationCode.toUpperCase(),
+              stationName: json.currentStation || lastDepartedHalt?.stationName || json.currentStationCode,
+              sequence: lastDepartedHalt?.sequence || 1,
+              distance: json.distanceCoveredKm || lastDepartedHalt?.distance || 0,
+              departureTime: json.currentStatus ? json.currentStatus.replace(/.*at\s+/i, '') : lastDepartedHalt?.scheduledDeparture,
+              platform: lastDepartedHalt?.platform,
+            };
           }
         }
-        if (!prevHaltObj && halts[0]) {
-          prevHaltObj = {
-            stationCode: halts[0].stationCode,
-            stationName: halts[0].stationName,
-            sequence: 1,
-            distance: 0,
-            departureTime: json.scheduledDeparture || halts[0].scheduledDeparture,
-            platform: halts[0].platform || (json.platform !== 'TBD' ? json.platform : undefined),
-          };
+        if (!prevHaltObj) {
+          const fallback = lastDepartedHalt || halts[0];
+          if (fallback) {
+            prevHaltObj = {
+              stationCode: fallback.stationCode,
+              stationName: fallback.stationName,
+              sequence: fallback.sequence,
+              distance: fallback.distance,
+              departureTime: fallback.scheduledDeparture,
+              platform: fallback.platform || (json.platform !== 'TBD' ? json.platform : undefined),
+            };
+          }
         }
 
         if (json.nextHaltCode) {
