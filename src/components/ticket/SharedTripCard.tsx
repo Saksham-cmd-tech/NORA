@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Radio, ChevronRight } from 'lucide-react-native';
+import { Radio, ChevronRight, ShieldCheck, ArrowRight } from 'lucide-react-native';
 import { Colors } from '../../theme/colors';
 import { NormalizedTicket } from '../../types/ticket';
-import { getTrainName } from '../../utils/stationLookup';
+import { getTrainName, getStationName } from '../../utils/stationLookup';
 import { getLiveTrainStatus, LiveTrainData, formatHaltTime } from '../../services/railService';
 import { AppText } from '../common/AppText';
 
@@ -29,6 +29,9 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
     ticket.train.name.trim() !== ticket.train.number
       ? ticket.train.name
       : getTrainName(ticket.train.number) || ticket.train.type || 'EXPRESS';
+
+  const fromStationName = ticket.journey.fromName || getStationName(ticket.journey.from);
+  const toStationName = ticket.journey.toName || getStationName(ticket.journey.to);
 
   useEffect(() => {
     let isMounted = true;
@@ -75,62 +78,104 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
     >
       {/* ================= UPPER SECTION ================= */}
       <View style={styles.upperSection}>
-        {/* Line 1: Train Name & Train Number */}
+        {/* Line 1: Train Name & Train Number with Badges */}
         <View style={styles.trainHeaderRow}>
-          <AppText
-            variant="body"
-            weight="heavy"
-            color="primary"
-            numberOfLines={1}
-            style={styles.trainNameText}
-          >
-            {resolvedTrainName}
-          </AppText>
-          <AppText
-            variant="body"
-            weight="bold"
-            color="secondary"
-            style={styles.trainNumberText}
-          >
-            {ticket.train.number}
-          </AppText>
+          <View style={styles.trainNameContainer}>
+            <View style={styles.sharedBadge}>
+              <Radio size={10} color={Colors.primary} />
+              <AppText variant="micro" weight="heavy" color="primary" style={styles.sharedBadgeText}>
+                SHARED
+              </AppText>
+            </View>
+            <AppText
+              variant="subheading"
+              weight="heavy"
+              color="primary"
+              numberOfLines={1}
+              style={styles.trainNameText}
+            >
+              {resolvedTrainName}
+            </AppText>
+          </View>
+
+          <View style={styles.trainNumberBadge}>
+            <AppText
+              variant="caption"
+              weight="heavy"
+              color="primary"
+              style={styles.trainNumberText}
+            >
+              {ticket.train.number}
+            </AppText>
+          </View>
         </View>
 
-        {/* Line 2: Origin, Connecting Line, and Destination */}
+        {/* Line 2: Origin, Minimalist Connecting Track, and Destination */}
         <View style={styles.routeRow}>
           <View style={styles.stationBlockLeft}>
             <AppText variant="title" weight="heavy" color="primary" style={styles.stationCode}>
               {ticket.journey.from}
             </AppText>
-            <AppText variant="caption" weight="bold" color="orange" style={styles.timeText}>
+            <AppText variant="caption" weight="heavy" color="orange" style={styles.timeText}>
               {ticket.journey.departure || '--:--'}
             </AppText>
+            {fromStationName ? (
+              <AppText variant="micro" weight="medium" color="secondary" numberOfLines={1} style={styles.stationSubName}>
+                {fromStationName}
+              </AppText>
+            ) : null}
           </View>
 
           <View style={styles.routeCenterLineCol}>
-            <View style={styles.trackLine} />
+            <View style={styles.trackLineSegment} />
+            <View style={styles.trackCenterPill}>
+              <ArrowRight size={12} color={Colors.appleTertiaryLabel} />
+            </View>
+            <View style={styles.trackLineSegment} />
           </View>
 
           <View style={styles.stationBlockRight}>
             <AppText variant="title" weight="heavy" color="primary" style={styles.stationCode}>
               {ticket.journey.to}
             </AppText>
-            <AppText variant="caption" weight="bold" color="primary" style={styles.timeText}>
+            <AppText variant="caption" weight="heavy" color="primary" style={styles.timeText}>
               {ticket.journey.arrival || '--:--'}
             </AppText>
+            {toStationName ? (
+              <AppText variant="micro" weight="medium" color="secondary" numberOfLines={1} style={styles.stationSubName}>
+                {toStationName}
+              </AppText>
+            ) : null}
           </View>
         </View>
 
         {/* Line 3: Date | Live status | Shared (or Berth) */}
         <View style={styles.dataRow}>
+          {/* Column 1: Date */}
           <View style={styles.dataColLeft}>
-            <AppText variant="caption" weight="medium" color="secondary" numberOfLines={1}>
+            <AppText variant="micro" uppercase color="secondary" weight="bold" letterSpacing={0.8} style={styles.dataLabel}>
+              DATE
+            </AppText>
+            <AppText variant="caption" weight="bold" color="primary" numberOfLines={1} style={styles.dataValue}>
               {ticket.journey.date}
             </AppText>
           </View>
 
+          {/* Column 2: Live status capsule */}
           <View style={styles.dataColCenter}>
-            <View style={styles.statusRow}>
+            <AppText variant="micro" uppercase color="secondary" weight="bold" letterSpacing={0.8} style={styles.dataLabel}>
+              STATUS
+            </AppText>
+            <View
+              style={[
+                styles.statusCapsule,
+                isDelayed
+                  ? styles.statusCapsuleOrange
+                  : isRunning
+                  ? styles.statusCapsuleGreen
+                  : styles.statusCapsuleNeutral,
+              ]}
+            >
               <View
                 style={[
                   styles.statusDot,
@@ -138,12 +183,12 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
                     ? styles.statusDotOrange
                     : isRunning
                     ? styles.statusDotGreen
-                    : styles.statusDotMuted,
+                    : styles.statusDotNeutral,
                 ]}
               />
               <AppText
-                variant="caption"
-                weight="bold"
+                variant="micro"
+                weight="heavy"
                 color={isDelayed ? 'orange' : isRunning ? 'success' : 'secondary'}
                 numberOfLines={1}
               >
@@ -152,12 +197,25 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
             </View>
           </View>
 
+          {/* Column 3: Seat or Shared status */}
           <View style={styles.dataColRight}>
-            <AppText variant="caption" weight="bold" color="orange" numberOfLines={1}>
-              {hasSpecificSeat
-                ? `${ticket.passenger.coach} · ${ticket.passenger.seat}`
-                : 'Shared'}
+            <AppText variant="micro" uppercase color="secondary" weight="bold" letterSpacing={0.8} style={styles.dataLabel}>
+              BERTH
             </AppText>
+            {hasSpecificSeat ? (
+              <View style={styles.seatCapsule}>
+                <AppText variant="caption" weight="heavy" color="orange" numberOfLines={1}>
+                  {`${ticket.passenger.coach} · ${ticket.passenger.seat}`}
+                </AppText>
+              </View>
+            ) : (
+              <View style={styles.sharedCapsule}>
+                <ShieldCheck size={10} color={Colors.appleTertiaryLabel} style={{ marginRight: 3 }} />
+                <AppText variant="micro" weight="bold" color="secondary" numberOfLines={1}>
+                  Shared
+                </AppText>
+              </View>
+            )}
           </View>
         </View>
       </View>
@@ -172,8 +230,16 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
       {/* ================= LOWER SECTION (STUB) ================= */}
       <View style={styles.bottomStub}>
         <View style={styles.stubLeft}>
-          <Radio size={12} color={Colors.primary} style={{ marginRight: 6 }} />
-          <AppText variant="caption" weight="bold" color="primary" numberOfLines={1}>
+          <View style={styles.radioIconCircle}>
+            <Radio size={12} color={Colors.primary} />
+          </View>
+          <AppText
+            variant="caption"
+            weight="bold"
+            color="primary"
+            numberOfLines={1}
+            style={styles.stubText}
+          >
             {nextHalt
               ? `Next: ${nextHaltName}${nextHaltPlatform}`
               : isRunning
@@ -188,11 +254,19 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
           {loading ? (
             <ActivityIndicator size="small" color={Colors.primary} />
           ) : nextHalt?.arrivalTime ? (
-            <AppText variant="tiny" weight="bold" color="orange">
-              {`ETA ${formatHaltTime(nextHalt.arrivalTime)}`}
-            </AppText>
+            <View style={styles.etaBadge}>
+              <AppText variant="micro" weight="heavy" color="orange">
+                {`ETA ${formatHaltTime(nextHalt.arrivalTime)}`}
+              </AppText>
+              <ChevronRight size={12} color={Colors.appleOrange} style={{ marginLeft: 2 }} />
+            </View>
           ) : (
-            <ChevronRight size={14} color={Colors.textSecondary} />
+            <View style={styles.openRadarPill}>
+              <AppText variant="micro" weight="bold" color="secondary" style={{ marginRight: 2 }}>
+                Radar
+              </AppText>
+              <ChevronRight size={12} color={Colors.appleTertiaryLabel} />
+            </View>
           )}
         </View>
       </View>
@@ -203,75 +277,123 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
 const styles = StyleSheet.create({
   card: {
     backgroundColor: Colors.appleGroupedBg,
-    borderRadius: 18,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: Colors.appleSeparator,
     marginVertical: 8,
     overflow: 'hidden',
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.35,
     shadowRadius: 10,
-    elevation: 3,
+    elevation: 4,
   },
   upperSection: {
     paddingHorizontal: 18,
     paddingTop: 16,
-    paddingBottom: 6,
+    paddingBottom: 12,
   },
   trainHeaderRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginBottom: 12,
+  },
+  trainNameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    marginRight: 10,
+  },
+  sharedBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(245, 51, 44, 0.12)',
+    paddingHorizontal: 6,
+    paddingVertical: 2.5,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(245, 51, 44, 0.25)',
+    marginRight: 8,
+  },
+  sharedBadgeText: {
+    marginLeft: 3,
+    fontSize: 9,
+    letterSpacing: 0.6,
   },
   trainNameText: {
     flex: 1,
-    fontSize: 16,
-    marginRight: 10,
+    fontSize: 15,
+    letterSpacing: 0.2,
+  },
+  trainNumberBadge: {
+    backgroundColor: Colors.appleSecondaryBg,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 7,
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
   },
   trainNumberText: {
-    fontSize: 15,
+    fontSize: 13,
     letterSpacing: 0.5,
   },
   routeRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginVertical: 6,
+    marginVertical: 4,
   },
   stationBlockLeft: {
     alignItems: 'flex-start',
-    minWidth: 70,
+    minWidth: 76,
   },
   stationBlockRight: {
     alignItems: 'flex-end',
-    minWidth: 70,
+    minWidth: 76,
   },
   stationCode: {
-    fontSize: 24,
+    fontSize: 26,
     letterSpacing: 0.5,
+    lineHeight: 30,
   },
   timeText: {
     marginTop: 2,
+    fontSize: 13,
+  },
+  stationSubName: {
+    marginTop: 2,
+    maxWidth: 90,
+    fontSize: 10,
   },
   routeCenterLineCol: {
     flex: 1,
-    paddingHorizontal: 14,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 12,
   },
-  trackLine: {
-    width: '100%',
+  trackLineSegment: {
+    flex: 1,
     height: 1.5,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'rgba(255, 255, 255, 0.16)',
+  },
+  trackCenterPill: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: Colors.appleSecondaryBg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: Colors.appleSeparator,
+    marginHorizontal: 4,
   },
   dataRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
-    marginTop: 12,
-    marginBottom: 4,
+    marginTop: 14,
   },
   dataColLeft: {
     flex: 1,
@@ -285,15 +407,38 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-end',
   },
-  statusRow: {
+  dataLabel: {
+    fontSize: 9,
+    marginBottom: 4,
+  },
+  dataValue: {
+    fontSize: 13,
+  },
+  statusCapsule: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 3.5,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  statusCapsuleGreen: {
+    backgroundColor: 'rgba(48, 209, 88, 0.12)',
+    borderColor: 'rgba(48, 209, 88, 0.3)',
+  },
+  statusCapsuleOrange: {
+    backgroundColor: 'rgba(255, 159, 10, 0.12)',
+    borderColor: 'rgba(255, 159, 10, 0.3)',
+  },
+  statusCapsuleNeutral: {
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    borderColor: 'rgba(255, 255, 255, 0.12)',
   },
   statusDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    marginRight: 5,
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+    marginRight: 4,
   },
   statusDotGreen: {
     backgroundColor: Colors.appleGreen,
@@ -301,14 +446,29 @@ const styles = StyleSheet.create({
   statusDotOrange: {
     backgroundColor: Colors.appleOrange,
   },
-  statusDotMuted: {
+  statusDotNeutral: {
     backgroundColor: Colors.appleSecondaryLabel,
+  },
+  seatCapsule: {
+    paddingHorizontal: 2,
+    paddingVertical: 1,
+  },
+  sharedCapsule: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
   },
   perforationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     position: 'relative',
-    marginVertical: 4,
+    marginVertical: 0,
+    backgroundColor: Colors.appleGroupedBg,
   },
   notchLeft: {
     width: 16,
@@ -338,17 +498,48 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: Colors.appleSecondaryBg,
     paddingHorizontal: 16,
-    paddingVertical: 11,
+    paddingVertical: 12,
   },
   stubLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
+    marginRight: 10,
+  },
+  radioIconCircle: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: 'rgba(245, 51, 44, 0.14)',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 8,
+  },
+  stubText: {
+    flex: 1,
+    fontSize: 12,
   },
   stubRight: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
+  },
+  etaBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 159, 10, 0.12)',
+    paddingHorizontal: 7,
+    paddingVertical: 3.5,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 159, 10, 0.25)',
+  },
+  openRadarPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 6,
   },
 });
