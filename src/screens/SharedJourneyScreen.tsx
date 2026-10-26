@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
+  Modal,
 } from 'react-native';
 import {
   ArrowLeft,
@@ -18,6 +19,7 @@ import {
   Radio,
   ArrowRight,
   CheckCircle2,
+  Clock,
 } from 'lucide-react-native';
 import { Colors } from '../theme/colors';
 import { NormalizedTicket } from '../types/ticket';
@@ -42,12 +44,55 @@ interface SharedJourneyScreenProps {
   onViewInWallet?: (ticket: NormalizedTicket) => void;
 }
 
+function shouldShowEarlyJourneyNotice(dateStr?: string, timeStr?: string): boolean {
+  if (!dateStr && !timeStr) return false;
+  const now = new Date();
+  let year = now.getFullYear();
+  let month = now.getMonth();
+  let day = now.getDate();
+
+  if (dateStr && dateStr.toLowerCase() !== 'today') {
+    const isoMatch = dateStr.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+    if (isoMatch) {
+      year = parseInt(isoMatch[1], 10);
+      month = parseInt(isoMatch[2], 10) - 1;
+      day = parseInt(isoMatch[3], 10);
+    } else {
+      const p = new Date(dateStr);
+      if (!isNaN(p.getTime())) {
+        year = /\d{4}/.test(dateStr) ? p.getFullYear() : now.getFullYear();
+        month = p.getMonth();
+        day = p.getDate();
+      }
+    }
+  }
+
+  let h = 0, m = 0;
+  if (timeStr) {
+    const tm = timeStr.match(/(\d{1,2}):(\d{2})/);
+    if (tm) {
+      h = parseInt(tm[1], 10);
+      m = parseInt(tm[2], 10);
+    }
+  }
+
+  const journeyDate = new Date(year, month, day, h, m, 0);
+  const diffMs = journeyDate.getTime() - now.getTime();
+  return diffMs > 60 * 60 * 1000;
+}
+
 export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
   sharedTrip,
   onBack,
   onSaveToWallet,
   onViewInWallet,
 }) => {
+  const isEarlyJourney = shouldShowEarlyJourneyNotice(
+    sharedTrip.dateOfJourney,
+    sharedTrip.departureTime
+  );
+
+  const [earlyNoticeVisible, setEarlyNoticeVisible] = useState(isEarlyJourney);
   const [liveData, setLiveData] = useState<LiveTrainData | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -57,8 +102,12 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
 
   useEffect(() => {
     checkIfAlreadySaved();
-    fetchLiveStatus(true);
-  }, [sharedTrip.trainNumber]);
+    if (!isEarlyJourney) {
+      fetchLiveStatus(true);
+    } else {
+      setLoading(false);
+    }
+  }, [sharedTrip.trainNumber, isEarlyJourney]);
 
   const checkIfAlreadySaved = async () => {
     try {
@@ -263,25 +312,42 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
         <View style={styles.heroCard}>
           {/* Top Status Banner */}
           <View style={styles.heroStatusRow}>
-            <View style={styles.statusPill}>
+            {isEarlyJourney ? (
               <View
                 style={[
-                  styles.statusDot,
+                  styles.statusPill,
                   {
-                    backgroundColor: isCompleted
-                      ? Colors.appleTertiaryLabel
-                      : isDelayed
-                      ? '#FF453A'
-                      : Colors.appleGreen,
+                    backgroundColor: 'rgba(255, 159, 10, 0.12)',
+                    borderColor: 'rgba(255, 159, 10, 0.3)',
                   },
                 ]}
-              />
-              <AppText variant="micro" weight="heavy" color="primary">
-                {statusLabel}
-              </AppText>
-            </View>
+              >
+                <View style={[styles.statusDot, { backgroundColor: '#FF9F0A' }]} />
+                <AppText variant="micro" weight="heavy" style={{ color: '#FF9F0A' }}>
+                  TRACKING INACTIVE
+                </AppText>
+              </View>
+            ) : (
+              <View style={styles.statusPill}>
+                <View
+                  style={[
+                    styles.statusDot,
+                    {
+                      backgroundColor: isCompleted
+                        ? Colors.appleTertiaryLabel
+                        : isDelayed
+                        ? '#FF453A'
+                        : Colors.appleGreen,
+                    },
+                  ]}
+                />
+                <AppText variant="micro" weight="heavy" color="primary">
+                  {statusLabel}
+                </AppText>
+              </View>
+            )}
 
-            {liveData?.currentLocation?.speedKmh ? (
+            {liveData?.currentLocation?.speedKmh && !isEarlyJourney ? (
               <AppText variant="micro" color="secondary" weight="semibold">
                 {`Speed ~${liveData.currentLocation.speedKmh} km/h`}
               </AppText>
@@ -307,11 +373,11 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
 
           {/* Current & Next Station Columns */}
           <View style={styles.stationsRow}>
-            {/* CURRENT / LAST STATION */}
+            {/* CURRENT / ORIGIN STATION */}
             <View style={styles.stationColLeft}>
               <View style={styles.sectionHeaderBadge}>
                 <AppText variant="micro" weight="heavy" color="secondary" style={styles.colHeaderLabel}>
-                  CURRENT STATION
+                  {isEarlyJourney ? 'ORIGIN STATION' : 'CURRENT STATION'}
                 </AppText>
               </View>
               <AppText
@@ -321,19 +387,19 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
                 numberOfLines={1}
                 style={styles.stationNameHeading}
               >
-                {currentStationName}
+                {isEarlyJourney ? (sharedTrip.fromStationName || sharedTrip.fromStation) : currentStationName}
               </AppText>
               <AppText variant="caption" weight="medium" color="secondary" style={styles.stationTimeDetail}>
-                {currentStationTimeDisplay || `${currentStationCode}`}
+                {isEarlyJourney ? `Departure scheduled at ${sharedTrip.departureTime || '--:--'}` : (currentStationTimeDisplay || `${currentStationCode}`)}
               </AppText>
             </View>
 
-            {/* NEXT STATION */}
+            {/* NEXT / DESTINATION STATION */}
             <View style={styles.stationColRight}>
               <View style={styles.nextStationBadge}>
-                <Radio size={10} color={Colors.primary} style={{ marginRight: 4 }} />
+                <Radio size={10} color={isEarlyJourney ? Colors.appleSecondaryLabel : Colors.primary} style={{ marginRight: 4 }} />
                 <AppText variant="micro" weight="heavy" color="primary" style={styles.nextLabelText}>
-                  NEXT STATION
+                  {isEarlyJourney ? 'DESTINATION' : 'NEXT STATION'}
                 </AppText>
               </View>
               <AppText
@@ -343,14 +409,26 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
                 numberOfLines={1}
                 style={styles.stationNameHeading}
               >
-                {nextStationName}
+                {isEarlyJourney ? (sharedTrip.toStationName || sharedTrip.toStation) : nextStationName}
               </AppText>
               <AppText variant="caption" weight="heavy" color="primary" style={styles.stationTimeDetail}>
-                {nextStationEta ? `ETA ${nextStationEta}` : 'Arriving soon'}
-                {nextStationPlatform ? ` · Platform ${nextStationPlatform}` : ''}
+                {isEarlyJourney
+                  ? `Expected ${sharedTrip.arrivalTime || '--:--'}`
+                  : nextStationEta
+                  ? `ETA ${nextStationEta}${nextStationPlatform ? ` · Platform ${nextStationPlatform}` : ''}`
+                  : 'Arriving soon'}
               </AppText>
             </View>
           </View>
+
+          {isEarlyJourney && (
+            <View style={styles.earlyNoticeBanner}>
+              <Clock size={14} color="#FF9F0A" style={{ marginRight: 8, marginTop: 1 }} />
+              <AppText variant="micro" weight="medium" style={{ color: '#FFD60A', flex: 1, lineHeight: 17 }}>
+                {`You can track this journey 1 hour before departure (${sharedTrip.dateOfJourney || 'Scheduled'} at ${sharedTrip.departureTime || '--:--'}).`}
+              </AppText>
+            </View>
+          )}
 
           {/* Progress bar connecting Current Station -> Next Station */}
           <View style={styles.progressSection}>
@@ -358,7 +436,7 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
               <View
                 style={[
                   styles.progressBarFill,
-                  { width: isCompleted ? '100%' : `${Math.max(12, routeProgressPercent)}%` },
+                  { width: isEarlyJourney ? '0%' : isCompleted ? '100%' : `${Math.max(12, routeProgressPercent)}%` },
                 ]}
               />
             </View>
@@ -367,7 +445,9 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
                 {currentStationCode}
               </AppText>
               <AppText variant="micro" color="secondary" weight="semibold">
-                {isCompleted
+                {isEarlyJourney
+                  ? `Departure in ${sharedTrip.dateOfJourney || "future"}`
+                  : isCompleted
                   ? 'Arrived at destination'
                   : nextStationPlatform
                   ? `Next halt at PF ${nextStationPlatform}`
@@ -639,6 +719,46 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
           </TouchableOpacity>
         )}
       </View>
+      {/* ================= 5. EARLY JOURNEY POP-UP MODAL ================= */}
+      <Modal
+        visible={earlyNoticeVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setEarlyNoticeVisible(false)}
+      >
+        <View style={styles.modalBackdrop}>
+          <View style={styles.earlyModalCard}>
+            <View style={styles.earlyModalIconBadge}>
+              <Clock size={28} color="#FF9F0A" />
+            </View>
+
+            <AppText variant="title" weight="heavy" color="primary" style={styles.earlyModalTitle}>
+              Live Tracking Ahead
+            </AppText>
+
+            <AppText variant="body" color="secondary" style={styles.earlyModalDesc}>
+              You can use live tracking <AppText weight="heavy" color="primary">1 hour before departure</AppText>. Real-time satellite radar and station telemetry will turn on automatically then.
+            </AppText>
+
+            <View style={styles.earlyModalSchedulePill}>
+              <Calendar size={13} color="#FF9F0A" style={{ marginRight: 6 }} />
+              <AppText variant="caption" weight="heavy" color="primary">
+                {`${sharedTrip.dateOfJourney || 'Upcoming'} at ${sharedTrip.departureTime || '--:--'}`}
+              </AppText>
+            </View>
+
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => setEarlyNoticeVisible(false)}
+              style={styles.earlyModalBtn}
+            >
+              <AppText variant="body" weight="heavy" color="primary">
+                View Boarding Pass
+              </AppText>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -1092,5 +1212,81 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: 'rgba(48, 209, 88, 0.35)',
+  },
+
+  /* Early Journey Notice & Modal */
+  earlyNoticeBanner: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: 'rgba(255, 159, 10, 0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 159, 10, 0.25)',
+    borderRadius: 12,
+    padding: 10,
+    marginTop: 14,
+  },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.78)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  earlyModalCard: {
+    width: '100%',
+    maxWidth: 380,
+    backgroundColor: '#1C1C1E',
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.16)',
+    padding: 24,
+    alignItems: 'center',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.8,
+    shadowRadius: 24,
+    elevation: 10,
+  },
+  earlyModalIconBadge: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: 'rgba(255, 159, 10, 0.14)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 159, 10, 0.35)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  earlyModalTitle: {
+    fontSize: 19,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  earlyModalDesc: {
+    fontSize: 13,
+    lineHeight: 19,
+    textAlign: 'center',
+    color: Colors.appleSecondaryLabel,
+    marginBottom: 16,
+  },
+  earlyModalSchedulePill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.12)',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 10,
+    marginBottom: 22,
+  },
+  earlyModalBtn: {
+    width: '100%',
+    backgroundColor: Colors.primary,
+    paddingVertical: 14,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
