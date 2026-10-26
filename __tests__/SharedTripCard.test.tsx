@@ -91,7 +91,7 @@ const mockSharedTicketPrivate: NormalizedTicket = {
 };
 
 describe('SharedTripCard Component', () => {
-  it('renders shared trip card with beacon, train details, and seat information', async () => {
+  it('renders shared trip card formatted as an authentic ticket pass', async () => {
     let root: any;
     await act(async () => {
       root = ReactTestRenderer.create(
@@ -104,15 +104,15 @@ describe('SharedTripCard Component', () => {
     });
 
     const json = JSON.stringify(root.toJSON());
-    expect(json).toContain('SHARED TRIP');
+    expect(json).toContain('SHARED');
     expect(json).toContain('Mumbai Rajdhani Express');
     expect(json).toContain('BCT');
     expect(json).toContain('NDLS');
-    expect(json).toContain('Coach B3 · Seat 45');
-    expect(json).toContain('Open Live Radar');
+    expect(json).toContain('B3 · 45');
+    expect(json).toContain('Track Live');
   });
 
-  it('renders privacy shield when coach & seat were protected by traveler', async () => {
+  it('renders PROTECTED in berth column when coach & seat were hidden for privacy', async () => {
     let root: any;
     await act(async () => {
       root = ReactTestRenderer.create(
@@ -125,10 +125,10 @@ describe('SharedTripCard Component', () => {
     });
 
     const json = JSON.stringify(root.toJSON());
-    expect(json).toContain('Coach & berth protected by traveler');
+    expect(json).toContain('PROTECTED');
   });
 
-  it('renders SharedTripCard in HomeScreen when ticket source is SHARED_LINK', async () => {
+  it('renders SharedTripCard in HomeScreen matching ticket style', async () => {
     let root: any;
     await act(async () => {
       root = ReactTestRenderer.create(
@@ -143,7 +143,7 @@ describe('SharedTripCard Component', () => {
     });
 
     const json = JSON.stringify(root.toJSON());
-    expect(json).toContain('SHARED TRIP');
-    expect(json).toContain('Open Live Radar');
+    expect(json).toContain('SHARED');
+    expect(json).toContain('Track Live');
   });
 });
