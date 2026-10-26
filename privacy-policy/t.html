@@ -45,7 +45,7 @@
     header {
       width: 100%;
       max-width: 520px;
-      padding: 16px 20px;
+      padding: 14px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -75,6 +75,12 @@
       font-size: 16px;
       font-weight: 700;
       letter-spacing: 0.3px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .live-badge {
@@ -147,10 +153,45 @@
       border-radius: 50%;
     }
 
-    .telemetry-meta {
+    /* Check Status Action Button */
+    .check-status-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: var(--text-primary);
+      padding: 5px 11px;
+      border-radius: 16px;
       font-size: 11px;
-      color: var(--text-secondary);
-      font-weight: 600;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .check-status-btn:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .check-status-btn:active {
+      transform: scale(0.96);
+    }
+
+    .check-status-btn .icon {
+      display: inline-block;
+      font-size: 12px;
+      transition: transform 0.4s ease;
+    }
+
+    .check-status-btn.loading .icon {
+      animation: spin 0.7s linear infinite;
+    }
+
+    .check-status-btn.loading {
+      opacity: 0.75;
+      pointer-events: none;
     }
 
     .hero-stations-row {
@@ -176,11 +217,13 @@
       margin-bottom: 6px;
       display: flex;
       align-items: center;
-      gap: 4px;
+      justify-content: space-between;
     }
 
     .station-eyebrow.accent {
       color: var(--accent);
+      justify-content: flex-start;
+      gap: 4px;
     }
 
     .station-name-hero {
@@ -611,9 +654,15 @@
       <img src="/logo.png" alt="NORA" class="brand-logo" onerror="this.style.display='none'">
       <span class="brand-title">NORA Live Radar</span>
     </a>
-    <div class="live-badge">
-      <div class="live-dot"></div>
-      LIVE
+    <div class="header-actions">
+      <button id="headerCheckStatusBtn" class="check-status-btn" onclick="triggerStatusCheck()">
+        <span class="icon">⟳</span>
+        <span class="text">Check Status</span>
+      </button>
+      <div class="live-badge">
+        <div class="live-dot"></div>
+        LIVE
+      </div>
     </div>
   </header>
 
@@ -637,6 +686,9 @@
   <script>
     const PROXY_URL = 'https://nora-rail-proxy.saksham-tale02dev.workers.dev';
     const API_KEY = 'nora_rail_sec_9f8b2c4e1a0d3e5f7a6b8c9d0e1f2a3b';
+
+    let currentTripData = null;
+    let isFetchingLive = false;
 
     // Base64URL decoder with UTF-8 support
     function fromBase64Url(str) {
@@ -712,44 +764,54 @@
       return t;
     }
 
-    async function init() {
-      const trip = parseUrlTrip();
-      const contentEl = document.getElementById('appContent');
-      const openAppBtn = document.getElementById('openAppBtn');
-
-      if (!trip || !trip.trainNumber) {
-        contentEl.innerHTML = `
-          <div class="card error-state">
-            <h2 style="font-size: 18px; margin-bottom: 8px;">No Trip Link Found</h2>
-            <p style="color: var(--text-secondary); font-size: 13px; line-height: 1.5; margin-bottom: 20px;">
-              This tracking link is missing journey details. Open NORA on Android to generate or share a live link.
-            </p>
-            <a href="https://play.google.com/store/apps/details?id=dev.saksham.nora" class="btn-primary" style="display: inline-flex;">
-              Get NORA on Google Play
-            </a>
-          </div>
-        `;
-        return;
-      }
-
-      // Configure direct deep link
-      openAppBtn.href = `nora://trip?data=${trip.rawEncoded}`;
-
-      // Query Cloudflare NTES proxy
-      let live = null;
+    // Query Cloudflare NTES proxy for live status
+    async function fetchLiveNTES(trainNumber) {
       try {
-        const res = await fetch(`${PROXY_URL}/?train=${encodeURIComponent(trip.trainNumber)}`, {
+        const res = await fetch(`${PROXY_URL}/?train=${encodeURIComponent(trainNumber)}`, {
           headers: { 'X-NORA-API-Key': API_KEY }
         });
         if (res.ok) {
           const json = await res.json();
-          if (json?.success) live = json;
+          if (json?.success) return json;
         }
       } catch (err) {
         console.error('NTES fetch error:', err);
       }
+      return null;
+    }
 
-      // Compute display fields
+    // Real-time status update triggered dynamically without site reload
+    async function triggerStatusCheck() {
+      if (isFetchingLive || !currentTripData?.trainNumber) return;
+      isFetchingLive = true;
+
+      // Update button visual states
+      const btns = document.querySelectorAll('.check-status-btn');
+      btns.forEach(b => {
+        b.classList.add('loading');
+        const textSpan = b.querySelector('.text');
+        if (textSpan) textSpan.textContent = 'Updating...';
+      });
+
+      try {
+        const live = await fetchLiveNTES(currentTripData.trainNumber);
+        renderView(currentTripData, live, new Date());
+      } finally {
+        isFetchingLive = false;
+        btns.forEach(b => {
+          b.classList.remove('loading');
+          const textSpan = b.querySelector('.text');
+          if (textSpan) textSpan.textContent = 'Check Status';
+        });
+      }
+    }
+
+    function renderView(trip, live, lastUpdatedTime = new Date()) {
+      const contentEl = document.getElementById('appContent');
+      const openAppBtn = document.getElementById('openAppBtn');
+
+      openAppBtn.href = `nora://trip?data=${trip.rawEncoded}`;
+
       const isCompleted = live?.status === 'completed';
       const delayMin = live?.delayMinutes || 0;
       const isDelayed = delayMin > 5;
@@ -778,7 +840,8 @@
       const passedCount = stations.filter(s => s.isDeparted === true || s.isArrived === true).length;
       const progressPercent = stations.length > 0 ? Math.round((passedCount / stations.length) * 100) : 40;
 
-      // Render Apple OLED UI
+      const timeString = lastUpdatedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
       contentEl.innerHTML = `
         <!-- 1. Hero Radar Card (Current & Next Station) -->
         <div class="card">
@@ -787,15 +850,20 @@
               <div class="dot"></div>
               <span>${statusText}</span>
             </div>
-            <div class="telemetry-meta">
-              ${live?.distanceCoveredKm ? `${live.distanceCoveredKm} km covered` : 'NTES Live Telemetry'}
-            </div>
+
+            <!-- In-card check status button -->
+            <button class="check-status-btn" onclick="triggerStatusCheck()">
+              <span class="icon">⟳</span>
+              <span class="text">Check Status</span>
+            </button>
           </div>
 
           <div class="hero-stations-row">
             <!-- CURRENT STATION -->
             <div class="hero-station-col">
-              <div class="station-eyebrow">CURRENT STATION</div>
+              <div class="station-eyebrow">
+                <span>CURRENT STATION</span>
+              </div>
               <div class="station-name-hero">${currentStationName}</div>
               <div class="station-meta-hero">${currentStationTime}</div>
             </div>
@@ -817,7 +885,7 @@
             </div>
             <div class="progress-footer">
               <span>${currentStationCode}</span>
-              <span>${nextPlatform ? `Next halt at ${nextPlatform}` : `${progressPercent}% route completed`}</span>
+              <span>${nextPlatform ? `Next halt at ${nextPlatform}` : `${progressPercent}% route completed`} · Updated ${timeString}</span>
               <span>${nextStationCode}</span>
             </div>
           </div>
@@ -887,7 +955,6 @@
             </div>
 
             ${(() => {
-              // Find last covered index
               let lastCoveredIdx = -1;
               stations.forEach((s, i) => {
                 if (s.isDeparted === true || s.isArrived === true) lastCoveredIdx = i;
@@ -933,6 +1000,29 @@
           🔒 Private & Stateless · Zero traveler credentials or PNRs are logged on remote servers.
         </div>
       `;
+    }
+
+    async function init() {
+      currentTripData = parseUrlTrip();
+      const contentEl = document.getElementById('appContent');
+
+      if (!currentTripData || !currentTripData.trainNumber) {
+        contentEl.innerHTML = `
+          <div class="card error-state">
+            <h2 style="font-size: 18px; margin-bottom: 8px;">No Trip Link Found</h2>
+            <p style="color: var(--text-secondary); font-size: 13px; line-height: 1.5; margin-bottom: 20px;">
+              This tracking link is missing journey details. Open NORA on Android to generate or share a live link.
+            </p>
+            <a href="https://play.google.com/store/apps/details?id=dev.saksham.nora" class="btn-primary" style="display: inline-flex;">
+              Get NORA on Google Play
+            </a>
+          </div>
+        `;
+        return;
+      }
+
+      const live = await fetchLiveNTES(currentTripData.trainNumber);
+      renderView(currentTripData, live, new Date());
     }
 
     // Initialize on page load and hash change
