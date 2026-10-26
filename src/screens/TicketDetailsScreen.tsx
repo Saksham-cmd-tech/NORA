@@ -492,6 +492,7 @@ export const TicketDetailsScreen: React.FC<TicketDetailsScreenProps> = ({
       <ShareTicketModal
         visible={shareModalVisible}
         data={shareData}
+        ticket={ticket}
         onClose={() => setShareModalVisible(false)}
       />
     </View>

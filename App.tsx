@@ -30,14 +30,17 @@ import { TrainStatusScreen } from './src/screens/TrainStatusScreen';
 import { AddTicketScreen } from './src/screens/AddTicketScreen';
 import { VerifyDetailsScreen } from './src/screens/VerifyDetailsScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
+import { SharedJourneyScreen } from './src/screens/SharedJourneyScreen';
 import { BottomNavigation } from './src/components/navigation/BottomNavigation';
 import { NoraModal } from './src/components/common/NoraModal';
+import { SharedTripData, parseTripShareUrl } from './src/services/tripShareService';
 
 export default function App() {
   const [tickets, setTickets] = useState<NormalizedTicket[]>([]);
   const [currentScreen, setCurrentScreen] = useState<ScreenName>('Onboarding');
   const [selectedTicket, setSelectedTicket] = useState<NormalizedTicket | null>(null);
   const [pendingTicket, setPendingTicket] = useState<NormalizedTicket | null>(null);
+  const [sharedTripData, setSharedTripData] = useState<SharedTripData | null>(null);
   const [autoOpenShareModal, setAutoOpenShareModal] = useState(false);
   const [isReady, setIsReady] = useState(false);
 
@@ -108,10 +111,26 @@ export default function App() {
       });
     });
 
+    // Listen for incoming deep links (Shared train trip links)
+    const handleIncomingDeepLink = (url: string | null | undefined) => {
+      if (!url) return;
+      const parsed = parseTripShareUrl(url);
+      if (parsed) {
+        setSharedTripData(parsed);
+        setCurrentScreen('SharedJourney');
+      }
+    };
+
+    Linking.getInitialURL().then(handleIncomingDeepLink);
+    const unsubLinking = Linking.addEventListener('url', ({ url }) => {
+      handleIncomingDeepLink(url);
+    });
+
     return () => {
       unsubscribe();
       unsubActions();
       unsubShareAndClipboard();
+      unsubLinking.remove();
     };
   }, []);
 
@@ -449,6 +468,24 @@ export default function App() {
               onExportTickets={handleExportTickets}
               onClearAllTickets={handleClearAllTickets}
               onViewOnboarding={() => setCurrentScreen('Onboarding')}
+            />
+          )}
+
+          {currentScreen === 'SharedJourney' && sharedTripData && (
+            <SharedJourneyScreen
+              sharedTrip={sharedTripData}
+              onBack={() => {
+                setSharedTripData(null);
+                setCurrentScreen('Home');
+              }}
+              onSaveToWallet={async () => {
+                await loadTickets();
+              }}
+              onViewInWallet={(ticket) => {
+                setSelectedTicket(ticket);
+                setSharedTripData(null);
+                setCurrentScreen('TicketDetails');
+              }}
             />
           )}
         </View>

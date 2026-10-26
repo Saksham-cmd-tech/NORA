@@ -52,7 +52,7 @@ export const AddTicketScreen: React.FC<AddTicketScreenProps> = ({
   const [fare, setFare] = useState('');
 
   // Keyboard avoidance and view preservation state
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<any>(null);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   useEffect(() => {

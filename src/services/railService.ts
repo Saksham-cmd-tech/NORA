@@ -212,8 +212,13 @@ export interface LiveTrainData {
 }
 
 // Cloudflare Worker Proxy URL for NTES live train status, halts & coach layouts
-// Replace with your deployed Cloudflare Worker URL (e.g. https://nora-rail-proxy.YOUR_SUBDOMAIN.workers.dev)
-export const CLOUDFLARE_PROXY_URL = 'https://nora-rail-proxy.YOUR_SUBDOMAIN.workers.dev';
+export const CLOUDFLARE_PROXY_URL = 'https://nora-rail-proxy.saksham-tale02dev.workers.dev';
+export const NORA_API_KEY = 'nora_rail_sec_9f8b2c4e1a0d3e5f7a6b8c9d0e1f2a3b';
+
+export const defaultProxyHeaders = {
+  Accept: 'application/json',
+  'X-NORA-API-Key': NORA_API_KEY,
+};
 
 // Permanent Cache for Coach Formations (never re-fetch once loaded)
 const coachCache = new Map<string, CoachPositionResponse>();
@@ -245,7 +250,7 @@ export async function fetchTrainName(trainNumber?: string): Promise<string> {
 
     const res = await fetch(`${CLOUDFLARE_PROXY_URL}/?train=${cleanNumber}&action=name`, {
       method: 'GET',
-      headers: { Accept: 'application/json' },
+      headers: defaultProxyHeaders,
       signal: controller.signal,
     });
     clearTimeout(timeoutId);
@@ -889,7 +894,7 @@ export async function getCoachPosition(
 
     const res = await fetch(`${CLOUDFLARE_PROXY_URL}/?train=${cleanNumber}`, {
       method: 'GET',
-      headers: { Accept: 'application/json' },
+      headers: defaultProxyHeaders,
       signal: controller.signal,
     });
     clearTimeout(timeoutId);
@@ -959,7 +964,7 @@ export async function getLegacyTrainDetails(
 
     const res = await fetch(`${CLOUDFLARE_PROXY_URL}/?train=${cleanNumber}`, {
       method: 'GET',
-      headers: { Accept: 'application/json' },
+      headers: defaultProxyHeaders,
       signal: controller.signal,
     });
     clearTimeout(timeoutId);
@@ -1077,7 +1082,7 @@ export async function getStationCoachPosition(
             formation: nativeJson.coachPosition || '',
             reversal: false,
             totalCoaches: nativeJson.coachPosition ? nativeJson.coachPosition.split('-').length : 0,
-            coaches: nativeJson.coachPosition
+            rake: nativeJson.coachPosition
               ? nativeJson.coachPosition.split('-').map((code: string, idx: number) => ({
                   position: idx + 1,
                   code,
@@ -1105,7 +1110,7 @@ export async function getStationCoachPosition(
       `${CLOUDFLARE_PROXY_URL}/?train=${cleanNumber}&station=${cleanStation}`,
       {
         method: 'GET',
-        headers: { Accept: 'application/json' },
+        headers: defaultProxyHeaders,
         signal: controller.signal,
       }
     );
@@ -1121,7 +1126,7 @@ export async function getStationCoachPosition(
           const t2 = setTimeout(() => c2.abort(), 5000);
           const r2 = await fetch(`${CLOUDFLARE_PROXY_URL}/?train=${cleanNumber}`, {
             method: 'GET',
-            headers: { Accept: 'application/json' },
+            headers: defaultProxyHeaders,
             signal: c2.signal,
           });
           clearTimeout(t2);
@@ -1214,7 +1219,7 @@ export async function getLiveTrainStatus(
 
     const res = await fetch(`${CLOUDFLARE_PROXY_URL}/?train=${cleanNumber}`, {
       method: 'GET',
-      headers: { Accept: 'application/json' },
+      headers: defaultProxyHeaders,
       signal: controller.signal,
     });
     clearTimeout(timeoutId);

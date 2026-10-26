@@ -5,3 +5,4 @@ compatibility_flags = ["nodejs_compat"]
 
 [vars]
 ENVIRONMENT = "production"
+NORA_API_KEY = "nora_rail_sec_9f8b2c4e1a0d3e5f7a6b8c9d0e1f2a3b"

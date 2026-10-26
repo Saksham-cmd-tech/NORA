@@ -1,4 +1,4 @@
-export type TicketSource = 'IRCTC' | 'redRail' | 'MANUAL';
+export type TicketSource = 'IRCTC' | 'redRail' | 'MANUAL' | 'SHARE' | 'CLIPBOARD' | 'SHARED_LINK';
 export type TicketStatus = 'CONFIRMED' | 'RAC' | 'WAITLISTED' | 'COMPLETED' | 'CANCELLED';
 
 export interface TrainInfo {
@@ -51,4 +51,12 @@ export interface NormalizedTicket {
   isUpcoming?: boolean;
 }
 
-export type ScreenName = 'Onboarding' | 'Home' | 'TicketDetails' | 'TrainStatus' | 'AddTicket' | 'VerifyDetails' | 'Settings';
+export type ScreenName =
+  | 'Onboarding'
+  | 'Home'
+  | 'TicketDetails'
+  | 'TrainStatus'
+  | 'AddTicket'
+  | 'VerifyDetails'
+  | 'Settings'
+  | 'SharedJourney';

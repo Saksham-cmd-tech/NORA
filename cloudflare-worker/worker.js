@@ -238,7 +238,7 @@ function formatTrainName(raw) {
 }
 
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     const url = new URL(request.url);
     const trainNumber = (url.searchParams.get('train') || '').trim();
     const stationCode = (url.searchParams.get('station') || '').trim().toUpperCase();
@@ -247,13 +247,31 @@ export default {
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Headers': 'Content-Type, X-NORA-API-Key, Authorization',
       'Content-Type': 'application/json; charset=utf-8',
       'Cache-Control': 'public, max-age=60',
     };
 
     if (request.method === 'OPTIONS') {
       return new Response(null, { headers: corsHeaders });
+    }
+
+    // 1. API Key Authentication Guard to secure the proxy
+    const authHeader = request.headers.get('Authorization') || '';
+    const apiKeyHeader = request.headers.get('X-NORA-API-Key') || request.headers.get('x-api-key') || '';
+    const apiKeyParam = url.searchParams.get('key') || '';
+    const expectedKey = (env && env.NORA_API_KEY) || 'nora_rail_sec_9f8b2c4e1a0d3e5f7a6b8c9d0e1f2a3b';
+
+    const providedKey = apiKeyHeader || apiKeyParam || (authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '');
+
+    if (providedKey !== expectedKey) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Unauthorized: Invalid or missing NORA API Key. Access restricted to NORA client.',
+        }),
+        { status: 401, headers: corsHeaders }
+      );
     }
 
     if (!trainNumber) {

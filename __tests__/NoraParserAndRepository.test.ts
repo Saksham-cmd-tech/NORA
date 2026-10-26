@@ -14,6 +14,12 @@ describe('NORA Parser & Duplicate Reconciliation Suite', () => {
   beforeAll(() => {
     jest.useFakeTimers();
     jest.setSystemTime(new Date('2026-10-10T12:00:00Z'));
+    global.fetch = jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        ok: false,
+        json: () => Promise.resolve({ success: false }),
+      })
+    );
   });
 
   afterAll(() => {
