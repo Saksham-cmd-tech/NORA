@@ -1215,7 +1215,7 @@ export async function getLiveTrainStatus(
   // 2. Fetch from Cloudflare Proxy (NTES real-time data, unlimited free quota)
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 7000);
+    const timeoutId = setTimeout(() => controller.abort(), 12000);
 
     const res = await fetch(`${CLOUDFLARE_PROXY_URL}/?train=${cleanNumber}`, {
       method: 'GET',
@@ -1373,15 +1373,43 @@ export async function getLiveTrainStatus(
     console.log(`[RailService] Cloudflare live status error for ${cleanNumber}:`, proxyErr);
   }
 
-  // 3. Fallback to cached or realistic seed data
+  // 3. Fallback to cached entry if available
   if (cachedEntry) {
     return { ...cachedEntry.data, isCached: true };
   }
 
-  const fallback = cleanNumber === '26101' ? FALLBACK_26101_LIVE : {
-    ...FALLBACK_26101_LIVE,
+  // Only return 26101 fallback if the requested train is genuinely 26101
+  if (cleanNumber === '26101') {
+    liveCache.set(cleanNumber, { data: FALLBACK_26101_LIVE, timestamp: now });
+    return FALLBACK_26101_LIVE;
+  }
+
+  // For other trains without NTES response, return a clean unconfirmed status without polluting cache
+  const knownName = getTrainName(cleanNumber) || `Train ${cleanNumber}`;
+  const unconfirmedData: LiveTrainData = {
     trainNumber: cleanNumber,
+    trainName: knownName,
+    startDate: new Date().toISOString().split('T')[0],
+    lastUpdatedAt: new Date().toISOString(),
+    status: 'scheduled',
+    delayMinutes: 0,
+    currentLocation: {
+      stationCode: cleanNumber === '12951' ? 'MMCT' : 'STN',
+      stationName: cleanNumber === '12951' ? 'Mumbai Central' : 'Origin Station',
+      sequence: 1,
+      status: 'scheduled',
+      isHalt: true,
+      delayMinutes: 0,
+    },
+    route: [],
+    train: {
+      number: cleanNumber,
+      name: knownName,
+      source: { code: 'SRC', name: 'Origin' },
+      destination: { code: 'DST', name: 'Destination' },
+    },
+    isLive: false,
+    isCached: false,
   };
-  liveCache.set(cleanNumber, { data: fallback, timestamp: now });
-  return fallback;
+  return unconfirmedData;
 }

@@ -31,7 +31,7 @@ describe('NORA Rail Service & NTES Proxy Suite', () => {
     // Immediate second call should be served from cooldown cache (isCached: true)
     const live2 = await getLiveTrainStatus('26101');
     expect(live2.isCached).toBe(true);
-  });
+  }, 30000);
 
   it('should dynamically resolve passenger cabin and seat from blueprint', async () => {
     const coachData = await getCoachPosition('26101');

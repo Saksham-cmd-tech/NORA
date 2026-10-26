@@ -57,7 +57,7 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
 
   useEffect(() => {
     checkIfAlreadySaved();
-    fetchLiveStatus();
+    fetchLiveStatus(true);
   }, [sharedTrip.trainNumber]);
 
   const checkIfAlreadySaved = async () => {
@@ -285,11 +285,24 @@ export const SharedJourneyScreen: React.FC<SharedJourneyScreenProps> = ({
               <AppText variant="micro" color="secondary" weight="semibold">
                 {`Speed ~${liveData.currentLocation.speedKmh} km/h`}
               </AppText>
-            ) : (
-              <AppText variant="micro" color="secondary" weight="semibold">
-                NTES Live
+            ) : null}
+
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => fetchLiveStatus(true)}
+              style={styles.heroCheckStatusBtn}
+              disabled={loading || refreshing}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              {refreshing ? (
+                <ActivityIndicator size="small" color="#FFFFFF" style={{ marginRight: 4, transform: [{ scale: 0.65 }] }} />
+              ) : (
+                <RefreshCw size={11} color={Colors.appleLabel} style={{ marginRight: 4 }} />
+              )}
+              <AppText variant="micro" weight="heavy" color="primary">
+                {refreshing ? 'Updating...' : 'Check Status'}
               </AppText>
-            )}
+            </TouchableOpacity>
           </View>
 
           {/* Current & Next Station Columns */}
@@ -729,6 +742,16 @@ const styles = StyleSheet.create({
     height: 6,
     borderRadius: 3,
     marginRight: 6,
+  },
+  heroCheckStatusBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.16)',
   },
   stationsRow: {
     flexDirection: 'row',

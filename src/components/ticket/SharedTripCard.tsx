@@ -35,7 +35,7 @@ export const SharedTripCard: React.FC<SharedTripCardProps> = ({
 
   useEffect(() => {
     let isMounted = true;
-    getLiveTrainStatus(ticket.train.number)
+    getLiveTrainStatus(ticket.train.number, true)
       .then((data) => {
         if (isMounted) {
           if (data) setLiveData(data);
