@@ -5,6 +5,14 @@
     {
       "source": "/privacy-policy",
       "destination": "/index.html"
+    },
+    {
+      "source": "/t",
+      "destination": "/t.html"
+    },
+    {
+      "source": "/t/(.*)",
+      "destination": "/t.html"
     }
   ],
   "headers": [

@@ -7,6 +7,14 @@
       "destination": "/privacy-policy/index.html"
     },
     {
+      "source": "/t",
+      "destination": "/privacy-policy/t.html"
+    },
+    {
+      "source": "/t/(.*)",
+      "destination": "/privacy-policy/t.html"
+    },
+    {
       "source": "/",
       "destination": "/privacy-policy/index.html"
     },

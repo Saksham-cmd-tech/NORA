@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NORA — Live Train Tracking</title>
+  <meta name="description" content="Track live train status, current & next stations, delays, and platform numbers privately with NORA.">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" type="image/png" href="/favicon.png">
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #000000;
+      --card-bg: #1C1C1E;
+      --card-secondary: #2C2C2E;
+      --separator: #38383A;
+      --text-primary: #FFFFFF;
+      --text-secondary: #8E8E93;
+      --accent: #F5332C;
+      --green: #30D158;
+      --orange: #FF9F0A;
+      --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 90px;
+    }
+
+    /* Navigation Header */
+    header {
+      width: 100%;
+      max-width: 520px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--separator);
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(20px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(48, 209, 88, 0.12);
+      border: 1px solid rgba(48, 209, 88, 0.25);
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--green);
+      letter-spacing: 0.6px;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+    }
+
+    /* Main Container */
+    main {
+      width: 100%;
+      max-width: 520px;
+      padding: 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Card Styling */
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 20px;
+      border: 1px solid var(--separator);
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Hero Card (Current & Next Station) */
+    .hero-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .status-capsule {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .status-capsule.ontime .dot { background: var(--green); }
+    .status-capsule.delayed .dot { background: #FF453A; }
+    .status-capsule .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .telemetry-meta {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .hero-stations-row {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .hero-station-col {
+      flex: 1;
+    }
+
+    .hero-station-col.right {
+      border-left: 1px solid var(--separator);
+      padding-left: 14px;
+    }
+
+    .station-eyebrow {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .station-eyebrow.accent {
+      color: var(--accent);
+    }
+
+    .station-name-hero {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      line-height: 1.25;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .station-meta-hero {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .station-meta-hero.active {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    /* Progress Track */
+    .progress-section {
+      border-top: 1px solid var(--separator);
+      padding-top: 14px;
+    }
+
+    .progress-bar-bg {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--green);
+      border-radius: 2px;
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .progress-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    /* Journey Overview (Boarding Pass Card) */
+    .journey-card {
+      background-color: var(--card-bg);
+      border-radius: 20px;
+      border: 1px solid var(--separator);
+      padding: 20px;
+    }
+
+    .journey-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .train-badge-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .train-num-badge {
+      background: var(--card-secondary);
+      border: 1px solid var(--separator);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .train-title-text {
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .journey-date-pill {
+      background: var(--card-secondary);
+      border: 1px solid var(--separator);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .route-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 10px 0;
+    }
+
+    .route-point {
+      min-width: 80px;
+    }
+
+    .route-point.right {
+      text-align: right;
+    }
+
+    .route-code {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      line-height: 1.1;
+    }
+
+    .route-time {
+      font-size: 13px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .route-station-sub {
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+      max-width: 95px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .route-track {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+    }
+
+    .route-line {
+      flex: 1;
+      height: 1.5px;
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .route-arrow-pill {
+      width: 24px;
+      height: 24px;
+      border-radius: 12px;
+      background: var(--card-secondary);
+      border: 1px solid var(--separator);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin: 0 6px;
+    }
+
+    .berth-section {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--separator);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .berth-pill {
+      background: var(--card-secondary);
+      border: 1px solid var(--separator);
+      padding: 6px 12px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .berth-pill-label {
+      font-size: 8px;
+      color: var(--text-secondary);
+      letter-spacing: 0.6px;
+      font-weight: 700;
+    }
+
+    .berth-pill-val {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-top: 1px;
+    }
+
+    .private-berth-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      width: 100%;
+    }
+
+    /* Timeline Halts */
+    .timeline-card {
+      background-color: var(--card-bg);
+      border-radius: 20px;
+      border: 1px solid var(--separator);
+      padding: 20px;
+    }
+
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .timeline-title {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      color: var(--text-secondary);
+    }
+
+    .timeline-count {
+      font-size: 10px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .timeline-item {
+      display: flex;
+      align-items: flex-start;
+      min-height: 48px;
+      position: relative;
+    }
+
+    .timeline-node-col {
+      width: 26px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-right: 12px;
+    }
+
+    .timeline-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      color: #FFFFFF;
+      flex-shrink: 0;
+      z-index: 2;
+    }
+
+    .timeline-dot.covered {
+      background: var(--accent);
+    }
+
+    .timeline-dot.current {
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(245, 51, 44, 0.3);
+    }
+
+    .timeline-dot.upcoming {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1.5px solid #48484A;
+    }
+
+    .timeline-line {
+      width: 2px;
+      flex: 1;
+      margin: 2px 0;
+      background: #38383A;
+    }
+
+    .timeline-line.covered {
+      background: var(--accent);
+    }
+
+    .timeline-content {
+      flex: 1;
+      padding-bottom: 12px;
+    }
+
+    .timeline-stn-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .timeline-stn-name {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .timeline-stn-name.covered {
+      color: var(--accent);
+    }
+
+    .timeline-stn-name.upcoming {
+      color: var(--text-secondary);
+    }
+
+    .current-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: rgba(245, 51, 44, 0.16);
+      border: 1px solid rgba(245, 51, 44, 0.35);
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 9px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-left: 6px;
+    }
+
+    .platform-pill {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--separator);
+      background: var(--card-secondary);
+      color: var(--text-secondary);
+    }
+
+    .platform-pill.covered {
+      border-color: rgba(245, 51, 44, 0.3);
+      color: var(--accent);
+    }
+
+    .timeline-time {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* Fixed Bottom Bar */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 14px 20px;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--separator);
+      display: flex;
+      justify-content: center;
+      z-index: 200;
+    }
+
+    .bottom-inner {
+      width: 100%;
+      max-width: 520px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-primary {
+      flex: 1;
+      background: #FFFFFF;
+      color: #000000;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .btn-primary:active {
+      opacity: 0.85;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 10px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      padding: 10px 16px;
+    }
+
+    /* Loading & Error States */
+    .loading-state, .error-state {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header>
+    <a href="https://nora-privacy-policy.vercel.app" class="brand-group">
+      <img src="/logo.png" alt="NORA" class="brand-logo" onerror="this.style.display='none'">
+      <span class="brand-title">NORA Live Radar</span>
+    </a>
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      LIVE
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main id="appContent">
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p style="color: var(--text-secondary); font-size: 13px;">Connecting to National Train Enquiry System...</p>
+    </div>
+  </main>
+
+  <!-- Sticky Bottom Bar -->
+  <div class="bottom-bar">
+    <div class="bottom-inner">
+      <a id="openAppBtn" href="nora://trip" class="btn-primary">
+        <span>⚡ OPEN IN NORA APP</span>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const PROXY_URL = 'https://nora-rail-proxy.saksham-tale02dev.workers.dev';
+    const API_KEY = 'nora_rail_sec_9f8b2c4e1a0d3e5f7a6b8c9d0e1f2a3b';
+
+    // Base64URL decoder with UTF-8 support
+    function fromBase64Url(str) {
+      try {
+        let b64 = str.replace(/-/g, '+').replace(/_/g, '/');
+        while (b64.length % 4) b64 += '=';
+        const binary = atob(b64);
+        const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+        return new TextDecoder().decode(bytes);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Extract trip payload from URL hash or query params
+    function parseUrlTrip() {
+      const fullUrl = window.location.href;
+      let rawData = '';
+
+      // Check hash (#data=...)
+      const hash = window.location.hash;
+      if (hash) {
+        if (hash.startsWith('#data=')) rawData = hash.substring(6);
+        else if (hash.startsWith('#')) rawData = hash.substring(1);
+      }
+
+      // Check query (?data=...)
+      if (!rawData) {
+        const match = window.location.search.match(/[?&]data=([^&#]+)/);
+        if (match) rawData = match[1];
+      }
+
+      if (rawData) {
+        const jsonStr = fromBase64Url(rawData);
+        if (jsonStr) {
+          try {
+            const p = JSON.parse(jsonStr);
+            return {
+              trainNumber: p.t || '',
+              trainName: p.n || ('Train ' + p.t),
+              trainType: p.tt || 'SUPERFAST',
+              date: p.d || 'Today',
+              from: p.f || '',
+              fromName: p.fn || p.f || '',
+              to: p.to || '',
+              toName: p.tn || p.to || '',
+              departure: p.dt || '--:--',
+              arrival: p.at || '--:--',
+              coach: p.c,
+              seat: p.s,
+              berth: p.b,
+              status: p.st || 'CONFIRMED',
+              rawEncoded: rawData,
+            };
+          } catch(e) {}
+        }
+      }
+
+      return null;
+    }
+
+    // Format time helper
+    function formatTime(t) {
+      if (!t) return '--:--';
+      const m = t.match(/(\d{1,2}):(\d{2})/);
+      if (m) {
+        let h = parseInt(m[1], 10);
+        const min = m[2];
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        return `${String(h).padStart(2, '0')}:${min} ${ampm}`;
+      }
+      return t;
+    }
+
+    async function init() {
+      const trip = parseUrlTrip();
+      const contentEl = document.getElementById('appContent');
+      const openAppBtn = document.getElementById('openAppBtn');
+
+      if (!trip || !trip.trainNumber) {
+        contentEl.innerHTML = `
+          <div class="card error-state">
+            <h2 style="font-size: 18px; margin-bottom: 8px;">No Trip Link Found</h2>
+            <p style="color: var(--text-secondary); font-size: 13px; line-height: 1.5; margin-bottom: 20px;">
+              This tracking link is missing journey details. Open NORA on Android to generate or share a live link.
+            </p>
+            <a href="https://play.google.com/store/apps/details?id=dev.saksham.nora" class="btn-primary" style="display: inline-flex;">
+              Get NORA on Google Play
+            </a>
+          </div>
+        `;
+        return;
+      }
+
+      // Configure direct deep link
+      openAppBtn.href = `nora://trip?data=${trip.rawEncoded}`;
+
+      // Query Cloudflare NTES proxy
+      let live = null;
+      try {
+        const res = await fetch(`${PROXY_URL}/?train=${encodeURIComponent(trip.trainNumber)}`, {
+          headers: { 'X-NORA-API-Key': API_KEY }
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json?.success) live = json;
+        }
+      } catch (err) {
+        console.error('NTES fetch error:', err);
+      }
+
+      // Compute display fields
+      const isCompleted = live?.status === 'completed';
+      const delayMin = live?.delayMinutes || 0;
+      const isDelayed = delayMin > 5;
+      const statusText = isCompleted ? 'JOURNEY COMPLETED' : isDelayed ? `${delayMin} MIN DELAY` : 'RUNNING ON TIME';
+      const statusClass = isDelayed ? 'delayed' : 'ontime';
+
+      // Real active current station
+      const currentStationName = live?.currentStation || trip.fromName || trip.from;
+      const currentStationCode = live?.currentStationCode || trip.from;
+      let currentStationTime = '';
+      if (live?.currentStatus && live.currentStatus.toLowerCase().includes('departed')) {
+        const match = live.currentStatus.match(/at\s+([\d:]+\s*(?:[A-Za-z0-9\-]+)?)/i);
+        currentStationTime = match ? `Departed at ${match[1]}` : live.currentStatus;
+      } else {
+        currentStationTime = `Scheduled ${formatTime(trip.departure)}`;
+      }
+
+      // Next station
+      const nextStationName = live?.nextHalt || trip.toName || trip.to;
+      const nextStationCode = live?.nextHaltCode || trip.to;
+      const nextEta = live?.nextHaltEta ? formatTime(live.nextHaltEta) : formatTime(trip.arrival);
+      const nextPlatform = live?.platform && live.platform !== 'TBD' ? `Platform ${live.platform}` : '';
+
+      // Stations list
+      const stations = Array.isArray(live?.stations) ? live.stations : [];
+      const passedCount = stations.filter(s => s.isDeparted === true || s.isArrived === true).length;
+      const progressPercent = stations.length > 0 ? Math.round((passedCount / stations.length) * 100) : 40;
+
+      // Render Apple OLED UI
+      contentEl.innerHTML = `
+        <!-- 1. Hero Radar Card (Current & Next Station) -->
+        <div class="card">
+          <div class="hero-top-row">
+            <div class="status-capsule ${statusClass}">
+              <div class="dot"></div>
+              <span>${statusText}</span>
+            </div>
+            <div class="telemetry-meta">
+              ${live?.distanceCoveredKm ? `${live.distanceCoveredKm} km covered` : 'NTES Live Telemetry'}
+            </div>
+          </div>
+
+          <div class="hero-stations-row">
+            <!-- CURRENT STATION -->
+            <div class="hero-station-col">
+              <div class="station-eyebrow">CURRENT STATION</div>
+              <div class="station-name-hero">${currentStationName}</div>
+              <div class="station-meta-hero">${currentStationTime}</div>
+            </div>
+
+            <!-- NEXT STATION -->
+            <div class="hero-station-col right">
+              <div class="station-eyebrow accent">● NEXT STATION</div>
+              <div class="station-name-hero">${nextStationName}</div>
+              <div class="station-meta-hero active">
+                ETA ${nextEta} ${nextPlatform ? `· ${nextPlatform}` : ''}
+              </div>
+            </div>
+          </div>
+
+          <!-- Connecting Progress Track -->
+          <div class="progress-section">
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width: ${progressPercent}%;"></div>
+            </div>
+            <div class="progress-footer">
+              <span>${currentStationCode}</span>
+              <span>${nextPlatform ? `Next halt at ${nextPlatform}` : `${progressPercent}% route completed`}</span>
+              <span>${nextStationCode}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Journey Boarding Pass Card -->
+        <div class="journey-card">
+          <div class="journey-header">
+            <div class="train-badge-group">
+              <span class="train-num-badge">${trip.trainNumber}</span>
+              <span class="train-title-text">${trip.trainName}</span>
+            </div>
+            <div class="journey-date-pill">${trip.date}</div>
+          </div>
+
+          <div class="route-row">
+            <div class="route-point">
+              <div class="route-code">${trip.from}</div>
+              <div class="route-time">${formatTime(trip.departure)}</div>
+              <div class="route-station-sub">${trip.fromName}</div>
+            </div>
+
+            <div class="route-track">
+              <div class="route-line"></div>
+              <div class="route-arrow-pill">→</div>
+              <div class="route-line"></div>
+            </div>
+
+            <div class="route-point right">
+              <div class="route-code">${trip.to}</div>
+              <div class="route-time">${formatTime(trip.arrival)}</div>
+              <div class="route-station-sub">${trip.toName}</div>
+            </div>
+          </div>
+
+          <div class="berth-section">
+            ${trip.coach && trip.seat ? `
+              <div class="berth-pill">
+                <div class="berth-pill-label">COACH</div>
+                <div class="berth-pill-val">${trip.coach}</div>
+              </div>
+              <div class="berth-pill">
+                <div class="berth-pill-label">SEAT</div>
+                <div class="berth-pill-val">${trip.seat}</div>
+              </div>
+              ${trip.berth ? `
+                <div class="berth-pill">
+                  <div class="berth-pill-label">TYPE</div>
+                  <div class="berth-pill-val">${trip.berth}</div>
+                </div>
+              ` : ''}
+            ` : `
+              <div class="private-berth-pill">
+                <span>🛡️</span>
+                <span>Coach & seat details kept private by traveler</span>
+              </div>
+            `}
+          </div>
+        </div>
+
+        <!-- 3. Halts Timeline (Covered in Accent, Upcoming in Gray) -->
+        ${stations.length > 0 ? `
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-title">ROUTE HALTS & SCHEDULE</span>
+              <span class="timeline-count">${passedCount} of ${stations.length} covered</span>
+            </div>
+
+            ${(() => {
+              // Find last covered index
+              let lastCoveredIdx = -1;
+              stations.forEach((s, i) => {
+                if (s.isDeparted === true || s.isArrived === true) lastCoveredIdx = i;
+              });
+
+              return stations.map((stn, idx) => {
+                const isCovered = idx <= lastCoveredIdx;
+                const isCurrent = idx === lastCoveredIdx;
+                const dotClass = isCurrent ? 'current' : isCovered ? 'covered' : 'upcoming';
+                const lineClass = isCovered ? 'covered' : '';
+                const nameClass = isCovered ? 'covered' : 'upcoming';
+
+                return `
+                  <div class="timeline-item">
+                    <div class="timeline-node-col">
+                      <div class="timeline-dot ${dotClass}">
+                        ${isCovered ? '✓' : ''}
+                      </div>
+                      ${idx < stations.length - 1 ? `<div class="timeline-line ${lineClass}"></div>` : ''}
+                    </div>
+                    <div class="timeline-content">
+                      <div class="timeline-stn-row">
+                        <div style="display: flex; align-items: center;">
+                          <span class="timeline-stn-name ${nameClass}">${stn.stationName || stn.stationCode}</span>
+                          ${isCurrent ? `<span class="current-badge">● CURRENT</span>` : ''}
+                        </div>
+                        ${stn.platform && stn.platform !== 'TBD' ? `
+                          <span class="platform-pill ${isCovered ? 'covered' : ''}">PF ${stn.platform}</span>
+                        ` : ''}
+                      </div>
+                      <div class="timeline-time">
+                        ${stn.scheduledDeparture || stn.scheduledArrival || '--:--'}
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('');
+            })()}
+          </div>
+        ` : ''}
+
+        <div class="footer-note">
+          🔒 Private & Stateless · Zero traveler credentials or PNRs are logged on remote servers.
+        </div>
+      `;
+    }
+
+    // Initialize on page load and hash change
+    window.addEventListener('DOMContentLoaded', init);
+    window.addEventListener('hashchange', init);
+  </script>
+</body>
+</html>
