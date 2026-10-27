@@ -260,7 +260,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
               </AppText>
             </View>
             <AppText variant="body" color="secondary">
-              1.2.0 (Build 2026.10)
+              1.2.1 (Build 2026.10)
             </AppText>
           </View>
 

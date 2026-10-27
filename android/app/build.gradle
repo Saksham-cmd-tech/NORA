@@ -27,8 +27,8 @@ android {
         applicationId "dev.saksham.nora"
         minSdkVersion (rootProject.ext.minSdkVersion as Integer)
         targetSdkVersion (rootProject.ext.targetSdkVersion as Integer)
-        versionCode 5
-        versionName "1.2.0"
+        versionCode 6
+        versionName "1.2.1"
     }
 
     signingConfigs {

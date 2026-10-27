@@ -33,8 +33,8 @@ Both production builds have been generated and signed with this keystore:
    - **Original Build Path:** `android/app/build/outputs/bundle/release/app-release.aab`
    - **Size:** ~46 MB
    - **Package Name:** `dev.saksham.nora`
-   - **Version Code:** `4`
-   - **Version Name:** `1.2.0`
+   - **Version Code:** `6`
+   - **Version Name:** `1.2.1`
 
 2. **Standalone Release APK (`.apk`) — For Direct Installation/Testing:**
    - **Path:** `release_builds/app-release.apk`
